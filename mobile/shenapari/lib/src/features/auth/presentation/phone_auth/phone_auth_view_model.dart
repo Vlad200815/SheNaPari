@@ -74,6 +74,7 @@ class PhoneAuthViewModel
         phoneNumber,
       );
 
+
       if (otpData.succeeded.orFalse()) {
         final int otpCodeExpiresInSeconds = (otpData.data?.expiresInSeconds)
             .orZero();
