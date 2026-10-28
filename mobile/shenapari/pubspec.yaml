@@ -1,0 +1,291 @@
+name: shenapari
+description: "A new Flutter project."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+3
+
+environment:
+  sdk: ^3.10.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Use with the CupertinoIcons class for iOS style icons.
+  #  cupertino_icons: ^1.0.8
+
+  ###
+  ### UI
+  ###
+
+  # scroll_to_hide: ^2.2.1
+
+  # Fonts
+  google_fonts: ^8.1.0
+
+  flutter_svg: ^2.3.0
+
+  skeletonizer: ^3.0.0
+  shimmer: ^4.0.0
+
+  # Email validation
+  email_validator: ^3.0.0
+  mask_text_input_formatter: ^2.9.0
+
+  expansion_tile_list: ^2.0.0
+
+  # Bottom sheet dialog
+  #  sheet: ^1.0.0
+
+  # OTP code
+  pinput: ^6.0.2
+
+  # Markdown
+  flutter_markdown_plus: ^1.0.7
+
+  # Pagination
+  #  infinite_scroll_pagination: ^5.1.0
+
+
+
+  ###
+  ### General
+  ###
+
+
+  #Share
+  share_plus: ^13.1.0
+
+  #Email send
+  url_launcher: ^6.3.1
+
+  #DI
+  get_it: ^9.2.1
+
+  # Deeplink
+  app_links: ^7.0.0
+
+  # JWT
+  dart_jsonwebtoken: ^3.4.1
+
+  # Identical ID
+  uuid: ^4.5.3
+
+  # JSON serializable & model
+  json_annotation: ^4.12.0
+  freezed_annotation: ^3.1.0
+  enum_to_string: ^2.0.1
+
+  # Image Cached
+  cached_network_image: ^4.0.0
+
+  # Navigation
+  go_router: ^18.0.1
+
+  # Update version
+  ota_update: ^7.0.2
+  in_app_update: ^5.0.0
+  package_info_plus: ^10.1.0
+
+  # For data class
+  equatable: ^3.0.0
+
+  # Resource localizations
+  easy_localization: ^3.0.7
+  easy_localization_loader: ^2.0.2
+  intl: ^0.20.3
+
+
+  ###
+  ### Networking
+  ###
+
+  #  internet_connection_checker: ^3.0.1
+  connectivity_plus: ^6.1.5
+  dio: ^5.7.0
+  retrofit: ^4.4.1
+  pretty_dio_logger: ^1.4.0
+  http_parser: ^4.1.2
+  http: ^1.2.2
+  #  async: ^2.13.0
+
+
+  ###
+  ### State Management
+  ###
+
+  bloc: ^9.2.1
+  flutter_bloc: ^9.1.1
+  bloc_concurrency: ^0.3.0
+  stream_transform: ^2.1.0
+  get: ^4.6.6
+
+
+
+  ###
+  ### Firebase packages
+  ###
+
+#  firebase_auth: ^6.5.2
+
+  # Notifications
+  firebase_messaging: ^16.3.0
+  flutter_local_notifications: ^22.3.1
+
+  firebase_core: ^4.10.0
+  firebase_crashlytics: ^5.2.3
+  firebase_analytics: ^12.4.2
+#  cloud_firestore: ^6.5.0
+#  google_sign_in: ^7.2.0
+
+
+  ###
+  ### Local Storage
+  ###
+
+  #  hive: ^2.2.3
+  #  hive_flutter: ^1.1.0
+  flutter_secure_storage: ^11.2.0
+  permission_handler: ^13.0.2
+  #hive_generator: ^2.0.1
+
+  # Sqlite helper packages
+  sqflite: ^2.4.4
+  path: ^1.9.1
+  path_provider: ^2.1.6
+
+  # Shared Preferences
+  shared_preferences: ^2.3.4
+
+
+
+###
+### Dev Dependencies
+###
+
+  vector_graphics: any
+  flutter_native_splash: any
+  collection: any
+  pub_semver: any
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  ###
+  ### Testing
+  ###
+
+  bloc_test: ^10.0.0
+  mocktail: ^1.0.5
+
+  # App icons
+  flutter_launcher_icons: ^0.14.4
+
+  # Splash screen
+  flutter_lints: ^6.0.0
+
+  #Flavour
+  flutter_flavorizr: ^2.5.0
+
+  # Data class
+  freezed: ^4.0.1
+
+  # Auto generate some files
+  build_runner: ^2.15.1
+  flutter_gen_runner: ^5.11.0
+  json_serializable: ^6.7.1
+  retrofit_generator: ^10.2.11
+
+  # Connection controller
+#  connectivity_plus: ^6.0.3
+#  data_strength: ^0.0.2
+
+
+
+###
+### Config generate when build
+###
+
+flutter_gen:
+  output: lib/gen/
+  line_length: 160
+
+  integrations:
+    flutter_svg: true
+
+  assets:
+    enabled: true
+
+  fonts:
+    enabled: true
+
+  colors:
+    enabled: true
+    inputs:
+      - assets/color/colors.xml
+
+###
+### Flutter package setup
+###
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    # Legal
+    - assets/legal/privacy_policy/
+    - assets/legal/terms_of_use/
+
+    # Images
+    - assets/images/
+    - assets/images/bottom_nav/
+    - assets/images/onboarding/
+    - assets/images/auth/
+    - assets/images/home/
+
+    # Translations
+    - assets/translations/
+
+
+
+###
+### Splash Screen
+###
+
+flutter_native_splash:
+  #! FOR ALL PLATFORM, except Android 12+:
+
+  # general color for all platform (except android 12+):
+  # see there only 2 lines in all parameters that marked as [required], so others
+  # remain optional. NOTE that if you specify the [required] color, then you cant
+  # use the [required] background_image in the next section. the reverse is true.
+  # select one, they cant work together.
+  #  color: "#ffffff"   #========[REQUIRED]============
+  #  color_dark: "#000000"
+
+  # hide notif bar on android. ios already hides it by default.
+  # Has no effect in web since web has no notification bar.
+  fullscreen: true
+
+  # general background_image for all platform (except android 12+)
+  # if you specify this [required] background_image, then you should comment the
+  # [required] color in previous section. select one, they cant work together.
+
+  background_image: assets/images/splash/light_background.png    #========[REQUIRED]============
+  background_image_dark: assets/images/splash/dark_background.png
+
+  #background_image:      "assets/background.png"
+  #background_image_dark: "assets/dark-background.png"
+
+  # general image for all platform (except android 12+):
+  # allows you to specify an image used in the splash screen. It must be a
+  # png file and should be sized for 4x pixel density.
+
+  image: assets/images/splash/logo.png
+
+  android_12:
+    image: assets/images/splash/logo.png
+
+    color: "#ffffff"
+    color_dark: "#000000"
