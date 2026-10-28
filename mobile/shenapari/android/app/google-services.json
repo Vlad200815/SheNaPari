@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "882818375303",
+    "project_id": "animal-4c31f",
+    "storage_bucket": "animal-4c31f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882818375303:android:8c87aeb27d872be7dc6222",
+        "android_client_info": {
+          "package_name": "com.example.animal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxP3ZvR2pWHxN7947PzukBSAkvlHhxQxk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882818375303:android:519dfd81a13fb4fddc6222",
+        "android_client_info": {
+          "package_name": "com.shenapari.shenapari"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxP3ZvR2pWHxN7947PzukBSAkvlHhxQxk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

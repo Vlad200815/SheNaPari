@@ -1,0 +1,84 @@
+{
+  "app": {
+    "continue_button_text": "Продовжити",
+    "edit_button_text": "Редагувати",
+
+    "internet_connection_on": "З’єднання відновлено",
+    "internet_connection_off": "Немає інтернету",
+    "alert_dialog_btn_positive": "Ок",
+    "errors": {
+      "unknown": "Невідомий",
+      "title": "Помилка",
+      "inputs_fill": "Заповніть усі поля",
+      "inspection_finish": "Не вдалося завершити перевірку",
+      "validation_input": "Помилка валідації",
+      "no_found": "Нічого не знайдено",
+      "unauthorized": "Користувач не авторизований",
+      "validation": "Перевірте правильність введених даних",
+
+      "email_val_default": "Електронна пошта обовʼязкова",
+      "email_val": "Введіть коректну електронну пошту",
+
+      "password_val_default": "Пароль обовʼязковий",
+      "password_val_min_characters": "Мінімум 8 символів",
+      "password_val_uppercase_letter": "Додайте хоча б одну велику літеру",
+      "password_val_min_one_digit": "Додайте хоча б одну цифру",
+      "confirm_password": "Паролі не співпадають",
+      "user_name_default": "Імʼя користувача обовʼязкове",
+      "user_name": "3–20 символів, літери та цифри",
+      "auth_error": "Упс, щось пішло не так"
+    },
+
+    "update": {
+      "dialog_info_title": "Доступна нова версія",
+      "dialog_info_message": "Оновіть застосунок, щоб отримати найкращий досвід",
+      "dialog_btn_update": "Оновити",
+      "dialog_btn_cancel": "Скасувати"
+    },
+
+
+    "bottom_bar": {
+      "home": "Головна",
+      "browser": "Пошук",
+      "discover": "Замовлення",
+      "profile": "Профіль"
+    },
+
+    "no_internet": {
+      "title": "Упс!!!",
+      "no_internet_explanation_title": "Інтернет-з’єднання не знайдено.\nПеревірте підключення або спробуйте ще раз.",
+      "btn_title": "Спробувати ще раз"
+    }
+  },
+
+  "onboarding_page": {
+    "welcome_title": "Ласкаво просимо до найсмачнішого додатка",
+    "order_on_fly_title": "Замовляй на льоту. Забирай за секунди!",
+    "peace_of_mind_title": "Спокій у кожному шматочку",
+    "app_name_title": "ШеНаПарі",
+    "skip_rush_text": "Забудь про черги в кампусі. Роби замовлення під час пари та забирай їжу щойно пролунає дзвоник. Без очікування та черг.",
+    "real_time_notifications_text": "Отримуй сповіщення в реальному часі: від моменту потрапляння на гриль до самої видачі. Ми дбаємо про час — ти про апетит.",
+    "next_button_title": "Далі",
+    "skip_button_title": "Пропустити",
+    "start_button_title": "Почати"
+  },
+
+  "phone_auth": {
+    "step_title": "Крок {current_step} з {max_steps}",
+    "enter_your_phone_title": "Введіть номер телефону",
+    "enter_your_phone_subtitle": "Ми надішлемо вам 6-значний код для підтвердження номера",
+    "terms_and_privacy_start_text": "Продовжуючи, ви погоджуєтеся з нашими",
+    "terms_of_use_hyper_text": "Умовами використання",
+    "privacy_policy_hyper_text": "Політикою конфіденційності",
+    "privacy_policy_title": "Політикою конфіденційності",
+    "and_text": "та",
+    "enter_6_digit_title": "Введіть 6-значний код",
+    "enter_6_digit_subtitle": "Ми надіслали код на номер",
+    "resend_code_title": "Надіслати код повторно через {resend_time}",
+    "send_code_again_button_text": "Надіслати код ще раз",
+    "varify_button_text": "Підтвердити",
+    "terms_of_use_title": "Умови використання",
+    "terms_of_use_subtitle": "Будь ласка, уважно прочитайте наші Умови використання",
+    "privacy_policy_subtitle": "Будь ласка, уважно прочитайте нашу Політику конфіденційності"
+  }
+}

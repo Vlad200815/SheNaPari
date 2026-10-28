@@ -1,0 +1,77 @@
+{
+  "app": {
+    "continue_button_text": "Continue",
+    "edit_button_text": "Edit",
+
+    "internet_connection_on": "Connection restored",
+    "internet_connection_off": "Offline",
+    "alert_dialog_btn_positive": "Ok",
+    "errors": {
+      "unknown": "Unknown",
+      "title": "Error",
+      "inputs_fill": "Fill all the fields",
+      "inspection_finish": "Failed to complete verification",
+      "validation_input": "Validation error",
+      "no_found": "Nothing found",
+      "unauthorized": "User is not authorized",
+      "validation": "Check the correctness of the entered data",
+      "email_val_default": "Email is required",
+      "email_val": "Enter a valid email",
+      "password_val_default": "Password is required",
+      "password_val_min_characters": "Minimum 8 characters",
+      "password_val_uppercase_letter": "Add at least one uppercase letter",
+      "password_val_min_one_digit": "Add at least one number",
+      "confirm_password": "Password do not match",
+      "user_name_default": "Username is required",
+      "user_name": "3-20 chars, letters, numbers...",
+      "auth_error": "Opps something went wrong"
+    },
+    "update": {
+      "dialog_info_title": "A new version is available",
+      "dialog_info_message": "Please update to get the best experience",
+      "dialog_btn_update": "Update",
+      "dialog_btn_cancel": "Cancel"
+    },
+    "bottom_bar": {
+      "home": "Home",
+      "browser": "Search",
+      "discover": "Orders",
+      "profile": "Profile"
+    },
+    "no_internet": {
+      "title": "Whoops!!!",
+      "no_internet_explanation_title": "No Internet connection was found.\nCheck your connection or try again.",
+      "btn_title": "Try again"
+    }
+  },
+  "onboarding_page": {
+    "welcome_title": "Welcome to the most tastiest app",
+    "order_on_fly_title": "Order on the fly. Pick up in seconds!",
+    "peace_of_mind_title": "Peace of mind in every bite",
+    "app_name_title": "SheNaPari",
+    "skip_rush_text": "Skip the campus rush. Place your order during class and grab your food the moment the bell rings. No lines, no waiting.",
+    "real_time_notifications_text": "Receive real-time notifications from the moment your order hits the grill until it's ready for pickup. We handle the timing; you handle the cravings.",
+    "next_button_title": "Next",
+    "skip_button_title": "Skip",
+    "start_button_title": "Start"
+  },
+
+  "phone_auth": {
+    "step_title": "Step {current_step} of {max_steps}",
+    "enter_your_phone_title": "Enter your phone number",
+    "enter_your_phone_subtitle": "We will send you a 6-digit code to verify your number",
+    "terms_and_privacy_start_text": "By continuing you agree to our",
+    "terms_of_use_hyper_text": "Terms of Use",
+    "privacy_policy_hyper_text": "Privacy Policy",
+    "privacy_policy_title": "Privacy Policy",
+    "and_text": "and",
+    "enter_6_digit_title": "Enter the 6-digit code",
+    "enter_6_digit_subtitle": "We sent your code to",
+    "resend_code_title": "Resend code in {resend_time}",
+    "send_code_again_button_text": "Send code again",
+    "varify_button_text": "Verify",
+    "terms_of_use_title": "Terms of Use",
+    "terms_of_use_subtitle": "Please read our Terms of Use carefully",
+    "privacy_policy_subtitle": "Please read our Privacy Policy carefully"
+  }
+}
