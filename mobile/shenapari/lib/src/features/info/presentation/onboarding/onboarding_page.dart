@@ -42,7 +42,7 @@ class OnboardingPage
     }
   }
 
-  final int INITIAL_PAGE = 0;
+  final int initialPage = 0;
 
   final List<String> images = [
     Assets.images.onboarding.welcome.path,
@@ -50,13 +50,13 @@ class OnboardingPage
     Assets.images.onboarding.realtimeNotifications.path,
   ];
 
-  final List<String> titles = [
+  List<String> get titles => [
     LocaleKeys.onboarding_page_welcome_title.tr(),
     LocaleKeys.onboarding_page_order_on_fly_title.tr(),
     LocaleKeys.onboarding_page_peace_of_mind_title.tr(),
   ];
 
-  final List<String> subTitles = [
+  List<String> get subTitles => [
     LocaleKeys.onboarding_page_app_name_title.tr(),
     LocaleKeys.onboarding_page_skip_rush_text.tr(),
     LocaleKeys.onboarding_page_real_time_notifications_text.tr(),
@@ -64,9 +64,10 @@ class OnboardingPage
 
   PageController? _pageController;
 
+
   @override
   void onInit(BuildContext context) {
-    _pageController = PageController(initialPage: INITIAL_PAGE);
+    _pageController = PageController(initialPage: initialPage);
     super.onInit(context);
   }
 
@@ -78,6 +79,11 @@ class OnboardingPage
 
   @override
   Widget createView(BuildContext context, OnboardingState state) {
+
+
+    final isLast = state.selectedPage == images.length - 1;
+
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -108,6 +114,8 @@ class OnboardingPage
                 },
               ),
             ),
+            const SizedBox(height: 20),
+
             Center(
               child: PageProgressBarView(
                 selectedPage: state.selectedPage.orZero(),
@@ -115,31 +123,34 @@ class OnboardingPage
               ),
             ),
 
-            const SizedBox(height: 28),
-            if (state.selectedPage != 2) ...[
-              ButtonItem.primary(
-                text: LocaleKeys.onboarding_page_next_button_title.tr(),
-                onTap: () => postAction(
-                  context,
-                  OnNextButtonPressedAction(pageController: _pageController),
-                ),
-                horizontalPadding: Dimen.DEFAULT_HORIZONTAL_PADDING,
+            const SizedBox(height: 20),
+
+            ButtonItem.primary(
+              text: isLast ?
+                LocaleKeys.onboarding_page_start_button_title.tr() :
+                LocaleKeys.onboarding_page_next_button_title.tr(),
+
+              onTap: () => postAction(
+                context, isLast ?
+              OnStartButtonPressedAction() :
+              OnNextButtonPressedAction(pageController: _pageController),
               ),
-              const SizedBox(height: 10),
-              ButtonItem.outlined(
+              horizontalPadding: Dimen.DEFAULT_HORIZONTAL_PADDING,
+            ),
+            const SizedBox(height: 10),
+            Visibility(
+              visible: !isLast,
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              child: ButtonItem.outlined(
                 text: LocaleKeys.onboarding_page_skip_button_title.tr(),
                 onTap: () => postAction(context, OnSkipButtonPressedAction()),
                 horizontalPadding: Dimen.DEFAULT_HORIZONTAL_PADDING,
               ),
-            ] else ...[
-              ButtonItem.primary(
-                text: LocaleKeys.onboarding_page_start_button_title.tr(),
-                onTap: () => postAction(context, OnStartButtonPressedAction()),
-                horizontalPadding: Dimen.DEFAULT_HORIZONTAL_PADDING,
-              ),
-              const SizedBox(height: 62),
-            ],
-            const SizedBox(height: 50),
+            ),
+            const SizedBox(height: 20),
+
           ],
         ),
       ),

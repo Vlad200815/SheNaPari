@@ -59,7 +59,7 @@ class Navigation {
       // notified when auth and (intro = onboarding) changes
       refreshListenable: Listenable.merge([authNotifier, introNotifier]),
 
-      redirect: _redirect,
+      // redirect: _redirect,
       errorBuilder: (context, state) {
         debugPrint("GoRouter caught an invalid path: ${state.uri}");
         return const Scaffold(
