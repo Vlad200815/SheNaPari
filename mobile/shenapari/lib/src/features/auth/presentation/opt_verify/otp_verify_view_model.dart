@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shenapari/src/app/config.dart';
-import 'package:shenapari/src/core/base/base_application.dart';
 import 'package:shenapari/src/core/base/base_view_model.dart';
 import 'package:shenapari/src/core/network/result.dart';
 import 'package:shenapari/src/core/others/extension/extensions.dart';
@@ -13,6 +12,7 @@ import 'package:shenapari/src/core/servies/uk_phone_number_formater.dart';
 import 'package:shenapari/src/features/auth/domain/entities/auth.dart';
 import 'package:shenapari/src/features/auth/domain/usecases/auth.dart';
 
+import '../../../../core/session/session_notifiers.dart';
 import 'otp_verify_action.dart';
 import 'otp_verify_event.dart';
 import 'otp_verify_state.dart';
