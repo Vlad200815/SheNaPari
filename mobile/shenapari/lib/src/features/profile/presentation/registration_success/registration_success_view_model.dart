@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shenapari/src/core/base/base_application.dart';
 import 'package:shenapari/src/core/base/base_view_model.dart';
 import 'package:shenapari/src/core/preference/app_preference.dart';
 
+import '../../../../core/session/session_notifiers.dart';
 import 'registration_success_action.dart';
 import 'registration_success_event.dart';
 import 'registration_success_state.dart';
