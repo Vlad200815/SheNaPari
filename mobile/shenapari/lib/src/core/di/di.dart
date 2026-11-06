@@ -8,7 +8,7 @@ import 'package:shenapari/src/features/profile/di/profile_locator.dart';
 final di = GetIt.instance;
 
 class Di {
-  static void setup() async {
+  static void setup()  {
     /// Register Dio Builder
     di.registerLazySingleton<DioBuilder>(() => DioBuilder.getInstance());
 
