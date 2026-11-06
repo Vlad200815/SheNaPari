@@ -40,13 +40,13 @@ class PosterViewState extends State<PosterView> {
   Widget build(BuildContext context) {
     final data = widget.posters;
     return AspectRatio(
-      aspectRatio: 4 / 3,
+      aspectRatio: 4 / 2.8,
       child: Stack(
         fit: StackFit.expand,
         children: [
           PageView.builder(
             controller: _pageController,
-            onPageChanged: changeIndex,
+            onPageChanged: _changeIndex,
             // For repeating logic you don't need to use itemCount
             itemBuilder: (context, index) {
               final realIndex = index % data.length;
@@ -78,7 +78,7 @@ class PosterViewState extends State<PosterView> {
 
   /// Scroll Animation
   void _startScrollPosterAnimation() {
-    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
       if (!_pageController.hasClients) return;
 
       _pageController.nextPage(
@@ -89,7 +89,7 @@ class PosterViewState extends State<PosterView> {
   }
 
   /// Change poster's index
-  void changeIndex(int index) {
+  void _changeIndex(int index) {
     setState(() {
       final realIndex = index % widget.posters.length;
       _selectedIndex = realIndex;
