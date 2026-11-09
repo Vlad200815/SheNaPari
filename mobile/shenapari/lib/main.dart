@@ -9,7 +9,7 @@ import 'package:shenapari/src/app/localization.dart';
 import 'package:shenapari/src/core/preference/app_preference.dart';
 import 'package:shenapari/src/core/session/session_notifiers.dart';
 
-import 'app.dart';
+import 'src/app/app.dart';
 import 'firebase_options.dart';
 import 'src/core/di/di.dart';
 
