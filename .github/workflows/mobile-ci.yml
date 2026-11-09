@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: mobile
+        working-directory: mobile/shenapari
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
