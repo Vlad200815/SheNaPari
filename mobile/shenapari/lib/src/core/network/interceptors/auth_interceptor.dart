@@ -3,7 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:shenapari/src/core/network/api.dart';
 import 'package:shenapari/src/core/others/extension/extensions.dart';
 import 'package:shenapari/src/core/preference/app_preference.dart';
-import 'package:shenapari/src/features/auth/data/models/auth.dart';
+import 'package:shenapari/src/core/session/models/jwt_response.dart';
+import 'package:shenapari/src/core/session/models/refresh_jwt_request.dart';
 
 import '../../session/session_notifiers.dart';
 
