@@ -2,15 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shenapari/src/core/others/extension/extensions.dart';
-import 'package:shenapari/src/core/resource/theme_text.dart';
-import 'package:shenapari/src/core/servies/debounce.dart';
 
-import '../../../generated/locale_keys.g.dart';
-import 'back_button_interceptor.dart';
-import 'base_application.dart';
 import 'base_view_action.dart';
 import 'base_view_event.dart';
 import 'base_view_model.dart';
@@ -29,23 +23,22 @@ abstract class BasePage<
     implements BaseWidgetLifecycle {
   BasePage({super.key});
 
-  GlobalKey rootKey = GlobalKey();
 
   bool get isWantKeepAlive => false;
 
   bool get isShowErrorMessage => true;
   ErrorViewEvent? _lastErrorEvent;
   LoadingViewEvent? _lastLoadingEvent;
-  final _subscriptions = <StreamSubscription<dynamic>>[];
+  // final _subscriptions = <StreamSubscription<dynamic>>[];
 
   ///
   /// Called when a back gesture has been completed and committed,
   /// or back button pressed has been released and committed.
   ///
-  bool onBackInvokedDispatcher(bool stopDefaultButtonEvent, RouteInfo info) {
-    debugPrint('$VM:: onBackPressed()');
-    return false;
-  }
+  // bool onBackInvokedDispatcher(bool stopDefaultButtonEvent, RouteInfo info) {
+  //   debugPrint('$VM:: onBackPressed()');
+  //   return false;
+  // }
 
   VM viewModelProvider(
     Uri uri,
@@ -76,11 +69,11 @@ abstract class BasePage<
   }
 
   ///Send action from view to view model
-  void postAction(BuildContext context, VA action, {bool isGlobal = false}) {
+  void postAction(BuildContext context, VA action) {
     Future.delayed(const Duration(milliseconds: 1), () {
       if (context.mounted) {
-        context.read<VM>().add(isGlobal ? GlobalAction(action) : action);
-        debugPrint('$VM:: postAction($action) isGlobal: $isGlobal');
+        // context.read<VM>().add(isGlobal ? GlobalAction(action) : action);
+        // debugPrint('$VM:: postAction($action) isGlobal: $isGlobal');
         if (_lastErrorEvent != null) {
           context.read<VM>().events.value = null;
         }
@@ -104,7 +97,6 @@ abstract class BasePage<
         builder: (context, state) {
           _onReceiveEvents(context);
           return Stack(
-            key: rootKey,
             children:
                 backgroundView(context, state) +
                 [
@@ -120,13 +112,13 @@ abstract class BasePage<
 
   @override
   void onInit(BuildContext context) {
-    _addNavigationChangeListener(context);
-    BackButtonInterceptor.add(onBackInvokedDispatcher);
-    _subscriptions.add(
-      appEventBus.on<GlobalAction>().listen((event) {
-        if (context.mounted) context.read<VM>().add(event);
-      }),
-    );
+    // _addNavigationChangeListener(context);
+    // BackButtonInterceptor.add(onBackInvokedDispatcher);
+    // _subscriptions.add(
+    //   appEventBus.on<GlobalAction>().listen((event) {
+    //     if (context.mounted) context.read<VM>().add(event);
+    //   }),
+    // );
     debugPrint('$VM:: onInit()');
   }
 
@@ -142,12 +134,12 @@ abstract class BasePage<
 
   @override
   void onDestroy() {
-    _removeNavigationChangeListener();
-    for (final s in _subscriptions) {
-      s.cancel();
-    }
-    _subscriptions.clear();
-    BackButtonInterceptor.remove(onBackInvokedDispatcher);
+    // _removeNavigationChangeListener();
+    // for (final s in _subscriptions) {
+    //   s.cancel();
+    // }
+    // _subscriptions.clear();
+    // BackButtonInterceptor.remove(onBackInvokedDispatcher);
     debugPrint('$VM:: onDestroy()');
   }
 
@@ -212,155 +204,115 @@ abstract class BasePage<
     if (!viewModel.isInitializedView) {
       onInit(context);
       viewModel.events.listen((event) {
-        if (event != null) {
-          if (event is ErrorViewEvent) {
-            viewModel.add(
-              ErrorViewAction(
-                exception: event.exception,
-                type: event.type,
-                message: event.message,
-              ),
-            );
-            if (isShowErrorMessage) {
-              _showSnackMessage(context, event.message);
-            }
-          } else if (event is MessageViewEvent) {
-            _showSnackMessage(context, event.text);
-          } else if (event is VE) {
-            handleEvent(context, event);
-          }
+        // if (event != null) {
+        //   if (event is ErrorViewEvent) {
+        //     viewModel.add(
+        //       ErrorViewAction(
+        //         exception: event.exception,
+        //         type: event.type,
+        //         message: event.message,
+        //       ),
+        //     );
+        //     // if (isShowErrorMessage) {
+        //     //   showAppSnackBar(context, event.message);
+        //     // }
+        //   // } else if (event is MessageViewEvent) {
+        //   //   showAppSnackBar(context, event.text);
+        //   // } else if (event is VE) {
+        //   //   handleEvent(context, event);
+        //   // }
         }
-        debugPrint('$VM:: handleEvent($event)');
-      });
+      );
     }
   }
 
   ///
   /// On subscribe to navigation changed
   ///
-  void _addNavigationChangeListener(BuildContext context) {
-    GoRouter.of(
-      context,
-    ).routeInformationProvider.addListener(_onChangeNavigationInfo);
-  }
+  // void _addNavigationChangeListener(BuildContext context) {
+  //   GoRouter.of(
+  //     context,
+  //   ).routeInformationProvider.addListener(_onChangeNavigationInfo);
+  // }
 
   ///
   /// On unsubscribe to navigation changed
   ///
-  void _removeNavigationChangeListener() {
-    final context = rootKey.currentContext;
-    if (context != null) {
-      GoRouter.of(
-        context,
-      ).routeInformationProvider.removeListener(_onChangeNavigationInfo);
-    }
-  }
+  // void _removeNavigationChangeListener() {
+  //   final context = rootKey.currentContext;
+  //   if (context != null) {
+  //     GoRouter.of(
+  //       context,
+  //     ).routeInformationProvider.removeListener(_onChangeNavigationInfo);
+  //   }
+  // }
 
   ///
   /// On change navigation page information
   ///
-  void _onChangeNavigationInfo() {
-    final context = rootKey.currentContext;
-    if (context != null) {
-      final pageState = GoRouterState.of(context);
-      final info = GoRouter.of(context).routeInformationProvider.value;
-      if (info.state != null && info.state is RouteInformationState<void>) {
-        final state = (info.state as RouteInformationState<void>);
-        final isResume = state.type == NavigatingType.restore;
-        if (isResume && pageState.uri == info.uri) {
-          onResume(context);
-        }
-      }
-    }
-  }
-
-  ///
-  /// Show snack message
-  ///
-  void _showSnackMessage(BuildContext context, String? text) {
-    Debounce.run("error-message", Duration(seconds: 1), () async {
-      Get.snackbar(
-        LocaleKeys.app_errors_title.tr,
-        (text).orEmpty(),
-        titleText: SizedBox(),
-        messageText: Text((text).orEmpty(), style: ThemeText.poppinsMedium()),
-        duration: Duration(seconds: 5),
-        barBlur: 12,
-      );
-      /*ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text((text).orEmpty(),
-                style: ThemeText.getBody(size: 14, color: ColorName.white))),
-      );*/
-    });
-  }
-
-  // void showErrorDialogEvent({
-  //   required BuildContext context,
-  //   String? title,
-  //   required String message
-  // }) {
-  //   showAdaptiveDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return ComponentManager.alertDialog(
-  //           // image: Assets.images.icNoConnection,
-  //             title: title,
-  //             message: message,
-  //             positiveButton: LocaleKeys.app_close.tr,
-  //             positiveButtonCallback: () {
-  //               context.pop();
-  //             }
-  //         );
+  // void _onChangeNavigationInfo() {
+  //   final context = rootKey.currentContext;
+  //   if (context != null) {
+  //     final pageState = GoRouterState.of(context);
+  //     final info = GoRouter.of(context).routeInformationProvider.value;
+  //     if (info.state != null && info.state is RouteInformationState<void>) {
+  //       final state = (info.state as RouteInformationState<void>);
+  //       final isResume = state.type == NavigatingType.restore;
+  //       if (isResume && pageState.uri == info.uri) {
+  //         onResume(context);
   //       }
-  //   );
+  //     }
+  //   }
   // }
+
+
+
+
 }
 
-class _BasePageState extends State<BasePage>
-    with AutomaticKeepAliveClientMixin<BasePage> {
+class _BasePageState extends State<BasePage> {
   _BasePageState(this._listener);
 
   final BaseWidgetLifecycle _listener;
 
-  late final AppLifecycleListener _appLifecycleListener;
+  // late final AppLifecycleListener _appLifecycleListener;
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    // super.build(context);
     return _listener.onCreateView(context);
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((it) {
-      final context = widget.rootKey.currentContext;
-      _appLifecycleListener = AppLifecycleListener(
-        onResume: () => {if (context != null) _listener.onResume(context)},
-        onHide: () => {if (context != null) _listener.onStop(context)},
-      );
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((it) {
+    //   // final context = widget.rootKey.currentContext;
+    //   _appLifecycleListener = AppLifecycleListener(
+    //     onResume: () => {if (context != null) _listener.onResume(context)},
+    //     onHide: () => {if (context != null) _listener.onStop(context)},
+    //   );
+    // });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    WidgetsBinding.instance.addPostFrameCallback((it) {
-      final context = widget.rootKey.currentContext;
-      if (context != null) {
-        _listener.onResume(context);
-      }
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((it) {
+    //   // final context = widget.rootKey.currentContext;
+    //   if (context != null) {
+    //     _listener.onResume(context);
+    //   } bum bum bum bum bum bum bum bum
+    // });
   }
 
   @override
   void dispose() {
-    _appLifecycleListener.dispose();
-    _listener.onDestroy();
+    // _appLifecycleListener.dispose();
+    // _listener.onDestroy();
     super.dispose();
   }
 
-  @override
-  bool get wantKeepAlive => widget.isWantKeepAlive;
+  // @override
+  // bool get wantKeepAlive => widget.isWantKeepAlive;
 }

@@ -42,11 +42,3 @@ class ErrorViewAction extends ViewAction {
   List<Object?> get props => [exception, message, type];
 }
 
-class GlobalAction<T> extends ViewAction {
-  const GlobalAction(this.data);
-
-  final T? data;
-
-  @override
-  List<Object?> get props => [data];
-}

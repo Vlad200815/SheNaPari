@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shenapari/gen/colors.gen.dart';
-import 'package:shenapari/src/core/base/base_application.dart';
 import 'package:shenapari/src/features/auth/presentation/opt_verify/otp_verify_page.dart';
 import 'package:shenapari/src/features/auth/presentation/phone_auth/phone_auth_page.dart';
 import 'package:shenapari/src/features/cart/presentation/cart/cart_page.dart';
@@ -22,6 +21,8 @@ import 'package:shenapari/src/features/profile/presentation/profile/profile_page
 import 'package:shenapari/src/features/profile/presentation/registration_profile/registration_profile_page.dart';
 import 'package:shenapari/src/features/profile/presentation/registration_success/registration_success_page.dart';
 import 'package:shenapari/src/features/root/root_page.dart';
+
+import '../core/session/session_notifiers.dart';
 
 class Navigation {
   // Private navigators

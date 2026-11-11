@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:shenapari/src/core/base/base_application.dart';
 import 'package:shenapari/src/core/base/base_view_model.dart';
 import 'package:shenapari/src/core/preference/app_preference.dart';
 import 'package:shenapari/src/features/info/presentation/onboarding/onboarding_action.dart';
 
+import '../../../../core/session/session_notifiers.dart';
 import 'onboarding_event.dart';
 import 'onboarding_state.dart';
 

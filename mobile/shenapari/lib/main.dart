@@ -5,12 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:shenapari/src/app/localization.dart';
-import 'package:shenapari/src/core/base/base_application.dart';
 import 'package:shenapari/src/core/preference/app_preference.dart';
-import 'package:shenapari/src/features/app/app_page.dart';
+import 'package:shenapari/src/core/session/session_notifiers.dart';
 
+import 'src/app/app.dart';
 import 'firebase_options.dart';
 import 'src/core/di/di.dart';
 
@@ -32,6 +31,9 @@ void main() async {
   /// Configure Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  /// Set up Firebase Crashlytics
+  await _setupCrashlytics();
+
   /// Firebase Messaging
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -44,32 +46,29 @@ void main() async {
   /// Localization
   await Localization.init();
 
+  /// Remove the splash screen
+  FlutterNativeSplash.remove();
+
+  runApp(Localization.localizedApp(const App()));
+}
+
+
+Future<void> _setupCrashlytics() async{
   /// Only enable Crashlytics in release mode
   await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
     !kDebugMode,
   );
 
-  /// Check if Crashlytics is enabled
-  if (FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled) {
-    ///Capture Flutter framework errors (UI/Widget build errors)
-    FlutterError.onError = (details) {
-      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
-    };
+  if (kDebugMode) return;
+  /// Capture Flutter framework errors (UI/Widget build errors)
+  FlutterError.onError = (details) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+  };
 
-    /// Capture asynchronous errors (Futures/Streams/Compute)
-    PlatformDispatcher.instance.onError = (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      return true;
-    };
-  }
+  /// Capture asynchronous errors (Futures/Streams/Compute)
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
 
-  /// Remove the splash screen
-  FlutterNativeSplash.remove();
-
-  runApp(
-    GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Localization.localizedApp(AppPage()),
-    ),
-  );
 }
