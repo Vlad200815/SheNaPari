@@ -1,0 +1,15 @@
+# Local PostgreSQL for development: `docker compose up -d` (from backend/)
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: shenapari
+      POSTGRES_PASSWORD: shenapari
+      POSTGRES_DB: shenapari
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

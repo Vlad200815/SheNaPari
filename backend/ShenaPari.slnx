@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ShenaPari.Api/ShenaPari.Api.csproj" />
+  </Folder>
+</Solution>
