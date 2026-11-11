@@ -82,7 +82,39 @@ void main() {
       ).thenAnswer((_) async {});
     });
 
-    test("needsProfile: false → current -> authenticated", () async {
+    test('needsProfile=false overwrites previous true flag', () async {
+      await prefs.setBool(needsProfileKey, true);
+
+      await repo.saveTokens(
+        accessToken: accessMockValue,
+        refreshToken: refreshMockValue,
+        needsProfile: false,
+      );
+
+      expect(prefs.getBool(needsProfileKey), false);
+    });
+
+    test('storage write fails → current stays unchanged', () async {
+      when(
+        () => storage.write(
+          key: any(named: 'key'),
+          value: any(named: 'value'),
+        ),
+      ).thenThrow(Exception('keychain locked'));
+
+      await expectLater(
+        repo.saveTokens(
+          accessToken: accessMockValue,
+          refreshToken: refreshMockValue,
+          needsProfile: false,
+        ),
+        throwsException,
+      );
+
+      expect(repo.current, SessionStatus.unauthenticated);
+    });
+
+    test('needsProfile=false → current is authenticated', () async {
       await repo.saveTokens(
         accessToken: accessMockValue,
         refreshToken: refreshMockValue,
@@ -126,6 +158,114 @@ void main() {
       );
 
       expect(prefs.getBool(needsProfileKey), true);
+    });
+  });
+
+  group('clear', () {
+    setUp(() async {
+      when(
+        () => storage.delete(key: any(named: 'key')),
+      ).thenAnswer((_) async {});
+      when(
+        () => storage.write(
+          key: any(named: 'key'),
+          value: any(named: 'value'),
+        ),
+      ).thenAnswer((_) async {});
+
+      // Arrange a logged-in session to clear.
+      await repo.saveTokens(
+        accessToken: accessMockValue,
+        refreshToken: refreshMockValue,
+        needsProfile: true,
+      );
+    });
+
+    test('deletes both tokens from storage', () async {
+      await repo.clear();
+
+      verify(() => storage.delete(key: accessStorageKey)).called(1);
+      verify(() => storage.delete(key: refreshStorageKey)).called(1);
+    });
+
+    test('removes needsProfile flag', () async {
+      await repo.clear();
+
+      expect(prefs.getBool(needsProfileKey), isNull);
+    });
+
+    test('current → unauthenticated', () async {
+      await repo.clear();
+
+      expect(repo.current, SessionStatus.unauthenticated);
+    });
+  });
+
+  group('completeProfile', () {
+    test('needsProfile session → authenticated, flag false', () async {
+      when(
+        () => storage.write(
+          key: any(named: 'key'),
+          value: any(named: 'value'),
+        ),
+      ).thenAnswer((_) async {});
+      await repo.saveTokens(
+        accessToken: accessMockValue,
+        refreshToken: refreshMockValue,
+        needsProfile: true,
+      );
+
+      await repo.completeProfile();
+
+      expect(repo.current, SessionStatus.authenticated);
+      expect(prefs.getBool(needsProfileKey), false);
+    });
+  });
+
+  group('changes', () {
+    setUp(() {
+      when(
+        () => storage.write(
+          key: any(named: 'key'),
+          value: any(named: 'value'),
+        ),
+      ).thenAnswer((_) async {});
+      when(
+        () => storage.delete(key: any(named: 'key')),
+      ).thenAnswer((_) async {});
+    });
+
+    test('emits every status transition in order', () async {
+      // Subscribe BEFORE acting: a broadcast stream does not replay.
+      final expectation = expectLater(
+        repo.changes,
+        emitsInOrder([
+          SessionStatus.needsProfile,
+          SessionStatus.authenticated,
+          SessionStatus.unauthenticated,
+        ]),
+      );
+
+      await repo.saveTokens(
+        accessToken: accessMockValue,
+        refreshToken: refreshMockValue,
+        needsProfile: true,
+      );
+      await repo.completeProfile();
+      await repo.clear();
+
+      await expectation;
+    });
+
+    test('does not emit when status is unchanged', () async {
+      final emitted = <SessionStatus>[];
+      final sub = repo.changes.listen(emitted.add);
+
+      await repo.clear(); // already unauthenticated
+      await Future<void>.delayed(Duration.zero); // let the stream deliver
+
+      expect(emitted, isEmpty);
+      await sub.cancel();
     });
   });
 }

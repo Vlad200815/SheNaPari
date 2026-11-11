@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shenapari/src/core/others/extension/extensions.dart';
@@ -15,9 +17,20 @@ class SessionRepositoryImpl implements SessionRepository {
 
   SessionStatus _status = SessionStatus.unauthenticated;
 
+  // Broadcast: several listeners (router redirect, SessionCubit, ...) may
+  // subscribe at once; a single-subscription stream would throw.
+  final _changes = StreamController<SessionStatus>.broadcast();
+
   @override
-  // TODO: implement changes
-  Stream<SessionStatus> get changes => throw UnimplementedError();
+  Stream<SessionStatus> get changes => _changes.stream;
+
+  /// Single place that updates the cache and notifies listeners,
+  /// so the two can never get out of sync.
+  void _setStatus(SessionStatus status) {
+    if (status == _status) return;
+    _status = status;
+    _changes.add(status);
+  }
 
   @override
   Future<void> init() async {
@@ -37,19 +50,22 @@ class SessionRepositoryImpl implements SessionRepository {
   }
 
   @override
-  // TODO: implement current
   SessionStatus get current => _status;
 
   @override
-  Future<void> clear() {
-    // TODO: implement clear
-    throw UnimplementedError();
+  Future<void> clear() async {
+    await _storage.delete(key: accessStorageKey);
+    await _storage.delete(key: refreshStorageKey);
+    await _prefs.remove(needsProfileKey);
+
+    _setStatus(SessionStatus.unauthenticated);
   }
 
   @override
-  Future<void> completeProfile() {
-    // TODO: implement completeProfile
-    throw UnimplementedError();
+  Future<void> completeProfile() async {
+    await _prefs.setBool(needsProfileKey, false);
+
+    _setStatus(SessionStatus.authenticated);
   }
 
   @override
@@ -57,9 +73,19 @@ class SessionRepositoryImpl implements SessionRepository {
     required String accessToken,
     required String refreshToken,
     required bool needsProfile,
-  }) {
-    // TODO: implement saveTokens
-    throw UnimplementedError();
+  }) async {
+    // Storage first: it is the source of truth. If a write throws,
+    // _status must stay as it was so `current` never claims a session
+    // that was not persisted.
+    await _storage.write(key: accessStorageKey, value: accessToken);
+    await _storage.write(key: refreshStorageKey, value: refreshToken);
+    // Always write the flag (true AND false) so a stale `true` from a
+    // previous session gets overwritten.
+    await _prefs.setBool(needsProfileKey, needsProfile);
+
+    _setStatus(
+      needsProfile ? SessionStatus.needsProfile : SessionStatus.authenticated,
+    );
   }
 
   @override
