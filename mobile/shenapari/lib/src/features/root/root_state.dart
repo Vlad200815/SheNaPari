@@ -6,7 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shenapari/gen/assets.gen.dart';
 import 'package:shenapari/gen/colors.gen.dart';
-import 'package:shenapari/src/core/base/back_button_interceptor.dart';
 import 'package:shenapari/src/features/root/root_page.dart';
 
 import '../../../../generated/locale_keys.g.dart';
@@ -142,20 +141,20 @@ class RootState extends State<RootPage> {
   ///
   /// On back pressed button dispatcher
   ///
-  bool _onBackInvokedDispatcher(bool stopDefaultButtonEvent, RouteInfo info) {
-    final page = info.currentRoute(context);
-    page?.isCurrent == false;
-    final isEnable = _isNeedRefreshNavBarIndex(
-      context,
-      _bottomMenuInitialIndex,
-    );
-    if (isEnable) {
-      //widget.navigationShell.goBranch(_bottomMenuInitialIndex);
-      return false;
-    } else {
-      return false;
-    }
-  }
+  // bool _onBackInvokedDispatcher(bool stopDefaultButtonEvent, RouteInfo info) {
+  //   final page = info.currentRoute(context);
+  //   page?.isCurrent == false;
+  //   final isEnable = _isNeedRefreshNavBarIndex(
+  //     context,
+  //     _bottomMenuInitialIndex,
+  //   );
+  //   if (isEnable) {
+  //     //widget.navigationShell.goBranch(_bottomMenuInitialIndex);
+  //     return false;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   ///
   /// On change route dispatcher

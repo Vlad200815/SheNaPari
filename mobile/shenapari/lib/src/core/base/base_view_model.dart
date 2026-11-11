@@ -10,12 +10,6 @@ import 'base_view_state.dart';
 import 'error_view_helper.dart';
 import 'live_data.dart';
 
-class _Handler {
-  const _Handler({required this.isType, required this.type});
-
-  final bool Function(dynamic value) isType;
-  final Type type;
-}
 
 abstract class BaseViewModel<
   VS extends ViewState,
@@ -24,7 +18,6 @@ abstract class BaseViewModel<
 >
     extends Bloc<ViewAction, VS> {
   final LiveData<ViewEvent?> events = LiveData.broadcast(null);
-  final _handlers = <_Handler>[];
 
   bool isInitializedView = false;
 
@@ -47,10 +40,7 @@ abstract class BaseViewModel<
       if (action is ErrorViewAction) {
         debugPrint('$runtimeType:: onReceive ($action()');
         await onErrors(emit, action.exception, action.type, action.message);
-      } else if (action is GlobalAction) {
-        await onAppAction(action, emit);
-        debugPrint('$runtimeType:: onReceive ($action()');
-      } else if (action is VA) {
+      }  else if (action is VA) {
         debugPrint('$runtimeType:: onReceive ($action()');
         await onViewAction(action, emit);
       }
@@ -68,26 +58,8 @@ abstract class BaseViewModel<
   ///Called when view page passes instance of [VA] to handle.
   Future<void> onViewAction(VA action, Emitter<VS> emitter) async {}
 
-  ///Called when receive global app action.
-  Future<void> onAppAction(GlobalAction action, Emitter<VS> emitter) async {}
 
-  void register<E extends GlobalAction>(
-    EventHandler<E, State> handler, {
-    EventTransformer<E>? transformer,
-  }) {
-    // ignore: prefer_asserts_with_message
-    assert(() {
-      final handlerExists = _handlers.any((handler) => handler.type == E);
-      if (handlerExists) {
-        throw StateError(
-          'on<$E> was called multiple times. '
-          'There should only be a single event handler per event type.',
-        );
-      }
-      _handlers.add(_Handler(isType: (dynamic e) => e is E, type: E));
-      return true;
-    }());
-  }
+
 
   Future<void> onErrors(
     Emitter<VS> emitter,

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:shenapari/src/core/network/result.dart';
+import 'package:shenapari/src/core/session/models/jwt_response.dart';
 import 'package:shenapari/src/features/auth/data/data_sources/remote/auth_api_service.dart';
 import 'package:shenapari/src/features/auth/data/models/auth.dart';
 import 'package:shenapari/src/features/auth/domain/entities/auth.dart';
