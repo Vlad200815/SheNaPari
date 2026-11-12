@@ -1,11 +1,15 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using ShenaPari.Api.Entities;
 
 namespace ShenaPari.Api.Auth;
 
+/// Reads the logged-in user from the JWT. Only call inside [Authorize].
 public static class ClaimsExtensions
 {
-    /// Id of the logged-in user from the JWT "sub" claim. Only call inside [Authorize].
     public static Guid UserId(this ClaimsPrincipal user) =>
         Guid.Parse(user.FindFirstValue(JwtRegisteredClaimNames.Sub)!);
+
+    public static UserRole Role(this ClaimsPrincipal user) =>
+        Enum.Parse<UserRole>(user.FindFirstValue("role")!);
 }

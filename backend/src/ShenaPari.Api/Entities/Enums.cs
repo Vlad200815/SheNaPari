@@ -1,9 +1,12 @@
 namespace ShenaPari.Api.Entities;
 
+/// Staff roles are nested: SuperAdmin can do everything Admin can, Admin everything Cook can.
 public enum UserRole
 {
-    Student,
-    Staff,
+    Customer,
+    Cook,
+    Admin,
+    SuperAdmin,
 }
 
 /// Pending → Accepted → Cooking → Ready → PickedUp;

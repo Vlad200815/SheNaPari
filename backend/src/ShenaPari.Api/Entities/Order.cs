@@ -10,8 +10,8 @@ public class Order
     /// Random 128-bit secret; the only thing encoded into the pickup QR.
     public Guid PickupToken { get; set; }
 
-    public Guid UserId { get; set; }
-    public User User { get; set; } = null!;
+    public Guid CustomerId { get; set; }
+    public Customer Customer { get; set; } = null!;
     public int BreakSlotId { get; set; }
     public BreakSlot BreakSlot { get; set; } = null!;
     public OrderStatus Status { get; set; } = OrderStatus.Pending;
