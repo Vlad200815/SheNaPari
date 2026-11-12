@@ -1,32 +1,18 @@
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using ShenaPari.Api.Common;
 using ShenaPari.Api.Data;
 using ShenaPari.Api.Dtos;
 using ShenaPari.Api.Entities;
 
 namespace ShenaPari.Api.Auth;
 
-/// Result of an auth operation: either a value or an error the controller maps to HTTP.
-public record AuthResult<T>(T? Value, AuthError? Error)
-{
-    public static AuthResult<T> Ok(T value) => new(value, null);
-    public static AuthResult<T> Fail(AuthError error) => new(default, error);
-}
-
-public enum AuthError
-{
-    InvalidPhone,
-    TooManyRequests, // asked for a new code within 60 s
-    InvalidCode,     // wrong, expired or no code
-    TooManyAttempts, // 5 wrong attempts on one code
-    InvalidToken,    // refresh token unknown, expired or revoked
-}
-
 public partial class AuthService(
     AppDbContext db,
     ISmsSender sms,
     TokenService tokens,
+    PasswordService passwords,
     TimeProvider clock)
 {
     private static readonly TimeSpan CodeLifetime = TimeSpan.FromMinutes(5);
@@ -36,23 +22,23 @@ public partial class AuthService(
     [System.Text.RegularExpressions.GeneratedRegex(@"^\+380\d{9}$")]
     private static partial System.Text.RegularExpressions.Regex UaPhone();
 
-    public async Task<AuthResult<bool>> RequestOtpAsync(string phone)
+    public async Task<Result<object?>> RequestOtpAsync(string phone)
     {
-        if (!UaPhone().IsMatch(phone)) return AuthResult<bool>.Fail(AuthError.InvalidPhone);
+        if (!UaPhone().IsMatch(phone)) return AuthErrors.InvalidPhone;
 
         var now = clock.GetUtcNow();
-        var last = await db.OtpCodes
+        var last = await db.VerificationCodes
             .Where(o => o.Phone == phone)
             .OrderByDescending(o => o.CreatedAt)
             .FirstOrDefaultAsync();
         if (last is not null && now - last.CreatedAt < ResendCooldown)
-            return AuthResult<bool>.Fail(AuthError.TooManyRequests);
+            return AuthErrors.TooManyRequests;
 
         // Only one live code per phone: old ones are deleted.
-        await db.OtpCodes.Where(o => o.Phone == phone).ExecuteDeleteAsync();
+        await db.VerificationCodes.Where(o => o.Phone == phone).ExecuteDeleteAsync();
 
         var code = RandomNumberGenerator.GetInt32(0, 1_000_000).ToString("D6");
-        db.OtpCodes.Add(new OtpCode
+        db.VerificationCodes.Add(new VerificationCode
         {
             Phone = phone,
             CodeHash = HashCode(phone, code),
@@ -62,17 +48,17 @@ public partial class AuthService(
         await db.SaveChangesAsync();
 
         await sms.SendAsync(phone, $"ShenaPari code: {code}");
-        return AuthResult<bool>.Ok(true);
+        return Result.Ok();
     }
 
-    public async Task<AuthResult<AuthResponseDto>> VerifyOtpAsync(string phone, string code)
+    public async Task<Result<AuthResponseDto>> VerifyOtpAsync(string phone, string code)
     {
         var now = clock.GetUtcNow();
-        var otp = await db.OtpCodes.FirstOrDefaultAsync(o => o.Phone == phone);
+        var otp = await db.VerificationCodes.FirstOrDefaultAsync(o => o.Phone == phone);
         if (otp is null || otp.ExpiresAt < now)
-            return AuthResult<AuthResponseDto>.Fail(AuthError.InvalidCode);
+            return AuthErrors.InvalidCode;
         if (otp.Attempts >= MaxAttempts)
-            return AuthResult<AuthResponseDto>.Fail(AuthError.TooManyAttempts);
+            return AuthErrors.TooManyAttempts;
 
         var ok = CryptographicOperations.FixedTimeEquals(
             Encoding.UTF8.GetBytes(otp.CodeHash),
@@ -81,37 +67,61 @@ public partial class AuthService(
         {
             otp.Attempts++;
             await db.SaveChangesAsync();
-            return AuthResult<AuthResponseDto>.Fail(AuthError.InvalidCode);
+            return AuthErrors.InvalidCode;
         }
 
-        db.OtpCodes.Remove(otp);
+        db.VerificationCodes.Remove(otp);
 
-        var user = await db.Users.FirstOrDefaultAsync(u => u.Phone == phone);
+        var user = await db.Customers.FirstOrDefaultAsync(u => u.Phone == phone);
         if (user is null)
         {
-            user = new User { Phone = phone, CreatedAt = now };
-            db.Users.Add(user);
+            user = new Customer { Phone = phone, Role = UserRole.Customer, CreatedAt = now };
+            db.Customers.Add(user);
+        }
+        else if (!user.IsActive)
+        {
+            await db.SaveChangesAsync(); // the used code is still consumed
+            return AuthErrors.AccountDeactivated;
         }
 
         var response = IssueTokens(user);
         await db.SaveChangesAsync();
-        return AuthResult<AuthResponseDto>.Ok(response);
+        return response;
+    }
+
+    /// Staff login. The same error for "no such e-mail" and "wrong password",
+    /// so nobody can probe which e-mails have accounts.
+    public async Task<Result<AuthResponseDto>> StaffLoginAsync(string email, string password)
+    {
+        var normalized = email.Trim().ToLowerInvariant();
+        var employee = await db.Employees
+            .Include(e => e.Credentials)
+            .FirstOrDefaultAsync(e => e.Email == normalized);
+        if (employee?.Credentials is null ||
+            !passwords.Verify(employee, employee.Credentials.PasswordHash, password))
+            return AuthErrors.InvalidCredentials;
+        if (!employee.IsActive) return AuthErrors.AccountDeactivated;
+
+        var response = IssueTokens(employee);
+        await db.SaveChangesAsync();
+        return response;
     }
 
     /// Rotation: the old refresh token is revoked and a new pair is issued.
-    public async Task<AuthResult<AuthResponseDto>> RefreshAsync(string refreshToken)
+    public async Task<Result<AuthResponseDto>> RefreshAsync(string refreshToken)
     {
         var hash = TokenService.Hash(refreshToken);
         var stored = await db.RefreshTokens
             .Include(t => t.User)
             .FirstOrDefaultAsync(t => t.TokenHash == hash);
-        if (stored is null || stored.RevokedAt is not null || stored.ExpiresAt < clock.GetUtcNow())
-            return AuthResult<AuthResponseDto>.Fail(AuthError.InvalidToken);
+        if (stored is null || stored.RevokedAt is not null || stored.ExpiresAt < clock.GetUtcNow()
+            || !stored.User.IsActive)
+            return AuthErrors.InvalidToken;
 
         stored.RevokedAt = clock.GetUtcNow();
         var response = IssueTokens(stored.User);
         await db.SaveChangesAsync();
-        return AuthResult<AuthResponseDto>.Ok(response);
+        return response;
     }
 
     public async Task LogoutAsync(Guid userId, string refreshToken)
@@ -130,7 +140,8 @@ public partial class AuthService(
         return new AuthResponseDto(
             tokens.CreateAccessToken(user),
             raw,
-            IsNew: string.IsNullOrWhiteSpace(user.Name));
+            // Only customers are asked for a name on first login.
+            IsNew: user is Customer && string.IsNullOrWhiteSpace(user.Name));
     }
 
     // Phone is mixed in so equal codes for different phones have different hashes.
