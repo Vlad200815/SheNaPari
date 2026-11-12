@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Options;
 
-namespace ShenaPari.Api.Menu;
+namespace ShenaPari.Api.Schedules;
 
 /// Answers "what is today?" in the campus time zone. The server itself may run in UTC,
 /// so DateTime.Today would give the wrong day around midnight.
-public class CampusClock(TimeProvider clock, IOptions<BreakScheduleOptions> options)
+public class CampusClock(TimeProvider clock, IOptions<CampusOptions> options)
 {
     private readonly TimeZoneInfo _zone = TimeZoneInfo.FindSystemTimeZoneById(options.Value.TimeZone);
 

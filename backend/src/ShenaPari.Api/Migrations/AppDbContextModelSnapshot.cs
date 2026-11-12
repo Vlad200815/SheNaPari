@@ -17,6 +17,50 @@ namespace ShenaPari.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.15");
 
+            modelBuilder.Entity("ShenaPari.Api.Entities.BellSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("BellSchedules");
+                });
+
+            modelBuilder.Entity("ShenaPari.Api.Entities.BellScheduleBreak", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BellScheduleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<TimeOnly>("End")
+                        .HasColumnType("TEXT");
+
+                    b.Property<TimeOnly>("Start")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BellScheduleId");
+
+                    b.ToTable("BellScheduleBreak");
+                });
+
             modelBuilder.Entity("ShenaPari.Api.Entities.BreakSlot", b =>
                 {
                     b.Property<int>("Id")
@@ -26,13 +70,12 @@ namespace ShenaPari.Api.Migrations
                     b.Property<long>("EndsAt")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("OrderDeadline")
-                        .HasColumnType("INTEGER");
-
                     b.Property<long>("StartsAt")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StartsAt");
 
                     b.ToTable("BreakSlots");
                 });
@@ -308,6 +351,15 @@ namespace ShenaPari.Api.Migrations
                     b.HasDiscriminator().HasValue("Employee");
                 });
 
+            modelBuilder.Entity("ShenaPari.Api.Entities.BellScheduleBreak", b =>
+                {
+                    b.HasOne("ShenaPari.Api.Entities.BellSchedule", null)
+                        .WithMany("Breaks")
+                        .HasForeignKey("BellScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ShenaPari.Api.Entities.Dish", b =>
                 {
                     b.HasOne("ShenaPari.Api.Entities.Category", "Category")
@@ -375,6 +427,11 @@ namespace ShenaPari.Api.Migrations
                         .HasForeignKey("ShenaPari.Api.Entities.UserCredentials", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ShenaPari.Api.Entities.BellSchedule", b =>
+                {
+                    b.Navigation("Breaks");
                 });
 
             modelBuilder.Entity("ShenaPari.Api.Entities.Category", b =>
