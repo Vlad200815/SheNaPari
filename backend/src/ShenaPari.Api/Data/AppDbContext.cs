@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShenaPari.Api.Entities;
 
 namespace ShenaPari.Api.Data;
@@ -6,7 +7,10 @@ namespace ShenaPari.Api.Data;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<User> Users => Set<User>();
-    public DbSet<OtpCode> OtpCodes => Set<OtpCode>();
+    public DbSet<Customer> Customers => Set<Customer>();
+    public DbSet<Employee> Employees => Set<Employee>();
+    public DbSet<UserCredentials> UserCredentials => Set<UserCredentials>();
+    public DbSet<VerificationCode> VerificationCodes => Set<VerificationCode>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Dish> Dishes => Set<Dish>();
@@ -14,17 +18,45 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder c)
+    {
+        // SQLite has no native date/time or decimal types, so EF Core cannot
+        // compare or ORDER BY DateTimeOffset/decimal columns inside a query.
+        // Storing them as numbers fixes that:
+        //  - DateTimeOffset → long (UTC ticks), sortable and comparable
+        //  - decimal → double, fine for canteen prices (2 decimals)
+        c.Properties<DateTimeOffset>().HaveConversion<DateTimeOffsetToBinaryConverter>();
+        c.Properties<decimal>().HaveConversion<double>();
+    }
+
     protected override void OnModelCreating(ModelBuilder b)
     {
         b.Entity<User>(e =>
         {
-            e.HasIndex(u => u.Phone).IsUnique();
-            e.Property(u => u.Phone).HasMaxLength(20);
             e.Property(u => u.Name).HasMaxLength(100);
             e.Property(u => u.Role).HasConversion<string>().HasMaxLength(20);
         });
 
-        b.Entity<OtpCode>(e =>
+        // Unique indexes ignore NULLs, so employees (no phone) and customers (no e-mail)
+        // can share the Users table.
+        b.Entity<Customer>(e =>
+        {
+            e.HasIndex(c => c.Phone).IsUnique();
+            e.Property(c => c.Phone).HasMaxLength(20);
+        });
+
+        b.Entity<Employee>(e =>
+        {
+            e.HasIndex(x => x.Email).IsUnique();
+            e.Property(x => x.Email).HasMaxLength(200);
+            e.HasOne(x => x.Credentials).WithOne()
+                .HasForeignKey<UserCredentials>(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        b.Entity<UserCredentials>(e => e.HasKey(c => c.UserId));
+
+        b.Entity<VerificationCode>(e =>
         {
             e.HasIndex(o => o.Phone);
             e.Property(o => o.Phone).HasMaxLength(20);

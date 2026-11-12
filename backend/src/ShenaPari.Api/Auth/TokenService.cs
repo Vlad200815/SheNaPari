@@ -12,7 +12,7 @@ public class TokenService(IOptions<JwtOptions> options, TimeProvider clock)
 {
     private readonly JwtOptions _opt = options.Value;
 
-    /// Short-lived JWT. Carries user id and role, so [Authorize(Roles = "Staff")] works
+    /// Short-lived JWT. Carries user id and role, so role policies ([Authorize(Policy = Policies.Cook)]) work
     /// without a DB lookup.
     public string CreateAccessToken(User user)
     {

@@ -1,7 +1,7 @@
 namespace ShenaPari.Api.Entities;
 
-/// One-time login code. Only a hash is stored, never the code itself.
-public class OtpCode
+/// One-time SMS login code. Only a hash is stored, never the code itself.
+public class VerificationCode
 {
     public Guid Id { get; set; }
     public required string Phone { get; set; }
