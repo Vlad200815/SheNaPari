@@ -16,4 +16,4 @@ public record DishDto(
     string? ImageUrl,
     bool IsPopular);
 
-public record BreakSlotDto(int Id, DateTimeOffset StartsAt, DateTimeOffset EndsAt, DateTimeOffset OrderDeadline);
+public record BreakSlotDto(int Id, DateTimeOffset StartsAt, DateTimeOffset EndsAt);

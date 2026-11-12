@@ -5,7 +5,7 @@ using ShenaPari.Api.Common;
 using ShenaPari.Api.Data;
 using ShenaPari.Api.Dtos;
 using ShenaPari.Api.Entities;
-using ShenaPari.Api.Menu;
+using ShenaPari.Api.Schedules;
 
 namespace ShenaPari.Api.Orders;
 
@@ -23,7 +23,7 @@ public class OrderService(AppDbContext db, CampusClock clock, IHubContext<Orders
 
         var slot = await db.BreakSlots.FindAsync(dto.BreakSlotId);
         if (slot is null) return OrderErrors.BreakNotFound;
-        if (slot.OrderDeadline <= clock.UtcNow) return OrderErrors.DeadlinePassed;
+        if (slot.StartsAt <= clock.UtcNow) return OrderErrors.BreakPassed;
 
         // Prices come from the DB, never from the client.
         var dishIds = dto.Items.Select(i => i.DishId).Distinct().ToList();
@@ -158,7 +158,7 @@ public class OrderService(AppDbContext db, CampusClock clock, IHubContext<Orders
         return o is null ? null : ToStaffDto(o);
     }
 
-    private static BreakSlotDto ToSlotDto(BreakSlot b) => new(b.Id, b.StartsAt, b.EndsAt, b.OrderDeadline);
+    private static BreakSlotDto ToSlotDto(BreakSlot b) => new(b.Id, b.StartsAt, b.EndsAt);
 
     private static List<OrderItemDto> ToItemDtos(Order o) =>
         o.Items.Select(i => new OrderItemDto(i.DishId, i.Dish.Name, i.Quantity, i.UnitPrice)).ToList();

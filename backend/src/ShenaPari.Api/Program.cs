@@ -9,7 +9,7 @@ using ShenaPari.Api.Common;
 using ShenaPari.Api.Data;
 using ShenaPari.Api.Employees;
 using ShenaPari.Api.Entities;
-using ShenaPari.Api.Menu;
+using ShenaPari.Api.Schedules;
 using ShenaPari.Api.Orders;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -75,8 +75,10 @@ builder.Services
 builder.Services.AddAuthorization(Policies.Register);
 
 // --- Menu & orders ---
-builder.Services.AddOptions<BreakScheduleOptions>().Bind(builder.Configuration.GetSection("BreakSchedule"));
+builder.Services.AddOptions<CampusOptions>().Bind(builder.Configuration.GetSection("Campus"));
 builder.Services.AddSingleton<CampusClock>();
+builder.Services.AddScoped<ScheduleService>();
+builder.Services.AddHostedService<SlotGenerationService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddSignalR()
     .AddJsonProtocol(o => o.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
