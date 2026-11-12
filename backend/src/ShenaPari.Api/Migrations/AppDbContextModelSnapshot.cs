@@ -80,6 +80,25 @@ namespace ShenaPari.Api.Migrations
                     b.ToTable("BreakSlots");
                 });
 
+            modelBuilder.Entity("ShenaPari.Api.Entities.Canteen", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsAcceptingOrders")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Canteens");
+                });
+
             modelBuilder.Entity("ShenaPari.Api.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -148,7 +167,7 @@ namespace ShenaPari.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("BreakSlotId")
+                    b.Property<int?>("BreakSlotId")
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("CreatedAt")
@@ -157,11 +176,17 @@ namespace ShenaPari.Api.Migrations
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("TEXT");
 
+                    b.Property<long?>("EstimatedReadyAt")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Number")
                         .HasColumnType("INTEGER");
 
                     b.Property<Guid>("PickupToken")
                         .HasColumnType("TEXT");
+
+                    b.Property<long?>("ReadyAt")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -176,10 +201,14 @@ namespace ShenaPari.Api.Migrations
 
                     b.HasIndex("BreakSlotId");
 
+                    b.HasIndex("CreatedAt");
+
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("PickupToken")
                         .IsUnique();
+
+                    b.HasIndex("Status");
 
                     b.ToTable("Orders");
                 });
@@ -192,6 +221,11 @@ namespace ShenaPari.Api.Migrations
 
                     b.Property<int>("DishId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("NameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("TEXT");
@@ -210,6 +244,73 @@ namespace ShenaPari.Api.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("ShenaPari.Api.Entities.OrderStatusChange", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("At")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid?>("ChangedByUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(300)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderStatusChanges");
+                });
+
+            modelBuilder.Entity("ShenaPari.Api.Entities.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Amount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("REAL");
+
+                    b.Property<long>("CreatedAt")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("PaidAt")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("ShenaPari.Api.Entities.RefreshToken", b =>
@@ -375,9 +476,7 @@ namespace ShenaPari.Api.Migrations
                 {
                     b.HasOne("ShenaPari.Api.Entities.BreakSlot", "BreakSlot")
                         .WithMany()
-                        .HasForeignKey("BreakSlotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BreakSlotId");
 
                     b.HasOne("ShenaPari.Api.Entities.Customer", "Customer")
                         .WithMany("Orders")
@@ -407,6 +506,24 @@ namespace ShenaPari.Api.Migrations
                     b.Navigation("Dish");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("ShenaPari.Api.Entities.OrderStatusChange", b =>
+                {
+                    b.HasOne("ShenaPari.Api.Entities.Order", null)
+                        .WithMany("StatusChanges")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ShenaPari.Api.Entities.Payment", b =>
+                {
+                    b.HasOne("ShenaPari.Api.Entities.Order", null)
+                        .WithMany("Payments")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ShenaPari.Api.Entities.RefreshToken", b =>
@@ -442,6 +559,10 @@ namespace ShenaPari.Api.Migrations
             modelBuilder.Entity("ShenaPari.Api.Entities.Order", b =>
                 {
                     b.Navigation("Items");
+
+                    b.Navigation("Payments");
+
+                    b.Navigation("StatusChanges");
                 });
 
             modelBuilder.Entity("ShenaPari.Api.Entities.Customer", b =>

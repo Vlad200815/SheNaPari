@@ -18,6 +18,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<BreakSlot> BreakSlots => Set<BreakSlot>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+    public DbSet<OrderStatusChange> OrderStatusChanges => Set<OrderStatusChange>();
+    public DbSet<Payment> Payments => Set<Payment>();
+    public DbSet<Canteen> Canteens => Set<Canteen>();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder c)
     {
@@ -91,8 +94,31 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(o => o.Total).HasPrecision(10, 2);
             // Stored as text so the DB is readable in psql/pgAdmin.
             e.Property(o => o.Status).HasConversion<string>().HasMaxLength(20);
+            e.HasIndex(o => o.Status);
+            e.HasIndex(o => o.CreatedAt);
+            e.HasMany(o => o.StatusChanges).WithOne().HasForeignKey(c => c.OrderId).OnDelete(DeleteBehavior.Cascade);
+            e.HasMany(o => o.Payments).WithOne().HasForeignKey(p => p.OrderId).OnDelete(DeleteBehavior.Cascade);
         });
 
-        b.Entity<OrderItem>(e => e.Property(i => i.UnitPrice).HasPrecision(10, 2));
+        b.Entity<OrderItem>(e =>
+        {
+            e.Property(i => i.UnitPrice).HasPrecision(10, 2);
+            e.Property(i => i.NameSnapshot).HasMaxLength(200);
+        });
+
+        b.Entity<OrderStatusChange>(e =>
+        {
+            e.Property(c => c.Status).HasConversion<string>().HasMaxLength(20);
+            e.Property(c => c.Reason).HasMaxLength(300);
+        });
+
+        b.Entity<Payment>(e =>
+        {
+            e.Property(p => p.Amount).HasPrecision(10, 2);
+            e.Property(p => p.Provider).HasConversion<string>().HasMaxLength(20);
+            e.Property(p => p.Status).HasConversion<string>().HasMaxLength(20);
+        });
+
+        b.Entity<Canteen>(e => e.Property(c => c.Name).HasMaxLength(100));
     }
 }

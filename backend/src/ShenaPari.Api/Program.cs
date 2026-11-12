@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi;
 using ShenaPari.Api.Auth;
+using ShenaPari.Api.Canteens;
 using ShenaPari.Api.Common;
 using ShenaPari.Api.Data;
 using ShenaPari.Api.Employees;
@@ -79,7 +80,11 @@ builder.Services.AddOptions<CampusOptions>().Bind(builder.Configuration.GetSecti
 builder.Services.AddSingleton<CampusClock>();
 builder.Services.AddScoped<ScheduleService>();
 builder.Services.AddHostedService<SlotGenerationService>();
+builder.Services.AddOptions<OrderOptions>().Bind(builder.Configuration.GetSection("Orders"));
+builder.Services.AddSingleton<OrderNotifier>();
 builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<CanteenService>();
+builder.Services.AddHostedService<OrderExpiryService>();
 builder.Services.AddSignalR()
     .AddJsonProtocol(o => o.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 

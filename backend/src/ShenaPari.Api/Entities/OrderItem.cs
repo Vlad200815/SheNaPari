@@ -9,6 +9,7 @@ public class OrderItem
     public Dish Dish { get; set; } = null!;
     public int Quantity { get; set; }
 
-    /// Price copied at order time so later menu changes don't rewrite history.
+    /// Name and price copied at order time, so later menu edits don't rewrite history.
+    public required string NameSnapshot { get; set; }
     public decimal UnitPrice { get; set; }
 }
