@@ -16,4 +16,7 @@ public record DishDto(
     string? ImageUrl,
     bool IsPopular);
 
+/// Staff view of a dish: includes the ones hidden from clients.
+public record StaffDishDto(int Id, int CategoryId, string Name, bool IsAvailable);
+
 public record BreakSlotDto(int Id, DateTimeOffset StartsAt, DateTimeOffset EndsAt);
