@@ -12,7 +12,7 @@ namespace ShenaPari.Api.Controllers;
 [Route("orders")]
 public class OrdersController(OrderService orders) : ControllerBase
 {
-    // POST /orders
+    // POST /orders  { breakSlotId: 12 | null, paymentProvider: "GooglePay", items: [...] }
     [HttpPost]
     public async Task<ActionResult<Result<OrderDto>>> Create(CreateOrderDto dto) =>
         (await orders.CreateAsync(User.UserId(), dto)).ToActionResult(successStatus: 201);
@@ -24,10 +24,11 @@ public class OrdersController(OrderService orders) : ControllerBase
 
     // GET /orders/{id}
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<Result<OrderDto>>> GetById(Guid id)
-    {
-        var order = await orders.GetMineByIdAsync(User.UserId(), id);
-        Result<OrderDto> result = order is null ? OrderErrors.NotFound : order;
-        return result.ToActionResult();
-    }
+    public async Task<ActionResult<Result<OrderDto>>> GetById(Guid id) =>
+        (await orders.GetMineByIdAsync(User.UserId(), id)).ToActionResult();
+
+    // POST /orders/{id}/cancel — until the kitchen starts cooking
+    [HttpPost("{id:guid}/cancel")]
+    public async Task<ActionResult<Result<OrderDto>>> Cancel(Guid id) =>
+        (await orders.CancelByCustomerAsync(User.UserId(), id)).ToActionResult();
 }

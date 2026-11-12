@@ -27,6 +27,12 @@ public static class DbSeeder
             await db.SaveChangesAsync();
         }
 
+        if (!await db.Canteens.AnyAsync())
+        {
+            db.Canteens.Add(new Canteen { Name = "Їдальня, корпус 1" });
+            await db.SaveChangesAsync();
+        }
+
         if (!await db.BellSchedules.AnyAsync())
         {
             await SeedSchedulesAsync(db, withTestSchedule: env.IsDevelopment());

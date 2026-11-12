@@ -63,5 +63,10 @@ public static class OrderErrors
     public static readonly Error DishUnavailable = new("order.dish_unavailable", "Деякі страви зараз недоступні", 409);
     public static readonly Error InvalidTransition = new("order.invalid_transition", "Така зміна статусу неможлива", 409);
     public static readonly Error AlreadyPickedUp = new("order.already_picked_up", "Замовлення вже видано", 409);
+    public static readonly Error PaymentRequired = new("order.payment_required", "Оберіть спосіб оплати", 400);
+    public static readonly Error CanteenPaused = new("order.canteen_paused", "Кухня зараз не приймає замовлення", 409);
+    public static readonly Error CannotCancel = new("order.cannot_cancel", "Замовлення вже готується, скасувати не можна", 409);
+    public static readonly Error InvalidEta = new("order.invalid_eta", "Час готовності: 5, 10, 15 або 20 хвилин", 400);
+    public static readonly Error EtaRequired = new("order.eta_required", "Щоб прийняти замовлення, вкажіть час готовності", 400);
     public static readonly Error NotReady = new("order.not_ready", "Замовлення ще не готове", 409);
 }

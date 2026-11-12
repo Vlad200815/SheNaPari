@@ -9,14 +9,30 @@ public enum UserRole
     SuperAdmin,
 }
 
-/// Pending → Accepted → Cooking → Ready → PickedUp;
-/// Cancelled is allowed only from Pending or Accepted.
+/// An order exists only once it is paid, then moves:
+///   Paid → Accepted → Cooking → Ready → PickedUp
+/// Cancelled is possible from Paid or Accepted (before cooking starts, money is refunded);
+/// NotPickedUp from Ready (nobody came for the food, no refund).
 public enum OrderStatus
 {
-    Pending,
+    Paid,
     Accepted,
     Cooking,
     Ready,
     PickedUp,
     Cancelled,
+    NotPickedUp,
+}
+
+/// Payment is simulated in the MVP: no real money moves.
+public enum PaymentProvider
+{
+    GooglePay,
+    ApplePay,
+}
+
+public enum PaymentStatus
+{
+    Paid,
+    Refunded,
 }

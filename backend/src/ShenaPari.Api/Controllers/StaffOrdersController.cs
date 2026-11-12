@@ -12,18 +12,23 @@ namespace ShenaPari.Api.Controllers;
 [Route("staff/orders")]
 public class StaffOrdersController(OrderService orders) : ControllerBase
 {
-    // GET /staff/orders?breakSlotId=3 — without the parameter: all of today's active orders
+    // GET /staff/orders — the kitchen's board (orders still in work)
     [HttpGet]
-    public async Task<ActionResult<Result<List<StaffOrderDto>>>> GetActive(int? breakSlotId) =>
-        Result<List<StaffOrderDto>>.Ok(await orders.GetForStaffAsync(breakSlotId)).ToActionResult();
+    public async Task<ActionResult<Result<List<StaffOrderDto>>>> GetActive() =>
+        Result<List<StaffOrderDto>>.Ok(await orders.GetActiveAsync()).ToActionResult();
 
-    // PATCH /staff/orders/{id}/status  { "status": "Accepted" }
+    // POST /staff/orders/{id}/accept  { "minutes": 15 } — 5, 10, 15 or 20
+    [HttpPost("{id:guid}/accept")]
+    public async Task<ActionResult<Result<StaffOrderDto>>> Accept(Guid id, AcceptOrderDto dto) =>
+        (await orders.AcceptAsync(User.UserId(), id, dto.Minutes)).ToActionResult();
+
+    // PATCH /staff/orders/{id}/status  { "status": "Cooking" | "Ready" | "Cancelled" | "NotPickedUp" | "PickedUp", "reason": "..." }
     [HttpPatch("{id:guid}/status")]
     public async Task<ActionResult<Result<StaffOrderDto>>> ChangeStatus(Guid id, UpdateStatusDto dto) =>
-        (await orders.ChangeStatusAsync(id, dto.Status)).ToActionResult();
+        (await orders.ChangeStatusAsync(User.UserId(), id, dto.Status, dto.Reason)).ToActionResult();
 
     // POST /staff/orders/pickup  { "token": "..." } — from the QR scanner
     [HttpPost("pickup")]
     public async Task<ActionResult<Result<StaffOrderDto>>> Pickup(PickupDto dto) =>
-        (await orders.PickupAsync(dto.Token)).ToActionResult();
+        (await orders.PickupAsync(User.UserId(), dto.Token)).ToActionResult();
 }
