@@ -14,6 +14,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Dish> Dishes => Set<Dish>();
+    public DbSet<BellSchedule> BellSchedules => Set<BellSchedule>();
     public DbSet<BreakSlot> BreakSlots => Set<BreakSlot>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
@@ -66,6 +67,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             e.HasIndex(t => t.TokenHash).IsUnique();
         });
+
+        b.Entity<BellSchedule>(e =>
+        {
+            e.HasIndex(s => s.Name).IsUnique();
+            e.Property(s => s.Name).HasMaxLength(100);
+            e.HasMany(s => s.Breaks).WithOne().HasForeignKey(x => x.BellScheduleId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        b.Entity<BreakSlot>(e => e.HasIndex(s => s.StartsAt));
 
         b.Entity<Category>(e => e.Property(c => c.Name).HasMaxLength(100));
 

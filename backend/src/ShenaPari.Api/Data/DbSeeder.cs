@@ -1,12 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using ShenaPari.Api.Auth;
 using ShenaPari.Api.Entities;
-using ShenaPari.Api.Menu;
+using ShenaPari.Api.Schedules;
 
 namespace ShenaPari.Api.Data;
 
-/// Fills an empty database with a demo menu, creates break slots for the coming days
+/// Fills an empty database with a demo menu, seeds the bell schedules, creates break slots for the coming days
 /// and creates the staff accounts listed in configuration. Safe to run on every startup.
 public static class DbSeeder
 {
@@ -15,7 +14,8 @@ public static class DbSeeder
         using var scope = services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var clock = scope.ServiceProvider.GetRequiredService<CampusClock>();
-        var schedule = scope.ServiceProvider.GetRequiredService<IOptions<BreakScheduleOptions>>().Value;
+        var schedules = scope.ServiceProvider.GetRequiredService<ScheduleService>();
+        var env = scope.ServiceProvider.GetRequiredService<IHostEnvironment>();
         var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
         var passwords = scope.ServiceProvider.GetRequiredService<PasswordService>();
 
@@ -27,33 +27,45 @@ public static class DbSeeder
             await db.SaveChangesAsync();
         }
 
-        await EnsureBreakSlotsAsync(db, clock, schedule);
+        if (!await db.BellSchedules.AnyAsync())
+        {
+            await SeedSchedulesAsync(db, withTestSchedule: env.IsDevelopment());
+            await schedules.RebuildSlotsAsync(); // drop slots made by older versions of the app
+        }
+        await schedules.EnsureSlotsAsync();
         await EnsureEmployeesAsync(db, clock, passwords,
             config.GetSection("Seed:Employees").Get<List<SeedEmployee>>() ?? []);
     }
 
-    private static async Task EnsureBreakSlotsAsync(
-        AppDbContext db, CampusClock clock, BreakScheduleOptions schedule)
+    /// First run: the two real bell schedules of the university. The shortened one is active
+    /// this semester; an admin can switch at any time (POST /admin/schedules/{id}/activate).
+    private static async Task SeedSchedulesAsync(AppDbContext db, bool withTestSchedule)
     {
-        for (var i = 0; i < schedule.DaysAhead; i++)
+        db.BellSchedules.Add(Schedule("Основний", isActive: false,
+            // 80-minute classes from 8:30, 10-minute breaks, long break after the 3rd class
+            ("09:50", "10:00"), ("11:20", "11:30"), ("12:50", "13:20"), ("14:40", "14:50"),
+            ("16:10", "16:20"), ("17:40", "17:50"), ("19:10", "19:20")));
+        db.BellSchedules.Add(Schedule("Скорочений", isActive: true,
+            // 60-minute classes from 8:30, long break after the 4th class
+            ("09:30", "09:40"), ("10:40", "10:50"), ("11:50", "12:00"), ("13:00", "13:30"),
+            ("14:30", "14:40"), ("15:40", "15:50"), ("16:50", "17:00")));
+        if (withTestSchedule)
         {
-            var date = clock.Today.AddDays(i);
-            var (from, to) = clock.DayRangeUtc(date);
-            if (await db.BreakSlots.AnyAsync(b => b.StartsAt >= from && b.StartsAt < to)) continue;
-
-            foreach (var slot in schedule.Slots)
-            {
-                var startsAt = clock.ToUtc(date, slot.Start);
-                db.BreakSlots.Add(new BreakSlot
-                {
-                    StartsAt = startsAt,
-                    EndsAt = clock.ToUtc(date, slot.End),
-                    OrderDeadline = startsAt.AddMinutes(-schedule.OrderDeadlineMinutes),
-                });
-            }
+            // Development only: a break every hour, to try ordering at any time of day.
+            db.BellSchedules.Add(Schedule("Тестовий (щогодини)", isActive: false,
+                Enumerable.Range(0, 24).Select(h => ($"{h:00}:00", $"{h:00}:20")).ToArray()));
         }
         await db.SaveChangesAsync();
     }
+
+    private static BellSchedule Schedule(string name, bool isActive, params (string Start, string End)[] breaks) => new()
+    {
+        Name = name,
+        IsActive = isActive,
+        Breaks = breaks
+            .Select(b => new BellScheduleBreak { Start = TimeOnly.Parse(b.Start), End = TimeOnly.Parse(b.End) })
+            .ToList(),
+    };
 
     /// Staff can't register through the API, so the first accounts come from configuration
     /// ("Seed:Employees"). This is how the SuperAdmin appears. Existing e-mails are left untouched.

@@ -39,6 +39,15 @@ public static class EmployeeErrors
     public static readonly Error CannotChangeSelf = new("employee.cannot_change_self", "Не можна вимкнути власний акаунт", 409);
 }
 
+public static class ScheduleErrors
+{
+    public static readonly Error NotFound = new("schedule.not_found", "Розклад не знайдено", 404);
+    public static readonly Error InvalidName = new("schedule.invalid_name", "Назва має містити від 2 до 100 символів", 400);
+    public static readonly Error NameTaken = new("schedule.name_taken", "Розклад з такою назвою вже існує", 409);
+    public static readonly Error InvalidBreaks = new("schedule.invalid_breaks", "Перерви не мають перетинатися, а кінець має бути пізніше за початок", 400);
+    public static readonly Error ActiveCannotBeDeleted = new("schedule.active_cannot_be_deleted", "Активний розклад не можна видалити", 409);
+}
+
 public static class MenuErrors
 {
     public static readonly Error DishNotFound = new("menu.dish_not_found", "Страву не знайдено", 404);
@@ -50,7 +59,7 @@ public static class OrderErrors
     public static readonly Error Empty = new("order.empty", "У замовленні немає страв", 400);
     public static readonly Error InvalidQuantity = new("order.invalid_quantity", "Кількість має бути від 1 до 20", 400);
     public static readonly Error BreakNotFound = new("order.break_not_found", "Перерву не знайдено", 400);
-    public static readonly Error DeadlinePassed = new("order.deadline_passed", "Прийом замовлень на цю перерву закрито", 409);
+    public static readonly Error BreakPassed = new("order.break_passed", "Ця перерва вже почалась, оберіть іншу", 409);
     public static readonly Error DishUnavailable = new("order.dish_unavailable", "Деякі страви зараз недоступні", 409);
     public static readonly Error InvalidTransition = new("order.invalid_transition", "Така зміна статусу неможлива", 409);
     public static readonly Error AlreadyPickedUp = new("order.already_picked_up", "Замовлення вже видано", 409);
