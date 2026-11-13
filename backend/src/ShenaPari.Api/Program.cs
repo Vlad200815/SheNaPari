@@ -11,6 +11,7 @@ using ShenaPari.Api.Data;
 using ShenaPari.Api.Employees;
 using ShenaPari.Api.Entities;
 using ShenaPari.Api.Schedules;
+using ShenaPari.Api.Menu;
 using ShenaPari.Api.Orders;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -78,6 +79,7 @@ builder.Services.AddAuthorization(Policies.Register);
 // --- Menu & orders ---
 builder.Services.AddOptions<CampusOptions>().Bind(builder.Configuration.GetSection("Campus"));
 builder.Services.AddSingleton<CampusClock>();
+builder.Services.AddScoped<MenuAdminService>();
 builder.Services.AddScoped<ScheduleService>();
 builder.Services.AddHostedService<SlotGenerationService>();
 builder.Services.AddOptions<OrderOptions>().Bind(builder.Configuration.GetSection("Orders"));
@@ -120,6 +122,9 @@ app.UseExceptionHandler(e => e.Run(ctx => WriteError(ctx.Response, CommonErrors.
 app.UseStatusCodePages(ctx => ctx.HttpContext.Response.StatusCode == 404
     ? WriteError(ctx.HttpContext.Response, CommonErrors.NotFound)
     : Task.CompletedTask);
+
+// Dish photos: files in wwwroot/ are served as-is, e.g. /images/dishes/5-ab12.jpg
+app.UseStaticFiles();
 
 // Swagger stays on: it doubles as API documentation for the coursework report.
 app.UseSwagger();
