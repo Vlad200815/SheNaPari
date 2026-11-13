@@ -10,3 +10,4 @@ obj/
 # Secrets: never commit (the repo is public)
 secrets/
 *firebase-adminsdk*.json
+TestResults/
