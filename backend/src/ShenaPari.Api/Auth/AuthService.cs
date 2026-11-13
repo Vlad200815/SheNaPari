@@ -119,7 +119,9 @@ public partial class AuthService(
             return AuthErrors.InvalidToken;
 
         stored.RevokedAt = clock.GetUtcNow();
-        var response = IssueTokens(stored.User);
+        // Same device, new session row: the device token moves along.
+        var response = IssueTokens(stored.User, stored.PushToken);
+        stored.PushToken = null;
         await db.SaveChangesAsync();
         return response;
     }
@@ -132,13 +134,14 @@ public partial class AuthService(
             .ExecuteUpdateAsync(s => s.SetProperty(t => t.RevokedAt, clock.GetUtcNow()));
     }
 
-    private AuthResponseDto IssueTokens(User user)
+    private AuthResponseDto IssueTokens(User user, string? pushToken = null)
     {
         var (raw, entity) = tokens.CreateRefreshToken(user.Id);
         entity.User = user;
+        entity.PushToken = pushToken;
         db.RefreshTokens.Add(entity);
         return new AuthResponseDto(
-            tokens.CreateAccessToken(user),
+            tokens.CreateAccessToken(user, entity.Id),
             raw,
             // Only customers are asked for a name on first login.
             IsNew: user is Customer && string.IsNullOrWhiteSpace(user.Name));

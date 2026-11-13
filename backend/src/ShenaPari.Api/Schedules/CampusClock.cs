@@ -12,6 +12,9 @@ public class CampusClock(TimeProvider clock, IOptions<CampusOptions> options)
 
     public DateOnly Today => DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(UtcNow, _zone).DateTime);
 
+    /// UTC instant → campus wall-clock time, for texts shown to people ("ready at 12:40").
+    public DateTime ToLocalTime(DateTimeOffset instant) => TimeZoneInfo.ConvertTime(instant, _zone).DateTime;
+
     /// Local campus date + time → UTC instant (handles summer/winter time).
     public DateTimeOffset ToUtc(DateOnly date, TimeOnly time)
     {

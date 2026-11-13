@@ -322,6 +322,10 @@ namespace ShenaPari.Api.Migrations
                     b.Property<long>("ExpiresAt")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("PushToken")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
                     b.Property<long?>("RevokedAt")
                         .HasColumnType("INTEGER");
 
@@ -333,6 +337,8 @@ namespace ShenaPari.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PushToken");
 
                     b.HasIndex("TokenHash")
                         .IsUnique();

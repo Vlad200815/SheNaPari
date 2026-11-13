@@ -5,13 +5,14 @@ using ShenaPari.Api.Common;
 using ShenaPari.Api.Data;
 using ShenaPari.Api.Dtos;
 using ShenaPari.Api.Entities;
+using ShenaPari.Api.Push;
 
 namespace ShenaPari.Api.Controllers;
 
 [ApiController]
 [Authorize]
 [Route("me")]
-public class MeController(AppDbContext db) : ControllerBase
+public class MeController(AppDbContext db, PushService push) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<Result<MeDto>>> Get()
@@ -33,6 +34,14 @@ public class MeController(AppDbContext db) : ControllerBase
         user.Name = name;
         await db.SaveChangesAsync();
         return Result<MeDto>.Ok(ToDto(user)).ToActionResult();
+    }
+
+    // PUT /me/push-token  { "token": "<Firebase device token>" } — after login and on token refresh
+    [HttpPut("push-token")]
+    public async Task<ActionResult<Result<object?>>> SetPushToken(PushTokenDto dto)
+    {
+        await push.SetDeviceTokenAsync(User.SessionId(), dto.Token);
+        return Result.Ok().ToActionResult();
     }
 
     private static MeDto ToDto(User u) =>
