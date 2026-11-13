@@ -13,6 +13,7 @@ using ShenaPari.Api.Entities;
 using ShenaPari.Api.Schedules;
 using ShenaPari.Api.Menu;
 using ShenaPari.Api.Orders;
+using ShenaPari.Api.Push;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,7 +84,19 @@ builder.Services.AddScoped<MenuAdminService>();
 builder.Services.AddScoped<ScheduleService>();
 builder.Services.AddHostedService<SlotGenerationService>();
 builder.Services.AddOptions<OrderOptions>().Bind(builder.Configuration.GetSection("Orders"));
-builder.Services.AddSingleton<OrderNotifier>();
+// --- Push notifications ---
+// With a Firebase service account key the server sends real pushes;
+// without one it still runs and only logs them.
+var firebaseKey = builder.Configuration["Firebase:CredentialsPath"];
+if (!string.IsNullOrWhiteSpace(firebaseKey)) firebaseKey = Path.GetFullPath(firebaseKey, builder.Environment.ContentRootPath);
+if (File.Exists(firebaseKey))
+    builder.Services.AddSingleton<IPushSender>(sp =>
+        new FcmPushSender(firebaseKey, sp.GetRequiredService<ILogger<FcmPushSender>>()));
+else
+    builder.Services.AddSingleton<IPushSender, LogPushSender>();
+builder.Services.AddScoped<PushService>();
+
+builder.Services.AddScoped<OrderNotifier>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<CanteenService>();
 builder.Services.AddHostedService<OrderExpiryService>();

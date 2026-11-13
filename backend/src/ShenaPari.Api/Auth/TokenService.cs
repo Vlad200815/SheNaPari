@@ -14,12 +14,14 @@ public class TokenService(IOptions<JwtOptions> options, TimeProvider clock)
 
     /// Short-lived JWT. Carries user id and role, so role policies ([Authorize(Policy = Policies.Cook)]) work
     /// without a DB lookup.
-    public string CreateAccessToken(User user)
+    public string CreateAccessToken(User user, Guid sessionId)
     {
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim("role", user.Role.ToString()),
+            // Which login session (RefreshToken row) this token belongs to.
+            new Claim(JwtRegisteredClaimNames.Sid, sessionId.ToString()),
         };
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_opt.Key));
         var token = new JwtSecurityToken(
@@ -38,6 +40,7 @@ public class TokenService(IOptions<JwtOptions> options, TimeProvider clock)
         var raw = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
         var entity = new RefreshToken
         {
+            Id = Guid.NewGuid(),
             UserId = userId,
             TokenHash = Hash(raw),
             ExpiresAt = clock.GetUtcNow().AddDays(_opt.RefreshTokenDays),

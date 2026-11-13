@@ -17,3 +17,6 @@ public record AuthResponseDto(string AccessToken, string RefreshToken, bool IsNe
 public record MeDto(Guid Id, UserRole Role, string? Name, string? Phone, string? Email);
 
 public record UpdateMeDto(string Name);
+
+/// Token = the Firebase device token; null switches notifications off for this device.
+public record PushTokenDto(string? Token);

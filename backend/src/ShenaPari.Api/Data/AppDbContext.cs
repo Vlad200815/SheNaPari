@@ -69,6 +69,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         b.Entity<RefreshToken>(e =>
         {
             e.HasIndex(t => t.TokenHash).IsUnique();
+            e.HasIndex(t => t.PushToken);
+            e.Property(t => t.PushToken).HasMaxLength(500);
         });
 
         b.Entity<BellSchedule>(e =>
