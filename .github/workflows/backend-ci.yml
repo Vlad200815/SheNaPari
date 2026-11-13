@@ -1,0 +1,83 @@
+name: Backend CI
+
+# When to run: on every push to main/develop and on every pull request,
+# but only if something under backend/ (or this file) changed.
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  workflow_dispatch: # "Run workflow" button on the Actions tab
+
+# A new push to the same branch cancels the run that is still in progress.
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# The job only reads the code; it cannot push or change anything in the repository.
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      # Downloaded NuGet packages are kept between runs; the key changes when a .csproj changes.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('backend/**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Restore packages
+        run: dotnet restore
+
+      # Any compiler warning fails the build, so warnings never pile up.
+      - name: Build (warnings are errors)
+        run: dotnet build --no-restore -c Release -warnaserror
+
+      # 59 tests: the real API in memory on a throw-away SQLite file.
+      - name: Test
+        run: dotnet test --no-build -c Release --logger "trx;LogFileName=results.trx" --logger "console;verbosity=normal"
+
+      # Fails if an entity was changed but the EF Core migration was forgotten.
+      - name: Check that migrations match the model
+        run: |
+          dotnet tool restore
+          dotnet ef migrations has-pending-model-changes --project src/ShenaPari.Api --configuration Release --no-build
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+
+      # Fails if a dependency has a known security vulnerability.
+      - name: Check for vulnerable packages
+        run: |
+          dotnet list package --vulnerable --include-transitive | tee vulnerable.txt
+          ! grep -q "has the following vulnerable packages" vulnerable.txt
+
+      # Test report is downloadable from the run page even when tests fail.
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: backend/tests/**/TestResults/*.trx
+          if-no-files-found: ignore
