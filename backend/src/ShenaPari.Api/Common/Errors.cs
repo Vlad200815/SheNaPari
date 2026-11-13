@@ -8,6 +8,7 @@ public static class CommonErrors
     public static readonly Error Forbidden = new("common.forbidden", "Недостатньо прав", 403);
     public static readonly Error Validation = new("common.validation", "Некоректні дані запиту", 400);
     public static readonly Error NotFound = new("common.not_found", "Не знайдено", 404);
+    public static readonly Error TooManyRequests = new("common.too_many_requests", "Забагато запитів, спробуйте за хвилину", 429);
     public static readonly Error ServerError = new("common.server_error", "Помилка сервера, спробуйте пізніше", 500);
 }
 

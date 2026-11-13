@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using ShenaPari.Api.Auth;
 using ShenaPari.Api.Common;
 using ShenaPari.Api.Dtos;
@@ -8,6 +9,7 @@ namespace ShenaPari.Api.Controllers;
 
 [ApiController]
 [Route("auth")]
+[EnableRateLimiting(RateLimits.Auth)]
 public class AuthController(AuthService auth) : ControllerBase
 {
     [HttpPost("otp/request")]

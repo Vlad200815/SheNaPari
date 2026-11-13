@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Microsoft.OpenApi;
 using ShenaPari.Api.Auth;
 using ShenaPari.Api.Canteens;
@@ -77,6 +78,17 @@ builder.Services
     });
 builder.Services.AddAuthorization(Policies.Register);
 
+// Login endpoints are the only ones open to strangers, so they get a per-address limit:
+// nobody can sit and guess passwords or flood phones with codes.
+var authLimit = builder.Configuration.GetValue("RateLimit:AuthRequestsPerMinute", 20);
+builder.Services.AddRateLimiter(o =>
+{
+    o.OnRejected = (ctx, _) => new ValueTask(WriteError(ctx.HttpContext.Response, CommonErrors.TooManyRequests));
+    o.AddPolicy(RateLimits.Auth, http => RateLimitPartition.GetFixedWindowLimiter(
+        http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = authLimit, Window = TimeSpan.FromMinutes(1) }));
+});
+
 // --- Menu & orders ---
 builder.Services.AddOptions<CampusOptions>().Bind(builder.Configuration.GetSection("Campus"));
 builder.Services.AddSingleton<CampusClock>();
@@ -145,6 +157,7 @@ app.UseSwaggerUI();
 // Opening the bare server address (http://localhost:5041) lands on Swagger.
 app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
 
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -159,3 +172,6 @@ static Task WriteError(HttpResponse response, Error error)
     response.StatusCode = error.Status;
     return response.WriteAsJsonAsync(Result<object?>.Fail(error));
 }
+
+/// Lets the integration tests start the real application (WebApplicationFactory<Program>).
+public partial class Program;

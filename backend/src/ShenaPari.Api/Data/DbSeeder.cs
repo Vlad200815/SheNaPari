@@ -92,39 +92,49 @@ public static class DbSeeder
 
     private record SeedEmployee(string Email, string Password, string Name, UserRole Role);
 
+    /// What a canteen near the university actually sells: fast food first, then hot dishes.
     private static List<Category> DemoMenu() =>
     [
         new()
         {
-            Name = "Перші страви", SortOrder = 1, Dishes =
+            Name = "Бургери", SortOrder = 1, Dishes =
+            [
+                new() { Name = "Чизбургер", Description = "Яловича котлета, сир чедер, солоний огірок, соус", Price = 95, WeightG = 220, Kcal = 480, IsPopular = true },
+                new() { Name = "Бургер з куркою", Description = "Куряче філе в паніруванні, салат, томат, соус", Price = 105, WeightG = 240, Kcal = 510 },
+                new() { Name = "Подвійний бургер", Description = "Дві яловичі котлети, подвійний сир, бекон", Price = 135, WeightG = 320, Kcal = 760 },
+            ],
+        },
+        new()
+        {
+            Name = "Хот-доги", SortOrder = 2, Dishes =
+            [
+                new() { Name = "Хот-дог класичний", Description = "Сосиска, кетчуп, гірчиця, маринована цибуля", Price = 55, WeightG = 180, Kcal = 390, IsPopular = true },
+                new() { Name = "Хот-дог із сиром", Description = "Сосиска, сирний соус, хрустка цибуля", Price = 65, WeightG = 200, Kcal = 450 },
+                new() { Name = "Французький хот-дог", Description = "Сосиска в багеті, часниковий соус", Price = 60, WeightG = 190, Kcal = 420 },
+            ],
+        },
+        new()
+        {
+            Name = "Багети", SortOrder = 3, Dishes =
+            [
+                new() { Name = "Багет із шинкою і сиром", Description = "Шинка, сир, салат, томат", Price = 75, WeightG = 230, Kcal = 430 },
+                new() { Name = "Багет із куркою", Description = "Куряче філе, овочі, соус цезар", Price = 85, WeightG = 250, Kcal = 460, IsPopular = true },
+                new() { Name = "Багет із тунцем", Description = "Тунець, яйце, огірок, майонез", Price = 90, WeightG = 240, Kcal = 440 },
+            ],
+        },
+        new()
+        {
+            Name = "Гарячі страви", SortOrder = 4, Dishes =
             [
                 new() { Name = "Борщ український", Description = "Зі сметаною та пампушкою", Price = 55, WeightG = 300, Kcal = 210, IsPopular = true },
                 new() { Name = "Суп курячий з локшиною", Description = "Домашня локшина, зелень", Price = 45, WeightG = 300, Kcal = 160 },
-                new() { Name = "Крем-суп грибний", Description = "Печериці, вершки, грінки", Price = 60, WeightG = 250, Kcal = 230 },
+                new() { Name = "Вареники з картоплею", Description = "Зі смаженою цибулею та сметаною", Price = 65, WeightG = 280, Kcal = 410 },
+                new() { Name = "Котлета по-київськи", Description = "З картопляним пюре", Price = 95, WeightG = 320, Kcal = 520 },
             ],
         },
         new()
         {
-            Name = "Другі страви", SortOrder = 2, Dishes =
-            [
-                new() { Name = "Котлета по-київськи", Description = "З картопляним пюре", Price = 95, WeightG = 320, Kcal = 520, IsPopular = true },
-                new() { Name = "Вареники з картоплею", Description = "Зі смаженою цибулею та сметаною", Price = 65, WeightG = 280, Kcal = 410, IsPopular = true },
-                new() { Name = "Гречка з грибами", Description = "Печериці, цибуля", Price = 55, WeightG = 280, Kcal = 330 },
-                new() { Name = "Плов зі свининою", Description = "Рис, морква, спеції", Price = 85, WeightG = 300, Kcal = 480 },
-            ],
-        },
-        new()
-        {
-            Name = "Салати", SortOrder = 3, Dishes =
-            [
-                new() { Name = "Олів'є", Description = "Класичний", Price = 45, WeightG = 180, Kcal = 290 },
-                new() { Name = "Вінегрет", Description = "Буряк, квасоля, огірок", Price = 35, WeightG = 180, Kcal = 140 },
-                new() { Name = "Цезар з куркою", Description = "Романо, пармезан, грінки", Price = 80, WeightG = 220, Kcal = 350, IsPopular = true },
-            ],
-        },
-        new()
-        {
-            Name = "Випічка", SortOrder = 4, Dishes =
+            Name = "Випічка", SortOrder = 5, Dishes =
             [
                 new() { Name = "Сирник", Description = "Зі сметаною", Price = 30, WeightG = 120, Kcal = 260 },
                 new() { Name = "Пиріжок з вишнею", Price = 20, WeightG = 90, Kcal = 230 },
@@ -133,7 +143,7 @@ public static class DbSeeder
         },
         new()
         {
-            Name = "Напої", SortOrder = 5, Dishes =
+            Name = "Напої", SortOrder = 6, Dishes =
             [
                 new() { Name = "Чай чорний", Price = 15, WeightG = 250, Kcal = 5 },
                 new() { Name = "Кава американо", Price = 30, WeightG = 200, Kcal = 10, IsPopular = true },
