@@ -1,0 +1,13 @@
+bin/
+obj/
+*.user
+.vs/
+.idea/
+*.db
+*.db-shm
+*.db-wal
+
+# Secrets: never commit (the repo is public)
+secrets/
+*firebase-adminsdk*.json
+TestResults/
