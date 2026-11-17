@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/session/auth_tokens.dart';
 import '../../core/session/session_repository.dart';
 import '../../core/storage/app_prefs.dart';
 import '../../features/auth/presentation/code/code_page.dart';
@@ -16,17 +15,12 @@ import 'main_shell.dart';
 import 'routes.dart';
 import 'stream_listenable.dart';
 
-// TODO(auth): remove together with the placeholder sign-in buttons.
-const _placeholderTokens = AuthTokens(
-  accessToken: 'placeholder',
-  refreshToken: 'placeholder',
-);
-
 /// The router re-runs [appRedirect] whenever the session or the onboarding
 /// flag changes, so screens never navigate manually after sign-in/sign-out.
 GoRouter createRouter({
   required SessionRepository session,
   required AppPrefs prefs,
+  required Future<void> Function() signOut,
 }) {
   return GoRouter(
     initialLocation: Routes.splash,
@@ -55,26 +49,17 @@ GoRouter createRouter({
       ),
       GoRoute(
         path: Routes.phone,
-        pageBuilder: (context, state) => _fade(
-          state,
-          PhonePage(onCodeSent: () => context.push(Routes.code)),
-        ),
+        pageBuilder: (_, state) => _fade(state, const PhonePage()),
       ),
       GoRoute(
         path: Routes.code,
-        builder: (_, _) => CodePage(
-          onSignedInAsNewUser: () =>
-              session.save(_placeholderTokens, isNewUser: true),
-          onSignedInAsExistingUser: () =>
-              session.save(_placeholderTokens, isNewUser: false),
-        ),
+        builder: (_, state) =>
+            CodePage(phone: state.uri.queryParameters['phone'] ?? ''),
       ),
       GoRoute(
         path: Routes.registrationProfile,
-        pageBuilder: (_, state) => _fade(
-          state,
-          RegistrationProfilePage(onSaved: session.completeProfile),
-        ),
+        pageBuilder: (_, state) =>
+            _fade(state, const RegistrationProfilePage()),
       ),
       StatefulShellRoute.indexedStack(
         pageBuilder: (_, state, navigationShell) =>
@@ -89,7 +74,7 @@ GoRouter createRouter({
             routes: [
               GoRoute(
                 path: Routes.profile,
-                builder: (_, _) => ProfilePage(onSignOut: session.clear),
+                builder: (_, _) => ProfilePage(onSignOut: signOut),
               ),
             ],
           ),
