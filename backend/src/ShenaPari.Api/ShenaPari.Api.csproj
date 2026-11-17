@@ -21,4 +21,9 @@
     <Folder Include="assets\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Terms of use and privacy policy, served by GET /legal/{type} -->
+    <EmbeddedResource Include="Legal\*.md" />
+  </ItemGroup>
+
 </Project>
