@@ -15,6 +15,9 @@ abstract interface class MenuRepository {
   /// One available dish; `menu.dish_not_found` (404) once it is hidden.
   Future<Result<Dish>> getDish(int id);
 
+  /// Today's breaks that have not started yet, earliest first.
+  Future<Result<List<BreakSlot>>> getTodayBreaks();
+
   /// The nearest break that has not started yet (may be tomorrow), or null
   /// when none is scheduled.
   Future<Result<BreakSlot?>> getNextBreak();
