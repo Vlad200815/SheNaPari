@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../../core/ui/app_text.dart';
 import '../../gen/assets.gen.dart';
 import '../../gen/colors.gen.dart';
 import 'routes.dart';
@@ -16,11 +16,11 @@ class MainShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
   /// Same order as the shell branches in `app_router.dart`.
-  static const _tabs = [
-    _Tab(Icons.home_outlined, Icons.home_rounded, 'Головна'),
-    _Tab(Icons.shopping_bag_outlined, Icons.shopping_bag, 'Кошик'),
-    _Tab(Icons.receipt_long_outlined, Icons.receipt_long, 'Замовлення'),
-    _Tab(Icons.person_outline_rounded, Icons.person_rounded, 'Профіль'),
+  static final _tabs = [
+    _Tab(Assets.images.bottomNav.icHome, 'Головна'),
+    _Tab(Assets.images.bottomNav.icCart, 'Кошик'),
+    _Tab(Assets.images.bottomNav.icOrders, 'Замовлення'),
+    _Tab(Assets.images.bottomNav.icProfile, 'Профіль'),
   ];
 
   void _openTab(int index) => navigationShell.goBranch(
@@ -56,12 +56,12 @@ class MainShell extends StatelessWidget {
         child: SafeArea(
           top: false,
           child: SizedBox(
-            height: 64,
+            height: 68,
             child: Row(
               children: [
                 tab(0),
                 tab(1),
-                const SizedBox(width: 84, child: _QrButtonSlot()),
+                const SizedBox(width: 96, child: _QrButtonSlot()),
                 tab(2),
                 tab(3),
               ],
@@ -74,10 +74,9 @@ class MainShell extends StatelessWidget {
 }
 
 class _Tab {
-  const _Tab(this.icon, this.selectedIcon, this.label);
+  const _Tab(this.icon, this.label);
 
-  final IconData icon;
-  final IconData selectedIcon;
+  final SvgGenImage icon;
   final String label;
 }
 
@@ -94,33 +93,42 @@ class _TabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = selected ? ColorName.primary400 : ColorName.secondary500;
     return Semantics(
       selected: selected,
       button: true,
+      label: tab.label,
+      excludeSemantics: true,
       child: InkResponse(
         onTap: onTap,
-        radius: 32,
+        radius: 36,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              selected ? tab.selectedIcon : tab.icon,
-              size: 26,
-              color: selected ? ColorName.primary500 : ColorName.typography500,
+            AnimatedScale(
+              scale: selected ? 1.08 : 1,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+              child: tab.icon.svg(
+                width: 28,
+                height: 28,
+                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+              ),
             ),
-            const SizedBox(height: 2),
-            Text(
-              tab.label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              // Yellow text on white is only 1.7:1, so the label of the
-              // selected tab gets dark and bold instead.
-              style: AppText.small(
-                color: selected
-                    ? ColorName.typography900
-                    : ColorName.typography500,
-                fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-              ).copyWith(fontSize: 12),
+            const SizedBox(height: 4),
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                height: 1.2,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                color: color,
+              ),
+              child: Text(
+                tab.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
@@ -133,6 +141,8 @@ class _TabButton extends StatelessWidget {
 class _QrButtonSlot extends StatelessWidget {
   const _QrButtonSlot();
 
+  static const _size = 84.0;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -140,44 +150,27 @@ class _QrButtonSlot extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Positioned(
-          top: -26,
+          top: -30,
           child: Semantics(
             button: true,
             label: 'Мій QR',
             child: Material(
               color: ColorName.primary400,
-              shape: const CircleBorder(
-                side: BorderSide(color: ColorName.white, width: 4),
-              ),
-              elevation: 4,
-              shadowColor: ColorName.primary500.withValues(alpha: 0.5),
+              shape: const CircleBorder(),
+              elevation: 6,
+              shadowColor: ColorName.primary500.withValues(alpha: 0.45),
               child: InkWell(
                 customBorder: const CircleBorder(),
                 onTap: () => context.push(Routes.myQr),
                 child: SizedBox.square(
-                  dimension: 72,
+                  dimension: _size,
                   child: Center(
-                    child: Assets.images.icScan.svg(
-                      width: 30,
-                      height: 30,
-                      colorFilter: const ColorFilter.mode(
-                        ColorName.typography900,
-                        BlendMode.srcIn,
-                      ),
-                    ),
+                    // The icon itself is white.
+                    child: Assets.images.icScan.svg(width: 34, height: 34),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
-        Positioned(
-          bottom: 6,
-          child: Text(
-            'Мій QR',
-            style: AppText.small(
-              color: ColorName.typography500,
-            ).copyWith(fontSize: 12),
           ),
         ),
       ],
