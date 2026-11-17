@@ -55,12 +55,12 @@ class MainShell extends StatelessWidget {
         child: SafeArea(
           top: false,
           child: SizedBox(
-            height: 64,
+            height: 54,
             child: Row(
               children: [
                 tab(0),
                 tab(1),
-                const SizedBox(width: 96, child: _QrButtonSlot()),
+                const SizedBox(width: 80, child: _QrButtonSlot()),
                 tab(2),
                 tab(3),
               ],
@@ -110,8 +110,8 @@ class _TabButton extends StatelessWidget {
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeOut,
               child: tab.icon.svg(
-                width: 30,
-                height: 30,
+                width: 24,
+                height: 24,
                 colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
               ),
             ),
@@ -126,7 +126,7 @@ class _TabButton extends StatelessWidget {
 class _QrButtonSlot extends StatelessWidget {
   const _QrButtonSlot();
 
-  static const _size = 84.0;
+  static const _size = 68.0;
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +135,7 @@ class _QrButtonSlot extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Positioned(
-          top: -30,
+          top: -24,
           child: Semantics(
             button: true,
             label: 'Мій QR',
@@ -151,7 +151,7 @@ class _QrButtonSlot extends StatelessWidget {
                   dimension: _size,
                   child: Center(
                     // The icon itself is white.
-                    child: Assets.images.icScan.svg(width: 34, height: 34),
+                    child: Assets.images.icScan.svg(width: 28, height: 28),
                   ),
                 ),
               ),
