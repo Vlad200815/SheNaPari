@@ -9,10 +9,11 @@ flutter pub get
 dart run build_runner build -d          # freezed, json_serializable, retrofit, flutter_gen
 flutter analyze
 flutter test
-flutter run --dart-define-from-file=env/dev.json             # Android-емулятор
-flutter run --dart-define-from-file=env/ios_simulator.json   # iOS-симулятор
-flutter run --dart-define=API_BASE_URL=http://<IP Mac>:5041  # справжній телефон у тій самій Wi-Fi
+flutter run --dart-define-from-file=env/dev.json      # емулятор / симулятор
+flutter run --dart-define-from-file=env/device.json   # справжній телефон у тій самій Wi-Fi
 ```
+
+Без `API_BASE_URL` застосунок сам іде на комп'ютер розробника: Android-емулятор → `http://10.0.2.2:5041`, iOS-симулятор → `http://localhost:5041`. Для телефона скопіюй `env/device.example.json` у `env/device.json` (у git не потрапляє) і впиши IP Mac (`ipconfig getifaddr en0`). У Android Studio ті самі запуски є на кнопці Run: «SheNaPari» і «SheNaPari (телефон)» (`.run/` у корені репо).
 
 ## Архітектура
 
@@ -41,7 +42,7 @@ lib/
 - Репозиторії повертають `Result<T>`, без винятків і без try/catch усередині.
 - Енуми з API приходять рядками; у кожного енума є `unknown`, парсимо через `values.asNameMap()[s] ?? unknown`.
 - domain — чистий Dart: без Flutter, Dio, `json_annotation`. DTO (суфікс `Dto`) не виходять за межі `data/`.
-- Use case лише там, де є кілька кроків або логіка клієнта. Правила, які перевіряє сервер, не дублюємо.
+- Use case лише там, де є кілька кроків або логіка клієнта. Правила, які перевіряє сервер, не дублюємо. Клас і файл мають суфікс `UseCase` / `_use_case.dart` (`VerifyCodeUseCase`), метод — `call()`.
 - Cubit за замовчуванням, Bloc для debounce і стрімів (SignalR). Стан — `freezed` з полем `status`. Cubit не має полів, що дублюють `state`, і не знає про `BuildContext`.
 - Після входу/виходу ніхто не викликає `context.go` вручну: `SessionRepository` змінює статус, роутер робить redirect сам.
 - Refresh токена — лише в `AuthInterceptor` (один спільний refresh на паралельні 401).
