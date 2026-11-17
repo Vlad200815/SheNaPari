@@ -12,15 +12,24 @@ on:
       - '.github/workflows/mobile-ci.yml'
   workflow_dispatch:
 
+# A new push to the same branch cancels the run still in progress.
+concurrency:
+  group: mobile-ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    # A normal run takes ~2.5 min; without a limit a hung step waits 6 hours.
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: mobile/shenapari
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
+        # Downloading the SDK from the cache sometimes hangs; fail fast instead.
+        timeout-minutes: 4
         with:
           channel: stable
           cache: true
