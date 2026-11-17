@@ -10,6 +10,7 @@ import '../../../../core/ui/app_theme.dart';
 import '../../../../core/ui/snack_bars.dart';
 import '../../../../gen/colors.gen.dart';
 import '../../../cart/presentation/cart_cubit.dart';
+import '../../../notifications/presentation/notifications_cubit.dart';
 import '../widgets/break_card.dart';
 import '../widgets/dish_card.dart';
 import '../widgets/filter_chips.dart';
@@ -23,8 +24,11 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<HomeCubit>()..load(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sl<HomeCubit>()..load()),
+        BlocProvider(create: (_) => sl<UnreadNotificationsCubit>()..load()),
+      ],
       child: BlocListener<HomeCubit, HomeState>(
         // A failed refresh keeps the old menu; tell the user with a snack bar.
         listenWhen: (previous, current) =>
@@ -145,7 +149,12 @@ class _Header extends StatelessWidget {
         children: [
           HomeHeader(
             firstName: state.firstName,
-            onNotifications: () => context.push(Routes.notifications),
+            hasUnread: context.watch<UnreadNotificationsCubit>().state,
+            onNotifications: () {
+              // Opening the list reads everything.
+              context.read<UnreadNotificationsCubit>().markSeen();
+              context.push(Routes.notifications);
+            },
           ),
           const SizedBox(height: 20),
           BreakCard(
