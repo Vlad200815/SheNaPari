@@ -139,4 +139,36 @@ void main() {
       expect((result as Err<void>).failure, const NetworkFailure());
     });
   });
+
+  group('apiCallNullable', () {
+    test('success without data is Ok(null), not a failure', () async {
+      final result = await apiCallNullable<int, String>(
+        () async => const ApiEnvelope<int>(succeeded: true),
+        (data) => 'value $data',
+      );
+
+      expect(result, const Ok<String?>(null));
+    });
+
+    test('data is converted to the entity', () async {
+      final result = await apiCallNullable<int, String>(
+        () async => const ApiEnvelope<int>(succeeded: true, data: 5),
+        (data) => 'value $data',
+      );
+
+      expect(result, const Ok<String?>('value 5'));
+    });
+
+    test('maps DioException through toFailure', () async {
+      final result = await apiCallNullable<int, String>(
+        () async => throw DioException(
+          requestOptions: _options,
+          type: DioExceptionType.connectionError,
+        ),
+        (data) => 'value $data',
+      );
+
+      expect((result as Err<String?>).failure, const NetworkFailure());
+    });
+  });
 }
