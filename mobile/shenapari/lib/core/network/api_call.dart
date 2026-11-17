@@ -27,6 +27,18 @@ Future<Result<T>> apiCall<D, T>(
   return Ok(toEntity(data));
 });
 
+/// Same as [apiCall] for endpoints where "nothing" is a valid answer
+/// (`GET /breaks/next` when no break is scheduled): `data: null` → `Ok(null)`.
+Future<Result<T?>> apiCallNullable<D, T>(
+  Future<ApiEnvelope<D>> Function() request,
+  T Function(D data) toEntity,
+) => _guard(() async {
+  final env = await request();
+  if (!env.succeeded) return Err(_errorOf(env));
+  final data = env.data;
+  return Ok(data == null ? null : toEntity(data));
+});
+
 /// Same as [apiCall] for endpoints that return no data (`data: null`).
 Future<Result<void>> apiCallVoid(
   Future<ApiEnvelope<void>> Function() request,

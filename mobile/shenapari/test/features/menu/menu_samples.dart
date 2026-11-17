@@ -1,3 +1,4 @@
+import 'package:shenapari/features/menu/domain/entities/break_slot.dart';
 import 'package:shenapari/features/menu/domain/entities/canteen.dart';
 import 'package:shenapari/features/menu/domain/entities/category.dart';
 import 'package:shenapari/features/menu/domain/entities/dish.dart';
@@ -41,8 +42,15 @@ const lemonade = Dish(
 
 const sampleDishes = [cheeseburger, hamburger, lemonade];
 
-const sampleMenu = Menu(
+final sampleBreak = BreakSlot(
+  id: 1,
+  startsAt: DateTime(2026, 11, 17, 11, 40),
+  endsAt: DateTime(2026, 11, 17, 12, 0),
+);
+
+final sampleMenu = Menu(
   canteen: sampleCanteen,
-  categories: [burgers, drinks],
+  categories: const [burgers, drinks],
   dishes: sampleDishes,
+  nextBreak: sampleBreak,
 );

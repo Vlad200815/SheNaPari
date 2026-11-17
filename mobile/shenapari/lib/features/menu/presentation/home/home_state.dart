@@ -21,6 +21,9 @@ abstract class HomeState with _$HomeState {
     Menu? menu,
     @Default(AllDishes()) MenuFilter filter,
     Failure? failure,
+
+    /// For the greeting; null if `/me` failed or the name is empty.
+    String? firstName,
   }) = _HomeState;
 
   List<Dish> get visibleDishes => [

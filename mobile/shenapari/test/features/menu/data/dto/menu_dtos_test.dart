@@ -77,4 +77,15 @@ void main() {
     expect(category.id, 2);
     expect(category.name, 'Бургери');
   });
+
+  test('a break comes in UTC and becomes local time', () {
+    final slot = BreakSlotDto.fromJson({
+      'id': 3,
+      'startsAt': '2026-11-17T09:40:00+00:00',
+      'endsAt': '2026-11-17T10:00:00+00:00',
+    }).toEntity();
+
+    expect(slot.startsAt.isUtc, isFalse);
+    expect(slot.startsAt, DateTime.utc(2026, 11, 17, 9, 40).toLocal());
+  });
 }

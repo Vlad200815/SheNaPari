@@ -3,6 +3,7 @@ import 'package:shenapari/core/result/result.dart';
 import 'package:shenapari/core/session/auth_tokens.dart';
 import 'package:shenapari/features/auth/domain/auth_repository.dart';
 import 'package:shenapari/features/auth/domain/entities/sign_in.dart';
+import 'package:shenapari/features/menu/domain/entities/break_slot.dart';
 import 'package:shenapari/features/menu/domain/entities/canteen.dart';
 import 'package:shenapari/features/menu/domain/entities/category.dart';
 import 'package:shenapari/features/menu/domain/entities/dish.dart';
@@ -89,4 +90,7 @@ class FakeMenuRepository implements MenuRepository {
       kcal: 540,
     ),
   ]);
+
+  @override
+  Future<Result<BreakSlot?>> getNextBreak() async => const Ok(null);
 }

@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../domain/entities/break_slot.dart';
 import '../../domain/entities/canteen.dart';
 import '../../domain/entities/category.dart';
 import '../../domain/entities/dish.dart';
@@ -19,6 +20,28 @@ class CanteenDto {
 
   Canteen toEntity() =>
       Canteen(name: name, isAcceptingOrders: isAcceptingOrders);
+}
+
+/// `GET /breaks/next`
+@JsonSerializable(createToJson: false)
+class BreakSlotDto {
+  const BreakSlotDto({
+    required this.id,
+    required this.startsAt,
+    required this.endsAt,
+  });
+
+  factory BreakSlotDto.fromJson(Map<String, dynamic> json) =>
+      _$BreakSlotDtoFromJson(json);
+
+  final int id;
+
+  /// ISO 8601 with an offset, e.g. `2026-11-17T11:40:00+00:00`.
+  final DateTime startsAt;
+  final DateTime endsAt;
+
+  BreakSlot toEntity() =>
+      BreakSlot(id: id, startsAt: startsAt.toLocal(), endsAt: endsAt.toLocal());
 }
 
 /// An item of `GET /categories`.
