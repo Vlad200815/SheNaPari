@@ -11,6 +11,7 @@ import 'package:shenapari/core/session/auth_tokens.dart';
 import 'package:shenapari/core/storage/in_memory_token_storage.dart';
 import 'package:shenapari/core/storage/token_storage.dart';
 import 'package:shenapari/features/auth/domain/auth_repository.dart';
+import 'package:shenapari/features/cart/presentation/cart_cubit.dart';
 import 'package:shenapari/features/auth/domain/usecases/sign_out_use_case.dart';
 import 'package:shenapari/features/auth/presentation/widgets/code_field.dart';
 import 'package:shenapari/features/menu/domain/menu_repository.dart';
@@ -197,6 +198,46 @@ void main() {
     expect(find.text(_phoneTitle), findsOneWidget);
     expect(_auth.logoutCalls, 1);
     expect(await sl<TokenStorage>().read(), isNull);
+  });
+
+  testWidgets('menu → dish → cart, and sign-out empties the cart', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+
+    // Buttons are found by their screen-reader labels.
+    final semantics = tester.ensureSemantics();
+
+    // Quick «+» on the card: the button now shows 1.
+    final add = find.bySemanticsLabel('Додати Чізбургер в кошик');
+    await tester.ensureVisible(add);
+    await tester.pumpAndSettle();
+    await tester.tap(add);
+    await tester.pumpAndSettle();
+    expect(sl<CartCubit>().state.count, 1);
+
+    // The card opens the dish; two more portions from there.
+    await _tap(tester, 'Чізбургер');
+    expect(find.text('Додати · 85 ₴'), findsOneWidget);
+    await tester.tap(find.bySemanticsLabel('Більше'));
+    await tester.pumpAndSettle();
+    await _tap(tester, 'Додати · 170 ₴');
+    expect(find.text('Додано в кошик'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Кошик'));
+    await tester.pumpAndSettle();
+    expect(find.text('255 ₴'), findsWidgets);
+    expect(find.text('Разом · 3 порції'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Профіль'));
+    await tester.pumpAndSettle();
+    await _tap(tester, 'Вийти');
+    expect(sl<CartCubit>().state.isEmpty, isTrue);
+    semantics.dispose();
   });
 
   group('delete account', () {

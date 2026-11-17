@@ -21,6 +21,13 @@ abstract final class Routes {
   static const myQr = '/my-qr';
   static const notifications = '/notifications';
 
+  /// Dish details, over the tabs.
+  static const dishPattern = '/dish/:id';
+  static String dish(int id) => '/dish/$id';
+
+  /// Checkout: placeholder until the next step.
+  static const checkout = '/checkout';
+
   /// Terms of use or privacy policy; open to everyone, signed in or not.
   static const legalPattern = '/legal/:type';
   static String legal(LegalDocumentType type) => '/legal/${type.name}';
