@@ -93,18 +93,17 @@ class _BreakCardState extends State<BreakCard> {
       container: true,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          // White text needs a dark enough orange: on primary500 it is only
-          // 2.3:1, on primary600 3.3:1, on primary700 5.2:1 (WCAG wants
-          // 3:1 for large bold text, 4.5:1 for regular).
+          // Brand yellow; the text on it is dark, since white on yellow is
+          // only 1.7:1 and hard to read.
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [ColorName.primary600, ColorName.primary700],
+            colors: [ColorName.primary300, ColorName.primary400],
           ),
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: ColorName.primary600.withValues(alpha: 0.25),
+              color: ColorName.primary400.withValues(alpha: 0.35),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
@@ -131,17 +130,15 @@ class _BreakCardState extends State<BreakCard> {
                             children: [
                               Text(
                                 title,
-                                // 19 px bold counts as large text (3:1).
-                                style: AppText.title(color: ColorName.white)
-                                    .copyWith(
-                                      fontSize: 19,
-                                      fontWeight: FontWeight.w700,
-                                    ),
+                                style: AppText.title().copyWith(
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                               Text(
                                 subtitle,
                                 style: AppText.small(
-                                  color: ColorName.white,
+                                  color: ColorName.typography900,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -192,7 +189,7 @@ class _Bubble extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: ColorName.white.withValues(alpha: 0.12),
+          color: ColorName.white.withValues(alpha: 0.25),
         ),
       ),
     );
@@ -211,9 +208,9 @@ class _IconCircle extends StatelessWidget {
       height: 44,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: ColorName.white.withValues(alpha: 0.2),
+        color: ColorName.white.withValues(alpha: 0.5),
       ),
-      child: Icon(icon, color: ColorName.white, size: 24),
+      child: Icon(icon, color: ColorName.typography900, size: 24),
     );
   }
 }
@@ -235,11 +232,11 @@ class _ProgressBar extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              ColoredBox(color: ColorName.white.withValues(alpha: 0.3)),
+              ColoredBox(color: ColorName.black.withValues(alpha: 0.12)),
               FractionallySizedBox(
                 alignment: Alignment.centerLeft,
                 widthFactor: value,
-                child: const ColoredBox(color: ColorName.white),
+                child: const ColoredBox(color: ColorName.typography900),
               ),
             ],
           ),
@@ -260,12 +257,12 @@ class _Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _glass ? ColorName.white : ColorName.primary700;
+    const color = ColorName.typography900;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: _glass
-            ? ColorName.white.withValues(alpha: 0.2)
+            ? ColorName.white.withValues(alpha: 0.5)
             : ColorName.white,
         borderRadius: BorderRadius.circular(20),
       ),
