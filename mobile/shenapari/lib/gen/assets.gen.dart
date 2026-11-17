@@ -60,11 +60,14 @@ class $AssetsImagesGen {
 class $AssetsLegalGen {
   const $AssetsLegalGen();
 
-  /// Directory path: assets/legal/privacy_policy
-  $AssetsLegalPrivacyPolicyGen get privacyPolicy => const $AssetsLegalPrivacyPolicyGen();
+  /// File path: assets/legal/privacy.md
+  String get privacy => 'assets/legal/privacy.md';
 
-  /// Directory path: assets/legal/terms_of_use
-  $AssetsLegalTermsOfUseGen get termsOfUse => const $AssetsLegalTermsOfUseGen();
+  /// File path: assets/legal/terms.md
+  String get terms => 'assets/legal/terms.md';
+
+  /// List of all assets
+  List<String> get values => [privacy, terms];
 }
 
 class $AssetsTranslationsGen {
@@ -170,32 +173,6 @@ class $AssetsImagesSplashGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [darkBackground, lightBackground, logo];
-}
-
-class $AssetsLegalPrivacyPolicyGen {
-  const $AssetsLegalPrivacyPolicyGen();
-
-  /// File path: assets/legal/privacy_policy/privacy_policy_en_fallback.md
-  String get privacyPolicyEnFallback => 'assets/legal/privacy_policy/privacy_policy_en_fallback.md';
-
-  /// File path: assets/legal/privacy_policy/privacy_policy_uk_fallback.md
-  String get privacyPolicyUkFallback => 'assets/legal/privacy_policy/privacy_policy_uk_fallback.md';
-
-  /// List of all assets
-  List<String> get values => [privacyPolicyEnFallback, privacyPolicyUkFallback];
-}
-
-class $AssetsLegalTermsOfUseGen {
-  const $AssetsLegalTermsOfUseGen();
-
-  /// File path: assets/legal/terms_of_use/terms_of_use_en_fallback.md
-  String get termsOfUseEnFallback => 'assets/legal/terms_of_use/terms_of_use_en_fallback.md';
-
-  /// File path: assets/legal/terms_of_use/terms_of_use_uk_fallback.md
-  String get termsOfUseUkFallback => 'assets/legal/terms_of_use/terms_of_use_uk_fallback.md';
-
-  /// List of all assets
-  List<String> get values => [termsOfUseEnFallback, termsOfUseUkFallback];
 }
 
 abstract final class Assets {

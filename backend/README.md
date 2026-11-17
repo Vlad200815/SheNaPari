@@ -64,6 +64,7 @@ Paid → Accepted → Cooking → Ready → PickedUp
 | Шлях | Хто |
 |---|---|
 | `/auth/*` | усі |
+| `/legal/terms`, `/legal/privacy` | усі (умови й політика: `{version, content}` у Markdown, тексти в `Legal/*.md`) |
 | `/categories`, `/dishes`, `/breaks`, `/canteen`, `/me` | будь-хто з токеном |
 | `/orders/*` | клієнт |
 | `/staff/*` | кухар і вище |
