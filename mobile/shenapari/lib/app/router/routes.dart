@@ -1,3 +1,5 @@
+import '../../features/legal/domain/entities/legal_document.dart';
+
 /// All paths in one place. Screens navigate by these constants and never
 /// import pages of other features.
 abstract final class Routes {
@@ -18,4 +20,8 @@ abstract final class Routes {
   /// Pushed over the tabs: the QR of the active order for pickup.
   static const myQr = '/my-qr';
   static const notifications = '/notifications';
+
+  /// Terms of use or privacy policy; open to everyone, signed in or not.
+  static const legalPattern = '/legal/:type';
+  static String legal(LegalDocumentType type) => '/legal/${type.name}';
 }

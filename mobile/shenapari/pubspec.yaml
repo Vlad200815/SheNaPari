@@ -232,8 +232,8 @@ flutter:
   generate: true
   assets:
     # Legal
-    - assets/legal/privacy_policy/
-    - assets/legal/terms_of_use/
+    # Offline copies of backend/src/ShenaPari.Api/Legal/*.md (keep in sync)
+    - assets/legal/
 
     # Images
     - assets/images/
