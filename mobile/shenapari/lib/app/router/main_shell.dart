@@ -1,5 +1,4 @@
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../gen/assets.gen.dart';
@@ -56,7 +55,7 @@ class MainShell extends StatelessWidget {
         child: SafeArea(
           top: false,
           child: SizedBox(
-            height: 68,
+            height: 64,
             child: Row(
               children: [
                 tab(0),
@@ -94,43 +93,29 @@ class _TabButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = selected ? ColorName.primary400 : ColorName.secondary500;
+    // No caption on screen; screen readers and long-press still get the name.
     return Semantics(
       selected: selected,
       button: true,
       label: tab.label,
       excludeSemantics: true,
-      child: InkResponse(
-        onTap: onTap,
-        radius: 36,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AnimatedScale(
-              scale: selected ? 1.08 : 1,
+      child: Tooltip(
+        message: tab.label,
+        child: InkResponse(
+          onTap: onTap,
+          radius: 32,
+          child: Center(
+            child: AnimatedScale(
+              scale: selected ? 1.1 : 1,
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeOut,
               child: tab.icon.svg(
-                width: 28,
-                height: 28,
+                width: 30,
+                height: 30,
                 colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
               ),
             ),
-            const SizedBox(height: 4),
-            AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 200),
-              style: GoogleFonts.poppins(
-                fontSize: 13,
-                height: 1.2,
-                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                color: color,
-              ),
-              child: Text(
-                tab.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
