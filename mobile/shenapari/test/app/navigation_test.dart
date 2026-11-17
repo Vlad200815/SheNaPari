@@ -12,6 +12,7 @@ import 'package:shenapari/core/storage/token_storage.dart';
 import 'package:shenapari/features/auth/domain/auth_repository.dart';
 import 'package:shenapari/features/auth/domain/usecases/sign_out_use_case.dart';
 import 'package:shenapari/features/auth/presentation/widgets/code_field.dart';
+import 'package:shenapari/features/menu/domain/menu_repository.dart';
 import 'package:shenapari/features/onboarding/presentation/onboarding_page.dart';
 import 'package:shenapari/features/profile/domain/profile_repository.dart';
 
@@ -47,7 +48,9 @@ Future<void> _pumpApp(
     ..unregister<AuthRepository>()
     ..registerSingleton<AuthRepository>(_auth)
     ..unregister<ProfileRepository>()
-    ..registerSingleton<ProfileRepository>(_profile);
+    ..registerSingleton<ProfileRepository>(_profile)
+    ..unregister<MenuRepository>()
+    ..registerSingleton<MenuRepository>(FakeMenuRepository());
 
   await tester.pumpWidget(
     App(
@@ -108,7 +111,7 @@ void main() {
     await _tap(tester, 'Продовжити');
 
     expect(_profile.savedName, 'Влад');
-    expect(find.text('Головна'), findsWidgets);
+    expect(find.byTooltip('Головна'), findsOneWidget);
   });
 
   testWidgets('splash is replaced by onboarding at once, without a slide', (
@@ -129,7 +132,7 @@ void main() {
     await _enterCode(tester, FakeAuthRepository.validCode);
 
     expect(find.text(_nameTitle), findsNothing);
-    expect(find.text('Головна'), findsWidgets);
+    expect(find.byTooltip('Головна'), findsOneWidget);
   });
 
   testWidgets('wrong code shows the server message and stays', (tester) async {
@@ -161,8 +164,10 @@ void main() {
       stored: const StoredSession(tokens: _tokens, needsProfile: false),
     );
 
-    expect(find.text('Головна'), findsWidgets);
+    expect(find.byTooltip('Головна'), findsOneWidget);
     expect(find.text(_phoneTitle), findsNothing);
+    expect(find.text('Чізбургер'), findsOneWidget, reason: 'menu is shown');
+    expect(find.text('85 ₴'), findsOneWidget);
   });
 
   testWidgets('unfinished profile reopens the name step', (tester) async {
@@ -184,7 +189,8 @@ void main() {
       stored: const StoredSession(tokens: _tokens, needsProfile: false),
     );
 
-    await _tap(tester, 'Профіль');
+    await tester.tap(find.byTooltip('Профіль'));
+    await tester.pumpAndSettle();
     await _tap(tester, 'Вийти');
 
     expect(find.text(_phoneTitle), findsOneWidget);

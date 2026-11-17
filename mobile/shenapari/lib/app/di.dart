@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../core/core_module.dart';
 import '../core/storage/token_storage.dart';
 import '../features/auth/auth_module.dart';
+import '../features/menu/menu_module.dart';
 import '../features/profile/profile_module.dart';
 import 'env.dart';
 
@@ -21,4 +22,5 @@ void setupDi({required SharedPreferences prefs, TokenStorage? tokenStorage}) {
   );
   registerAuth(sl);
   registerProfile(sl);
+  registerMenu(sl);
 }

@@ -102,6 +102,9 @@ class $AssetsImagesAuthGen {
 class $AssetsImagesBottomNavGen {
   const $AssetsImagesBottomNavGen();
 
+  /// File path: assets/images/bottom_nav/ic_cart.svg
+  SvgGenImage get icCart => const SvgGenImage('assets/images/bottom_nav/ic_cart.svg');
+
   /// File path: assets/images/bottom_nav/ic_home.svg
   SvgGenImage get icHome => const SvgGenImage('assets/images/bottom_nav/ic_home.svg');
 
@@ -111,11 +114,8 @@ class $AssetsImagesBottomNavGen {
   /// File path: assets/images/bottom_nav/ic_profile.svg
   SvgGenImage get icProfile => const SvgGenImage('assets/images/bottom_nav/ic_profile.svg');
 
-  /// File path: assets/images/bottom_nav/ic_search.svg
-  SvgGenImage get icSearch => const SvgGenImage('assets/images/bottom_nav/ic_search.svg');
-
   /// List of all assets
-  List<SvgGenImage> get values => [icHome, icOrders, icProfile, icSearch];
+  List<SvgGenImage> get values => [icCart, icHome, icOrders, icProfile];
 }
 
 class $AssetsImagesHomeGen {
