@@ -1,3 +1,7 @@
 # Service account keys must never be committed
 *firebase-adminsdk*.json
 .idea/caches/
+
+# macOS / IDE generated
+.DS_Store
+.idea/libraries/
