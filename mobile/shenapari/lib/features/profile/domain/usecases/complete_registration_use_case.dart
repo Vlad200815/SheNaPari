@@ -5,8 +5,8 @@ import '../profile_repository.dart';
 /// Saves the name of a new customer, then marks the profile as filled in.
 /// The order matters: if the name is not saved, the user must stay on the
 /// registration screen (the server would still say `isNew` next time).
-class CompleteRegistration {
-  CompleteRegistration(this._profile, this._session);
+class CompleteRegistrationUseCase {
+  CompleteRegistrationUseCase(this._profile, this._session);
 
   final ProfileRepository _profile;
   final SessionRepository _session;

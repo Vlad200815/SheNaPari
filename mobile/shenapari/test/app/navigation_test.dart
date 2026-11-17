@@ -10,7 +10,7 @@ import 'package:shenapari/core/session/auth_tokens.dart';
 import 'package:shenapari/core/storage/in_memory_token_storage.dart';
 import 'package:shenapari/core/storage/token_storage.dart';
 import 'package:shenapari/features/auth/domain/auth_repository.dart';
-import 'package:shenapari/features/auth/domain/usecases/sign_out.dart';
+import 'package:shenapari/features/auth/domain/usecases/sign_out_use_case.dart';
 import 'package:shenapari/features/auth/presentation/widgets/code_field.dart';
 import 'package:shenapari/features/onboarding/presentation/onboarding_page.dart';
 import 'package:shenapari/features/profile/domain/profile_repository.dart';
@@ -54,7 +54,7 @@ Future<void> _pumpApp(
       router: createRouter(
         session: sl(),
         prefs: sl(),
-        signOut: sl<SignOut>().call,
+        signOut: sl<SignOutUseCase>().call,
       ),
     ),
   );

@@ -8,7 +8,7 @@ import 'package:shenapari/core/session/session_status.dart';
 import 'package:shenapari/core/storage/in_memory_token_storage.dart';
 import 'package:shenapari/features/auth/domain/auth_repository.dart';
 import 'package:shenapari/features/auth/domain/entities/sign_in.dart';
-import 'package:shenapari/features/auth/domain/usecases/verify_code.dart';
+import 'package:shenapari/features/auth/domain/usecases/verify_code_use_case.dart';
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
 
@@ -18,13 +18,13 @@ const _phone = '+380671234567';
 void main() {
   late _MockAuthRepository auth;
   late SessionRepositoryImpl session;
-  late VerifyCode verifyCode;
+  late VerifyCodeUseCase verifyCode;
 
   setUp(() async {
     auth = _MockAuthRepository();
     session = SessionRepositoryImpl(InMemoryTokenStorage());
     await session.restore();
-    verifyCode = VerifyCode(auth, session);
+    verifyCode = VerifyCodeUseCase(auth, session);
   });
 
   tearDown(() => session.dispose());
