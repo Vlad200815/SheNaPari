@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/core_module.dart';
 import '../core/storage/token_storage.dart';
+import '../features/auth/auth_module.dart';
+import '../features/profile/profile_module.dart';
 import 'env.dart';
 
 /// Service locator. Use it only here, in feature modules and in
@@ -17,5 +19,6 @@ void setupDi({required SharedPreferences prefs, TokenStorage? tokenStorage}) {
     prefs: prefs,
     tokenStorage: tokenStorage,
   );
-  // Feature modules go here: registerAuth(sl); ...
+  registerAuth(sl);
+  registerProfile(sl);
 }

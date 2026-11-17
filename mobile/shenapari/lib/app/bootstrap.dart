@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../core/session/session_repository.dart';
 import '../core/storage/app_prefs.dart';
 import '../core/storage/token_storage.dart';
+import '../features/auth/domain/usecases/sign_out.dart';
 import 'app.dart';
 import 'di.dart';
 import 'router/app_router.dart';
@@ -21,7 +22,11 @@ Future<void> bootstrap() async {
     setupDi(prefs: await SharedPreferences.getInstance());
     runApp(
       App(
-        router: createRouter(session: sl(), prefs: sl()),
+        router: createRouter(
+          session: sl(),
+          prefs: sl(),
+          signOut: sl<SignOut>().call,
+        ),
       ),
     );
     await startSession(session: sl(), tokenStorage: sl(), prefs: sl());
