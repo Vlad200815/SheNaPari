@@ -1,0 +1,86 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shenapari/features/orders/data/dto/order_dtos.dart';
+import 'package:shenapari/features/orders/domain/entities/order.dart';
+
+/// `data` of `POST /orders` as the backend serializes it.
+const _json = {
+  'id': '3f2a6c1e-0000-4000-8000-000000000001',
+  'number': 7,
+  'status': 'Paid',
+  'total': 212.5,
+  'createdAt': '2026-11-17T09:05:00+00:00',
+  'breakSlot': {
+    'id': 4,
+    'startsAt': '2026-11-17T09:40:00+00:00',
+    'endsAt': '2026-11-17T10:00:00+00:00',
+  },
+  'estimatedReadyAt': null,
+  'readyAt': null,
+  'paymentProvider': 'GooglePay',
+  'items': [
+    {'dishId': 1, 'name': 'Чизбургер', 'quantity': 2, 'unitPrice': 95},
+    {'dishId': 9, 'name': 'Лимонад', 'quantity': 1, 'unitPrice': 22.5},
+  ],
+  'history': [
+    {'status': 'Paid', 'at': '2026-11-17T09:05:00+00:00', 'reason': null},
+  ],
+  'pickupToken': null,
+};
+
+void main() {
+  test('reads a placed order', () {
+    final order = OrderDto.fromJson(_json).toEntity();
+
+    expect(order.number, 7);
+    expect(order.status, OrderStatus.paid);
+    expect(order.totalKopecks, 21250);
+    expect(order.breakSlot!.id, 4);
+    expect(
+      order.breakSlot!.startsAt,
+      DateTime.utc(2026, 11, 17, 9, 40).toLocal(),
+    );
+    expect(order.items, const [
+      OrderItem(
+        dishId: 1,
+        name: 'Чизбургер',
+        quantity: 2,
+        unitPriceKopecks: 9500,
+      ),
+      OrderItem(
+        dishId: 9,
+        name: 'Лимонад',
+        quantity: 1,
+        unitPriceKopecks: 2250,
+      ),
+    ]);
+  });
+
+  test('«as soon as possible» has no break', () {
+    final order = OrderDto.fromJson({..._json, 'breakSlot': null}).toEntity();
+
+    expect(order.breakSlot, isNull);
+  });
+
+  test('statuses come in PascalCase; unknown ones do not crash', () {
+    expect(OrderDto.parseStatus('PickedUp'), OrderStatus.pickedUp);
+    expect(OrderDto.parseStatus('NotPickedUp'), OrderStatus.notPickedUp);
+    expect(OrderDto.parseStatus('Refunded'), OrderStatus.unknown);
+  });
+
+  test('the request matches the backend contract', () {
+    const dto = CreateOrderDto(
+      breakSlotId: null,
+      paymentProvider: 'ApplePay',
+      items: [CreateOrderItemDto(dishId: 1, quantity: 2)],
+    );
+
+    expect(dto.toJson(), {
+      'breakSlotId': null,
+      'paymentProvider': 'ApplePay',
+      'items': [
+        {'dishId': 1, 'quantity': 2},
+      ],
+    });
+    expect(OrderDto.providerName(PaymentProvider.googlePay), 'GooglePay');
+  });
+}
