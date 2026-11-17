@@ -15,6 +15,7 @@ import 'package:shenapari/features/cart/presentation/cart_cubit.dart';
 import 'package:shenapari/features/auth/domain/usecases/sign_out_use_case.dart';
 import 'package:shenapari/features/auth/presentation/widgets/code_field.dart';
 import 'package:shenapari/features/menu/domain/menu_repository.dart';
+import 'package:shenapari/features/orders/domain/orders_repository.dart';
 import 'package:shenapari/features/onboarding/presentation/onboarding_page.dart';
 import 'package:shenapari/features/profile/domain/profile_repository.dart';
 
@@ -28,6 +29,7 @@ const _nameTitle = 'Як вас звати?';
 
 late FakeAuthRepository _auth;
 late FakeProfileRepository _profile;
+late FakeOrdersRepository _orders;
 
 /// Starts the whole app the way bootstrap() does, with fake storage and
 /// fake repositories instead of the network.
@@ -52,7 +54,9 @@ Future<void> _pumpApp(
     ..unregister<ProfileRepository>()
     ..registerSingleton<ProfileRepository>(_profile)
     ..unregister<MenuRepository>()
-    ..registerSingleton<MenuRepository>(FakeMenuRepository());
+    ..registerSingleton<MenuRepository>(FakeMenuRepository())
+    ..unregister<OrdersRepository>()
+    ..registerSingleton<OrdersRepository>(_orders = FakeOrdersRepository());
 
   await tester.pumpWidget(
     App(
@@ -212,32 +216,65 @@ void main() {
     // Buttons are found by their screen-reader labels.
     final semantics = tester.ensureSemantics();
 
-    // Quick «+» on the card: the button now shows 1.
+    // Quick «+» on the card: one portion in the cart, the card keeps «+».
     final add = find.bySemanticsLabel('Додати Чізбургер в кошик');
     await tester.ensureVisible(add);
     await tester.pumpAndSettle();
     await tester.tap(add);
     await tester.pumpAndSettle();
     expect(sl<CartCubit>().state.count, 1);
+    expect(add, findsOneWidget);
 
-    // The card opens the dish; two more portions from there.
+    // The dish screen starts from what is in the cart, not from 1 on top.
     await _tap(tester, 'Чізбургер');
-    expect(find.text('Додати · 85 ₴'), findsOneWidget);
+    expect(find.text('Оновити · 85 ₴'), findsOneWidget);
     await tester.tap(find.bySemanticsLabel('Більше'));
     await tester.pumpAndSettle();
-    await _tap(tester, 'Додати · 170 ₴');
-    expect(find.text('Додано в кошик'), findsOneWidget);
+    await _tap(tester, 'Оновити · 170 ₴');
+    expect(find.text('Кошик оновлено'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Кошик'));
     await tester.pumpAndSettle();
-    expect(find.text('255 ₴'), findsWidgets);
-    expect(find.text('Разом · 3 порції'), findsOneWidget);
+    expect(find.text('170 ₴'), findsWidgets);
+    expect(find.text('Разом · 2 порції'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Профіль'));
     await tester.pumpAndSettle();
     await _tap(tester, 'Вийти');
     expect(sl<CartCubit>().state.isEmpty, isTrue);
     semantics.dispose();
+  });
+
+  testWidgets('cart → checkout → paid: the cart is emptied', (tester) async {
+    await _pumpApp(
+      tester,
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+    // The card is below the 600 px test screen: scroll to it first.
+    await tester.ensureVisible(find.text('Чізбургер'));
+    await tester.pumpAndSettle();
+    await _tap(tester, 'Чізбургер');
+    await _tap(tester, 'Додати · 85 ₴');
+    await tester.tap(find.byTooltip('Кошик'));
+    await tester.pumpAndSettle();
+    // Let the «Додано в кошик» snack bar go away: it covers the button.
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+
+    await _tap(tester, 'Оформити замовлення');
+    // No breaks left today in the fake: «as soon as possible» is chosen.
+    expect(find.text('Якнайшвидше'), findsOneWidget);
+    await _tap(tester, 'Оплатити · 85 ₴');
+
+    expect(find.text('Замовлення №7 оплачено'), findsOneWidget);
+    expect(_orders.placed.single.breakSlotId, isNull);
+    expect(_orders.placed.single.items.single.quantity, 1);
+    expect(sl<CartCubit>().state.isEmpty, isTrue);
+
+    await _tap(tester, 'До меню');
+    expect(find.text('Замовлення №7 оплачено'), findsNothing);
+    expect(find.text('Чізбургер'), findsOneWidget, reason: 'back on the menu');
   });
 
   group('delete account', () {

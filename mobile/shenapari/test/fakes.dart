@@ -8,6 +8,9 @@ import 'package:shenapari/features/menu/domain/entities/canteen.dart';
 import 'package:shenapari/features/menu/domain/entities/category.dart';
 import 'package:shenapari/features/menu/domain/entities/dish.dart';
 import 'package:shenapari/features/menu/domain/menu_repository.dart';
+import 'package:shenapari/features/orders/domain/entities/order.dart';
+import 'package:shenapari/features/orders/domain/orders_repository.dart';
+import 'package:shenapari/features/cart/domain/entities/cart.dart';
 import 'package:shenapari/features/profile/domain/entities/user.dart';
 import 'package:shenapari/features/profile/domain/profile_repository.dart';
 
@@ -115,4 +118,32 @@ class FakeMenuRepository implements MenuRepository {
 
   @override
   Future<Result<BreakSlot?>> getNextBreak() async => const Ok(null);
+
+  @override
+  Future<Result<List<BreakSlot>>> getTodayBreaks() async => const Ok([]);
+}
+
+/// Accepts any order as №7, priced from the cart.
+class FakeOrdersRepository implements OrdersRepository {
+  final placed =
+      <({List<CartItem> items, int? breakSlotId, PaymentProvider provider})>[];
+
+  @override
+  Future<Result<Order>> placeOrder({
+    required List<CartItem> items,
+    required int? breakSlotId,
+    required PaymentProvider provider,
+  }) async {
+    placed.add((items: items, breakSlotId: breakSlotId, provider: provider));
+    return Ok(
+      Order(
+        id: 'order-7',
+        number: 7,
+        status: OrderStatus.paid,
+        totalKopecks: items.fold(0, (sum, item) => sum + item.totalKopecks),
+        createdAt: DateTime(2026, 11, 17, 11),
+        items: const [],
+      ),
+    );
+  }
 }

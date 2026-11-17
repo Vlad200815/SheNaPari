@@ -9,13 +9,7 @@ import '../../domain/entities/dish.dart';
 
 /// A dish in the menu grid: photo, name, weight, price and a quick «+».
 class DishCard extends StatelessWidget {
-  const DishCard({
-    super.key,
-    required this.dish,
-    this.onTap,
-    this.onAdd,
-    this.inCart = 0,
-  });
+  const DishCard({super.key, required this.dish, this.onTap, this.onAdd});
 
   final Dish dish;
 
@@ -24,9 +18,6 @@ class DishCard extends StatelessWidget {
 
   /// Adds one portion to the cart.
   final VoidCallback? onAdd;
-
-  /// Portions already in the cart; shown on the button instead of «+».
-  final int inCart;
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +62,7 @@ class DishCard extends StatelessWidget {
                       style: AppText.title(),
                     ),
                   ),
-                  if (onAdd != null)
-                    _AddButton(dish: dish, inCart: inCart, onTap: onAdd!),
+                  if (onAdd != null) _AddButton(dish: dish, onTap: onAdd!),
                 ],
               ),
             ],
@@ -147,16 +137,11 @@ class _PopularBadge extends StatelessWidget {
   }
 }
 
-/// A yellow circle with «+», or with the count once the dish is in the cart.
+/// A yellow circle with «+»; the tab bar badge shows the count.
 class _AddButton extends StatelessWidget {
-  const _AddButton({
-    required this.dish,
-    required this.inCart,
-    required this.onTap,
-  });
+  const _AddButton({required this.dish, required this.onTap});
 
   final Dish dish;
-  final int inCart;
   final VoidCallback onTap;
 
   @override
@@ -165,9 +150,7 @@ class _AddButton extends StatelessWidget {
     return Semantics(
       container: true,
       button: true,
-      label: inCart == 0
-          ? 'Додати ${dish.name} в кошик'
-          : 'Додати ще, в кошику $inCart',
+      label: 'Додати ${dish.name} в кошик',
       excludeSemantics: true,
       child: Material(
         color: ColorName.primary400,
@@ -175,23 +158,9 @@ class _AddButton extends StatelessWidget {
         child: InkWell(
           customBorder: const CircleBorder(),
           onTap: onTap,
-          child: SizedBox.square(
+          child: const SizedBox.square(
             dimension: 36,
-            child: Center(
-              child: inCart == 0
-                  ? const Icon(
-                      Icons.add_rounded,
-                      color: ColorName.black,
-                      size: 22,
-                    )
-                  : Text(
-                      '$inCart',
-                      style: AppText.small(
-                        color: ColorName.black,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-            ),
+            child: Icon(Icons.add_rounded, color: ColorName.black, size: 22),
           ),
         ),
       ),
