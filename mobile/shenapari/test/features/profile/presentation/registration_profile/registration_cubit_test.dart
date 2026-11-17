@@ -3,18 +3,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shenapari/core/result/failure.dart';
 import 'package:shenapari/core/result/result.dart';
-import 'package:shenapari/features/profile/domain/usecases/complete_registration.dart';
+import 'package:shenapari/features/profile/domain/usecases/complete_registration_use_case.dart';
 import 'package:shenapari/features/profile/presentation/registration_profile/registration_cubit.dart';
 import 'package:shenapari/features/profile/presentation/registration_profile/registration_state.dart';
 
-class _MockCompleteRegistration extends Mock implements CompleteRegistration {}
+class _MockCompleteRegistrationUseCase extends Mock
+    implements CompleteRegistrationUseCase {}
 
 const _named = RegistrationState(name: 'Влад');
 
 void main() {
-  late _MockCompleteRegistration completeRegistration;
+  late _MockCompleteRegistrationUseCase completeRegistration;
 
-  setUp(() => completeRegistration = _MockCompleteRegistration());
+  setUp(() => completeRegistration = _MockCompleteRegistrationUseCase());
 
   test('a name shorter than 2 characters cannot be submitted', () {
     expect(const RegistrationState(name: ' В ').canSubmit, isFalse);

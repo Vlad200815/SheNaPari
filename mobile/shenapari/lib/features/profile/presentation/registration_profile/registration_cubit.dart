@@ -1,14 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/result/result.dart';
-import '../../domain/usecases/complete_registration.dart';
+import '../../domain/usecases/complete_registration_use_case.dart';
 import 'registration_state.dart';
 
 class RegistrationCubit extends Cubit<RegistrationState> {
   RegistrationCubit(this._completeRegistration)
     : super(const RegistrationState());
 
-  final CompleteRegistration _completeRegistration;
+  final CompleteRegistrationUseCase _completeRegistration;
 
   void nameChanged(String name) => emit(
     state.copyWith(

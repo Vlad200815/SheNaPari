@@ -6,8 +6,8 @@ import '../auth_repository.dart';
 ///
 /// Nobody navigates afterwards: the session status changes
 /// (needsProfile or authenticated) and the router redirects by itself.
-class VerifyCode {
-  VerifyCode(this._auth, this._session);
+class VerifyCodeUseCase {
+  VerifyCodeUseCase(this._auth, this._session);
 
   final AuthRepository _auth;
   final SessionRepository _session;

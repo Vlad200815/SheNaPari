@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/result/result.dart';
 import '../../domain/auth_repository.dart';
-import '../../domain/usecases/verify_code.dart';
+import '../../domain/usecases/verify_code_use_case.dart';
 import 'code_state.dart';
 
 /// Emits the seconds left: `seconds - 1, ..., 0`, one per second.
@@ -34,7 +34,7 @@ class CodeCubit extends Cubit<CodeState> {
   /// The number the code was sent to; fixed for the screen's lifetime.
   final String phone;
 
-  final VerifyCode _verifyCode;
+  final VerifyCodeUseCase _verifyCode;
   final AuthRepository _auth;
   final Countdown _countdown;
   StreamSubscription<int>? _ticker;

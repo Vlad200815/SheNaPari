@@ -4,11 +4,11 @@ import 'package:mocktail/mocktail.dart';
 import 'package:shenapari/core/result/failure.dart';
 import 'package:shenapari/core/result/result.dart';
 import 'package:shenapari/features/auth/domain/auth_repository.dart';
-import 'package:shenapari/features/auth/domain/usecases/verify_code.dart';
+import 'package:shenapari/features/auth/domain/usecases/verify_code_use_case.dart';
 import 'package:shenapari/features/auth/presentation/code/code_cubit.dart';
 import 'package:shenapari/features/auth/presentation/code/code_state.dart';
 
-class _MockVerifyCode extends Mock implements VerifyCode {}
+class _MockVerifyCodeUseCase extends Mock implements VerifyCodeUseCase {}
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
 
@@ -22,11 +22,11 @@ const _wrongCode = ValidationFailure(
 Stream<int> _frozen(int seconds) => const Stream.empty();
 
 void main() {
-  late _MockVerifyCode verifyCode;
+  late _MockVerifyCodeUseCase verifyCode;
   late _MockAuthRepository auth;
 
   setUp(() {
-    verifyCode = _MockVerifyCode();
+    verifyCode = _MockVerifyCodeUseCase();
     auth = _MockAuthRepository();
   });
 
