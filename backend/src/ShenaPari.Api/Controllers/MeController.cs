@@ -4,7 +4,9 @@ using ShenaPari.Api.Auth;
 using ShenaPari.Api.Common;
 using ShenaPari.Api.Data;
 using ShenaPari.Api.Dtos;
+using Microsoft.EntityFrameworkCore;
 using ShenaPari.Api.Entities;
+using ShenaPari.Api.Orders;
 using ShenaPari.Api.Push;
 
 namespace ShenaPari.Api.Controllers;
@@ -12,7 +14,7 @@ namespace ShenaPari.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("me")]
-public class MeController(AppDbContext db, PushService push) : ControllerBase
+public class MeController(AppDbContext db, PushService push, TimeProvider clock) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<Result<MeDto>>> Get()
@@ -34,6 +36,39 @@ public class MeController(AppDbContext db, PushService push) : ControllerBase
         user.Name = name;
         await db.SaveChangesAsync();
         return Result<MeDto>.Ok(ToDto(user)).ToActionResult();
+    }
+
+    // DELETE /me — the customer deletes their account (required by the app stores).
+    // The person is erased: name and phone go, every session and push token is
+    // revoked. Orders stay for the canteen's records but no longer point to anyone
+    // identifiable. The same phone can sign up again as a new account.
+    [HttpDelete]
+    public async Task<ActionResult<Result<object?>>> Delete()
+    {
+        var user = await db.Users.FindAsync(User.UserId());
+        if (user is null || !user.IsActive) return Result<object?>.Fail(CommonErrors.Unauthorized).ToActionResult();
+        if (user is not Customer customer)
+            return Result<object?>.Fail(ProfileErrors.StaffCannotDelete).ToActionResult();
+
+        var activeStatuses = Enum.GetValues<OrderStatus>().Where(OrderStatusRules.IsActive).ToList();
+        if (await db.Orders.AnyAsync(o => o.CustomerId == customer.Id && activeStatuses.Contains(o.Status)))
+            return Result<object?>.Fail(ProfileErrors.HasActiveOrder).ToActionResult();
+
+        var now = clock.GetUtcNow();
+        var oldPhone = customer.Phone;
+        customer.Name = null;
+        // Phone is required and unique: a placeholder that fits 20 chars frees the real number.
+        customer.Phone = $"del-{customer.Id:N}"[..20];
+        customer.DeactivatedAt = now;
+
+        await db.RefreshTokens
+            .Where(t => t.UserId == customer.Id)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(t => t.RevokedAt, t => t.RevokedAt ?? now)
+                .SetProperty(t => t.PushToken, (string?)null));
+        await db.VerificationCodes.Where(c => c.Phone == oldPhone).ExecuteDeleteAsync();
+        await db.SaveChangesAsync();
+        return Result.Ok().ToActionResult();
     }
 
     // PUT /me/push-token  { "token": "<Firebase device token>" } — after login and on token refresh

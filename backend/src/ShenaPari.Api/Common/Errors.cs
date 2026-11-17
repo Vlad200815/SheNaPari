@@ -26,6 +26,8 @@ public static class AuthErrors
 public static class ProfileErrors
 {
     public static readonly Error InvalidName = new("profile.invalid_name", "Ім'я має містити від 2 до 100 символів", 400);
+    public static readonly Error HasActiveOrder = new("profile.has_active_order", "Спершу заберіть або скасуйте активне замовлення", 409);
+    public static readonly Error StaffCannotDelete = new("profile.staff_cannot_delete", "Акаунт працівника видаляє адміністратор", 403);
 }
 
 public static class EmployeeErrors
