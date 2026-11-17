@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:material_ui/material_ui.dart';
@@ -6,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../app/di.dart';
 import '../../../core/ui/app_text.dart';
 import '../../../core/ui/app_theme.dart';
+import '../../../core/ui/snack_bars.dart';
 import '../../../gen/colors.gen.dart';
 import '../domain/entities/legal_document.dart';
 import 'legal_cubit.dart';
@@ -97,10 +99,26 @@ class _DocumentTextState extends State<_DocumentText> {
     super.dispose();
   }
 
+  /// Opens `https:` in the browser and `mailto:` in the mail app. If the
+  /// phone has no app for it (no mail app, e.g. on a simulator), the address
+  /// is copied so the user can still use it.
   Future<void> _openLink(String? href) async {
     final uri = href == null ? null : Uri.tryParse(href);
     if (uri == null) return;
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
+    var opened = false;
+    try {
+      opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } on Exception {
+      // PlatformException, or MissingPluginException where there is no
+      // url_launcher implementation.
+      opened = false;
+    }
+    if (opened || !mounted) return;
+
+    final text = uri.scheme == 'mailto' ? uri.path : uri.toString();
+    await Clipboard.setData(ClipboardData(text: text));
+    if (!mounted) return;
+    showInfoSnackBar(context, 'Не вдалося відкрити, скопіювали: $text');
   }
 
   @override
@@ -132,9 +150,10 @@ class _DocumentTextState extends State<_DocumentText> {
           pPadding: const EdgeInsets.only(bottom: 4),
           listBullet: body,
           strong: body.copyWith(fontWeight: FontWeight.w700),
+          // Links look like the ones on the phone screen: brand yellow.
           a: body.copyWith(
-            color: ColorName.primary600,
-            decoration: TextDecoration.underline,
+            color: ColorName.primary400,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
