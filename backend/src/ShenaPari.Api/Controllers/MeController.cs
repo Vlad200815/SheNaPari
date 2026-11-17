@@ -67,7 +67,34 @@ public class MeController(AppDbContext db, PushService push, TimeProvider clock)
                 .SetProperty(t => t.RevokedAt, t => t.RevokedAt ?? now)
                 .SetProperty(t => t.PushToken, (string?)null));
         await db.VerificationCodes.Where(c => c.Phone == oldPhone).ExecuteDeleteAsync();
+        await db.Notifications.Where(n => n.UserId == customer.Id).ExecuteDeleteAsync();
         await db.SaveChangesAsync();
+        return Result.Ok().ToActionResult();
+    }
+
+    // GET /me/notifications — the latest 50, newest first (the list under the bell)
+    [HttpGet("notifications")]
+    public async Task<ActionResult<Result<List<NotificationDto>>>> GetNotifications()
+    {
+        var userId = User.UserId();
+        var list = await db.Notifications
+            .Where(n => n.UserId == userId)
+            .OrderByDescending(n => n.CreatedAt)
+            .Take(50)
+            .Select(n => new NotificationDto(n.Id, n.OrderId, n.Title, n.Body, n.CreatedAt, n.ReadAt != null))
+            .ToListAsync();
+        return Result<List<NotificationDto>>.Ok(list).ToActionResult();
+    }
+
+    // POST /me/notifications/read — the app opened the list: everything is read
+    [HttpPost("notifications/read")]
+    public async Task<ActionResult<Result<object?>>> MarkNotificationsRead()
+    {
+        var userId = User.UserId();
+        var now = clock.GetUtcNow();
+        await db.Notifications
+            .Where(n => n.UserId == userId && n.ReadAt == null)
+            .ExecuteUpdateAsync(s => s.SetProperty(n => n.ReadAt, now));
         return Result.Ok().ToActionResult();
     }
 
