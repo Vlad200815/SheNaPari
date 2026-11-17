@@ -57,6 +57,17 @@ class FakeAuthRepository implements AuthRepository {
 
 class FakeProfileRepository implements ProfileRepository {
   String? savedName;
+  int deleteCalls = 0;
+
+  /// When set, deleting fails with it (like an active order on the server).
+  Failure? deleteFailure;
+
+  @override
+  Future<Result<void>> deleteAccount() async {
+    deleteCalls++;
+    final failure = deleteFailure;
+    return failure == null ? const Ok(null) : Err(failure);
+  }
 
   @override
   Future<Result<User>> getMe() async =>
