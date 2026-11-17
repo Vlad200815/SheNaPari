@@ -5,3 +5,6 @@
 # macOS / IDE generated
 .DS_Store
 .idea/libraries/
+
+# Android Studio opened at mobile/ instead of the repo root
+/mobile/.idea/
