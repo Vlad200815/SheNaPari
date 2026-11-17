@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:shenapari/core/result/failure.dart';
 import 'package:shenapari/core/result/result.dart';
 import 'package:shenapari/core/session/auth_tokens.dart';
@@ -9,6 +11,7 @@ import 'package:shenapari/features/menu/domain/entities/category.dart';
 import 'package:shenapari/features/menu/domain/entities/dish.dart';
 import 'package:shenapari/features/menu/domain/menu_repository.dart';
 import 'package:shenapari/features/orders/domain/entities/order.dart';
+import 'package:shenapari/features/orders/domain/order_events.dart';
 import 'package:shenapari/features/orders/domain/orders_repository.dart';
 import 'package:shenapari/features/cart/domain/entities/cart.dart';
 import 'package:shenapari/features/profile/domain/entities/user.dart';
@@ -123,10 +126,12 @@ class FakeMenuRepository implements MenuRepository {
   Future<Result<List<BreakSlot>>> getTodayBreaks() async => const Ok([]);
 }
 
-/// Accepts any order as №7, priced from the cart.
+/// Accepts any order as №7, priced from the cart, and keeps it so the
+/// tracking screens can read it. [kitchen] moves it on like the cook would.
 class FakeOrdersRepository implements OrdersRepository {
   final placed =
       <({List<CartItem> items, int? breakSlotId, PaymentProvider provider})>[];
+  final orders = <Order>[];
 
   @override
   Future<Result<Order>> placeOrder({
@@ -135,15 +140,71 @@ class FakeOrdersRepository implements OrdersRepository {
     required PaymentProvider provider,
   }) async {
     placed.add((items: items, breakSlotId: breakSlotId, provider: provider));
-    return Ok(
-      Order(
-        id: 'order-7',
-        number: 7,
-        status: OrderStatus.paid,
-        totalKopecks: items.fold(0, (sum, item) => sum + item.totalKopecks),
-        createdAt: DateTime(2026, 11, 17, 11),
-        items: const [],
-      ),
+    final now = DateTime(2026, 11, 17, 11);
+    final order = Order(
+      id: 'order-7',
+      number: 7,
+      status: OrderStatus.paid,
+      totalKopecks: items.fold(0, (sum, item) => sum + item.totalKopecks),
+      createdAt: now,
+      items: [
+        for (final item in items)
+          OrderItem(
+            dishId: item.dish.id,
+            name: item.dish.name,
+            quantity: item.quantity,
+            unitPriceKopecks: item.dish.priceKopecks,
+          ),
+      ],
+      history: [OrderStatusChange(status: OrderStatus.paid, at: now)],
+    );
+    orders.insert(0, order);
+    return Ok(order);
+  }
+
+  /// What the kitchen does on the server.
+  void kitchen(String id, OrderStatus status, {String? pickupToken}) {
+    final i = orders.indexWhere((o) => o.id == id);
+    final old = orders[i];
+    orders[i] = Order(
+      id: old.id,
+      number: old.number,
+      status: status,
+      totalKopecks: old.totalKopecks,
+      createdAt: old.createdAt,
+      items: old.items,
+      history: [
+        ...old.history,
+        OrderStatusChange(status: status, at: DateTime(2026, 11, 17, 11, 20)),
+      ],
+      pickupToken: pickupToken,
     );
   }
+
+  @override
+  Future<Result<List<Order>>> getMyOrders() async => Ok(List.of(orders));
+
+  @override
+  Future<Result<Order>> getOrder(String id) async {
+    for (final order in orders) {
+      if (order.id == id) return Ok(order);
+    }
+    return const Err(NotFoundFailure('Замовлення не знайдено'));
+  }
+
+  @override
+  Future<Result<Order>> cancel(String id) async {
+    kitchen(id, OrderStatus.cancelled);
+    return getOrder(id);
+  }
+}
+
+/// Live updates the test pushes by hand.
+class FakeOrderEvents implements OrderEvents {
+  final _controller = StreamController<String?>.broadcast();
+
+  void changed(String? orderId) => _controller.add(orderId);
+
+  @override
+  Stream<String?> get changes => _controller.stream;
 }

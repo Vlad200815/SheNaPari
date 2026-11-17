@@ -274,6 +274,11 @@ class _Placed extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             AppButton.primary(
+              text: 'Відстежити замовлення',
+              onPressed: () => context.go(Routes.order(order.id)),
+            ),
+            const SizedBox(height: 10),
+            AppButton.outlined(
               text: 'До меню',
               onPressed: () => context.go(Routes.home),
             ),
