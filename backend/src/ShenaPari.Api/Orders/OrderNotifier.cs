@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
+using ShenaPari.Api.Data;
 using ShenaPari.Api.Dtos;
 using ShenaPari.Api.Entities;
 using ShenaPari.Api.Push;
@@ -9,7 +10,8 @@ namespace ShenaPari.Api.Orders;
 /// Everything the server tells apps about orders goes through here:
 ///  - SignalR: instant updates for apps that are open
 ///  - push notifications: for the client whose app is closed
-public class OrderNotifier(IHubContext<OrdersHub> hub, PushService push, CampusClock clock)
+///  - a stored notification: the list under the bell in the app
+public class OrderNotifier(IHubContext<OrdersHub> hub, PushService push, CampusClock clock, AppDbContext db)
 {
     /// A new paid order appeared → the kitchen screen.
     public Task OrderCreatedAsync(StaffOrderDto order) =>
@@ -19,12 +21,28 @@ public class OrderNotifier(IHubContext<OrdersHub> hub, PushService push, CampusC
     /// when it is something they are waiting for.
     public async Task StatusChangedAsync(Order order)
     {
+        var message = BuildPush(order);
+        // Saved before the SignalR event: an app that reloads on the event
+        // already finds the new notification under the bell.
+        if (message is not null)
+        {
+            db.Notifications.Add(new Notification
+            {
+                UserId = order.CustomerId,
+                OrderId = order.Id,
+                Title = message.Title,
+                Body = message.Body,
+                CreatedAt = clock.UtcNow,
+            });
+            await db.SaveChangesAsync();
+        }
+
         await hub.Clients
             .Groups(OrdersHub.UserGroup(order.CustomerId), OrdersHub.StaffGroup)
             .SendAsync("OrderStatusChanged",
                 new OrderStatusChangedEvent(order.Id, order.Number, order.Status, order.EstimatedReadyAt));
 
-        if (BuildPush(order) is { } message)
+        if (message is not null)
             await push.SendToUserAsync(order.CustomerId, message);
     }
 
