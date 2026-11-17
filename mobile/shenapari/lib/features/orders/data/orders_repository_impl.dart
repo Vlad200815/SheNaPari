@@ -29,4 +29,16 @@ class OrdersRepositoryImpl implements OrdersRepository {
     ),
     (dto) => dto.toEntity(),
   );
+
+  @override
+  Future<Result<List<Order>>> getMyOrders() =>
+      apiCall(_api.getMy, (dtos) => [for (final dto in dtos) dto.toEntity()]);
+
+  @override
+  Future<Result<Order>> getOrder(String id) =>
+      apiCall(() => _api.getById(id), (dto) => dto.toEntity());
+
+  @override
+  Future<Result<Order>> cancel(String id) =>
+      apiCall(() => _api.cancel(id), (dto) => dto.toEntity());
 }
