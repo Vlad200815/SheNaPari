@@ -25,7 +25,7 @@ abstract final class Routes {
   static const dishPattern = '/dish/:id';
   static String dish(int id) => '/dish/$id';
 
-  /// Checkout: placeholder until the next step.
+  /// Choose a break and pay; pushed from the cart.
   static const checkout = '/checkout';
 
   /// Terms of use or privacy policy; open to everyone, signed in or not.

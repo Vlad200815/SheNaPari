@@ -12,6 +12,7 @@ import '../../features/legal/presentation/legal_page.dart';
 import '../../features/menu/domain/entities/dish.dart';
 import '../../features/menu/presentation/dish/dish_page.dart';
 import '../../features/menu/presentation/home/home_page.dart';
+import '../../features/orders/presentation/checkout/checkout_page.dart';
 import '../../features/onboarding/presentation/onboarding_page.dart';
 import '../../features/profile/presentation/profile/profile_page.dart';
 import '../../features/profile/presentation/registration_profile/registration_profile_page.dart';
@@ -132,13 +133,7 @@ GoRouter createRouter({
           initial: state.extra is Dish ? state.extra! as Dish : null,
         ),
       ),
-      GoRoute(
-        path: Routes.checkout,
-        builder: (_, _) => const PlaceholderPage(
-          title: 'Оформлення',
-          note: 'Вибір перерви й оплата — на наступному кроці',
-        ),
-      ),
+      GoRoute(path: Routes.checkout, builder: (_, _) => const CheckoutPage()),
       GoRoute(
         path: Routes.notifications,
         builder: (_, _) => const PlaceholderPage(
