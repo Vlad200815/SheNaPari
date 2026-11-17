@@ -9,10 +9,11 @@ flutter pub get
 dart run build_runner build -d          # freezed, json_serializable, retrofit, flutter_gen
 flutter analyze
 flutter test
-flutter run --dart-define-from-file=env/dev.json             # Android-емулятор
-flutter run --dart-define-from-file=env/ios_simulator.json   # iOS-симулятор
-flutter run --dart-define=API_BASE_URL=http://<IP Mac>:5041  # справжній телефон у тій самій Wi-Fi
+flutter run --dart-define-from-file=env/dev.json      # емулятор / симулятор
+flutter run --dart-define-from-file=env/device.json   # справжній телефон у тій самій Wi-Fi
 ```
+
+Без `API_BASE_URL` застосунок сам іде на комп'ютер розробника: Android-емулятор → `http://10.0.2.2:5041`, iOS-симулятор → `http://localhost:5041`. Для телефона скопіюй `env/device.example.json` у `env/device.json` (у git не потрапляє) і впиши IP Mac (`ipconfig getifaddr en0`). У Android Studio ті самі запуски є на кнопці Run: «SheNaPari» і «SheNaPari (телефон)» (`.run/` у корені репо).
 
 ## Архітектура
 
