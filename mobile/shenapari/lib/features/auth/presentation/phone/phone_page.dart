@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -9,6 +10,7 @@ import '../../../../core/ui/app_text.dart';
 import '../../../../core/ui/snack_bars.dart';
 import '../../../../gen/assets.gen.dart';
 import '../../../../gen/colors.gen.dart';
+import '../../../legal/domain/entities/legal_document.dart';
 import '../widgets/auth_layout.dart';
 import '../widgets/phone_field.dart';
 import 'phone_cubit.dart';
@@ -65,20 +67,50 @@ class PhonePage extends StatelessWidget {
   }
 }
 
-class _TermsText extends StatelessWidget {
+/// "By continuing you agree to our Terms and Privacy Policy" with both
+/// names as links.
+class _TermsText extends StatefulWidget {
   const _TermsText();
 
   @override
+  State<_TermsText> createState() => _TermsTextState();
+}
+
+class _TermsTextState extends State<_TermsText> {
+  late final _terms = _linkTo(LegalDocumentType.terms);
+  late final _privacy = _linkTo(LegalDocumentType.privacy);
+
+  TapGestureRecognizer _linkTo(LegalDocumentType type) =>
+      TapGestureRecognizer()..onTap = () => context.push(Routes.legal(type));
+
+  @override
+  void dispose() {
+    _terms.dispose();
+    _privacy.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final accent = AppText.regular(color: ColorName.primary500);
+    final link = AppText.regular(
+      color: ColorName.primary600,
+    ).copyWith(decoration: TextDecoration.underline);
     return Text.rich(
       TextSpan(
         style: AppText.regular(),
         children: [
           const TextSpan(text: 'Продовжуючи, ви погоджуєтеся з нашими '),
-          TextSpan(text: 'Умовами використання', style: accent),
+          TextSpan(
+            text: 'Умовами використання',
+            style: link,
+            recognizer: _terms,
+          ),
           const TextSpan(text: ' та '),
-          TextSpan(text: 'Політикою конфіденційності', style: accent),
+          TextSpan(
+            text: 'Політикою конфіденційності',
+            style: link,
+            recognizer: _privacy,
+          ),
         ],
       ),
       textAlign: TextAlign.center,
