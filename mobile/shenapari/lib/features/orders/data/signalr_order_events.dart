@@ -31,6 +31,12 @@ class SignalROrderEvents implements OrderEvents {
   final SessionRepository _session;
   late final StreamController<String?> _controller;
   HubConnection? _hub;
+  Timer? _retry;
+
+  /// How long to wait before opening a new connection after the old one
+  /// gave up (e.g. its token expired). Any REST call in between refreshes
+  /// the token the new connection will use.
+  static const retryDelay = Duration(seconds: 15);
 
   @override
   Stream<String?> get changes => _controller.stream;
@@ -52,17 +58,34 @@ class SignalROrderEvents implements OrderEvents {
         if (event is Map) _controller.add(event['orderId']?.toString());
       })
       // Events sent while offline are lost: ask screens to reload.
-      ..onreconnected(({connectionId}) => _controller.add(null));
+      ..onreconnected(({connectionId}) => _controller.add(null))
+      // Automatic reconnect gave up: start over while screens still listen.
+      ..onclose(({error}) {
+        if (identical(_hub, hub)) _retryLater();
+      });
     _hub = hub;
     try {
       await hub.start();
     } on Object catch (error) {
-      // No live updates then; screens still have pull-to-refresh.
+      // Screens still have pull-to-refresh; try again a bit later.
       developer.log('Order updates unavailable', name: 'orders', error: error);
+      if (identical(_hub, hub)) _retryLater();
     }
   }
 
+  void _retryLater() {
+    _hub = null;
+    _retry?.cancel();
+    _retry = Timer(retryDelay, () {
+      if (_controller.hasListener) {
+        _connect();
+        _controller.add(null); // whatever happened meanwhile, reload it
+      }
+    });
+  }
+
   Future<void> _disconnect() async {
+    _retry?.cancel();
     final hub = _hub;
     _hub = null;
     await hub?.stop();
