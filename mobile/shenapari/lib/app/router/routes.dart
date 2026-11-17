@@ -15,6 +15,10 @@ abstract final class Routes {
   static const home = '/home';
   static const cart = '/cart';
   static const orders = '/orders';
+
+  /// One order, over the tabs.
+  static const orderPattern = '/order/:id';
+  static String order(String id) => '/order/$id';
   static const profile = '/profile';
 
   /// Pushed over the tabs: the QR of the active order for pickup.

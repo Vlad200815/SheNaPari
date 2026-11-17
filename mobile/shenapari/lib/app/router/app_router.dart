@@ -13,6 +13,9 @@ import '../../features/menu/domain/entities/dish.dart';
 import '../../features/menu/presentation/dish/dish_page.dart';
 import '../../features/menu/presentation/home/home_page.dart';
 import '../../features/orders/presentation/checkout/checkout_page.dart';
+import '../../features/orders/presentation/my_qr/my_qr_page.dart';
+import '../../features/orders/presentation/order/order_page.dart';
+import '../../features/orders/presentation/orders/orders_page.dart';
 import '../../features/onboarding/presentation/onboarding_page.dart';
 import '../../features/profile/presentation/profile/profile_page.dart';
 import '../../features/profile/presentation/registration_profile/registration_profile_page.dart';
@@ -86,10 +89,7 @@ GoRouter createRouter({
             routes: [
               GoRoute(
                 path: Routes.orders,
-                builder: (_, _) => const PlaceholderPage(
-                  title: 'Замовлення',
-                  note: 'Історія замовлень з’явиться на кроці із замовленнями',
-                ),
+                builder: (_, _) => const OrdersPage(),
               ),
             ],
           ),
@@ -109,11 +109,13 @@ GoRouter createRouter({
         pageBuilder: (_, state) => MaterialPage(
           key: state.pageKey,
           fullscreenDialog: true,
-          child: const PlaceholderPage(
-            title: 'Мій QR',
-            note: 'Немає активних замовлень',
-          ),
+          child: const MyQrPage(),
         ),
+      ),
+      GoRoute(
+        path: Routes.orderPattern,
+        builder: (_, state) =>
+            OrderPage(orderId: state.pathParameters['id'] ?? ''),
       ),
       GoRoute(
         path: Routes.legalPattern,

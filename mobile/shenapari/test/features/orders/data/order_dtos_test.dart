@@ -83,4 +83,25 @@ void main() {
     });
     expect(OrderDto.providerName(PaymentProvider.googlePay), 'GooglePay');
   });
+
+  test('history and the pickup token of a ready order', () {
+    final order = OrderDto.fromJson({
+      ..._json,
+      'status': 'Ready',
+      'history': [
+        {'status': 'Paid', 'at': '2026-11-17T09:05:00+00:00', 'reason': null},
+        {'status': 'Ready', 'at': '2026-11-17T09:25:00+00:00', 'reason': null},
+      ],
+      'pickupToken': 'b7c1d2e3-0000-4000-8000-000000000009',
+    }).toEntity();
+
+    expect(order.pickupToken, 'b7c1d2e3-0000-4000-8000-000000000009');
+    expect(
+      order.reachedAt(OrderStatus.ready),
+      DateTime.utc(2026, 11, 17, 9, 25).toLocal(),
+    );
+    expect(order.reachedAt(OrderStatus.cooking), isNull);
+    expect(order.isActive, isTrue);
+    expect(order.canCancel, isFalse);
+  });
 }
