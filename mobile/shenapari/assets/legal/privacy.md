@@ -8,7 +8,7 @@
 
 2.1 Застосунок розробляє та підтримує індивідуальний розробник (далі — **«Оператор»**) під назвою ШеНаПарі.
 
-2.2 Контакти: **supportshenapari@gmail.com**, <https://shenapari.me>.
+2.2 Контакти: [supportshenapari@gmail.com](mailto:supportshenapari@gmail.com).
 
 ## 3. Які дані ми обробляємо
 
@@ -61,7 +61,7 @@
 - вимагати видалити акаунт і дані;
 - відкликати згоду на push-сповіщення в налаштуваннях телефону.
 
-Для цього напишіть на **supportshenapari@gmail.com** з номера телефону вашого акаунта. Ми відповімо протягом 30 днів.
+Для цього напишіть на [supportshenapari@gmail.com](mailto:supportshenapari@gmail.com) з номера телефону вашого акаунта. Ми відповімо протягом 30 днів.
 
 ## 8. Безпека
 
@@ -77,4 +77,4 @@
 
 ## 11. Контакти
 
-Питання щодо персональних даних: **supportshenapari@gmail.com**.
+Питання щодо персональних даних: [supportshenapari@gmail.com](mailto:supportshenapari@gmail.com).

@@ -61,4 +61,4 @@
 
 ## 11. Контакти
 
-**supportshenapari@gmail.com**, <https://shenapari.me>.
+[supportshenapari@gmail.com](mailto:supportshenapari@gmail.com).
