@@ -166,6 +166,8 @@ dependencies:
   collection: any
   pub_semver: any
   material_ui: ^1.11.1
+  signalr_netcore: ^1.4.4
+  qr_flutter: ^4.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

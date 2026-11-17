@@ -12,4 +12,13 @@ abstract class OrdersApi {
 
   @POST('/orders')
   Future<ApiEnvelope<OrderDto>> create(@Body() CreateOrderDto body);
+
+  @GET('/orders/my')
+  Future<ApiEnvelope<List<OrderDto>>> getMy();
+
+  @GET('/orders/{id}')
+  Future<ApiEnvelope<OrderDto>> getById(@Path('id') String id);
+
+  @POST('/orders/{id}/cancel')
+  Future<ApiEnvelope<OrderDto>> cancel(@Path('id') String id);
 }
