@@ -4,9 +4,10 @@ import '../../gen/colors.gen.dart';
 import 'app_text.dart';
 import 'app_theme.dart';
 
-enum _Kind { primary, outlined }
+enum _Kind { primary, outlined, destructive }
 
-/// The app's button: orange gradient (primary) or a grey border (outlined).
+/// The app's button: orange gradient (primary), a grey border (outlined)
+/// or solid red (destructive).
 ///
 /// `onPressed: null` shows the disabled look; [loading] shows a spinner and
 /// ignores taps, so a request cannot be sent twice.
@@ -24,6 +25,14 @@ class AppButton extends StatelessWidget {
     required this.onPressed,
     this.loading = false,
   }) : _kind = _Kind.outlined;
+
+  /// Solid red: only for irreversible actions such as deleting the account.
+  const AppButton.destructive({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.loading = false,
+  }) : _kind = _Kind.destructive;
 
   final String text;
   final VoidCallback? onPressed;
@@ -50,6 +59,10 @@ class AppButton extends StatelessWidget {
       _Kind.primary => (
         BoxDecoration(borderRadius: _radius, color: ColorName.typography200),
         ColorName.typography500,
+      ),
+      _Kind.destructive => (
+        BoxDecoration(borderRadius: _radius, color: ColorName.red),
+        ColorName.white,
       ),
       _Kind.outlined => (
         BoxDecoration(
