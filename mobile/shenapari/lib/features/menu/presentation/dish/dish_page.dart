@@ -33,7 +33,13 @@ class DishPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<DishCubit>(param1: dishId, param2: initial)..load(),
+      create: (context) {
+        final cubit = sl<DishCubit>(param1: dishId, param2: initial);
+        // Already in the cart: the stepper shows that amount, not 1.
+        final inCart = context.read<CartCubit>().state.quantityOf(dishId);
+        if (inCart > 0) cubit.setQuantity(inCart);
+        return cubit..load();
+      },
       child: BlocBuilder<DishCubit, DishState>(
         builder: (context, state) => Scaffold(
           backgroundColor: ColorName.white,
@@ -280,23 +286,21 @@ class _AddToCartBar extends StatelessWidget {
 
   final DishState state;
 
-  void _add(BuildContext context) {
-    final cart = context.read<CartCubit>();
-    final before = cart.state.quantityOf(state.dish!.id);
-    cart.add(state.dish!, quantity: state.quantity);
-    final added = cart.state.quantityOf(state.dish!.id) - before;
-    showInfoSnackBar(
-      context,
-      added < state.quantity
-          ? 'Більше ${Cart.maxQuantity} порцій однієї страви не можна'
-          : 'Додано в кошик',
-    );
+  /// Sets exactly the chosen amount: for a dish already in the cart the
+  /// stepper started from its amount, so «Оновити» does not add on top.
+  void _save(BuildContext context, {required bool inCart}) {
+    context.read<CartCubit>().setQuantity(state.dish!, state.quantity);
+    showInfoSnackBar(context, inCart ? 'Кошик оновлено' : 'Додано в кошик');
     _back(context);
   }
 
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<DishCubit>();
+    final inCart = context.select<CartCubit, bool>(
+      (cart) => cart.state.quantityOf(state.dish!.id) > 0,
+    );
+    final total = formatPrice(state.totalKopecks);
     return DecoratedBox(
       decoration: BoxDecoration(
         color: ColorName.white,
@@ -327,8 +331,8 @@ class _AddToCartBar extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: AppButton.primary(
-                  text: 'Додати · ${formatPrice(state.totalKopecks)}',
-                  onPressed: () => _add(context),
+                  text: inCart ? 'Оновити · $total' : 'Додати · $total',
+                  onPressed: () => _save(context, inCart: inCart),
                 ),
               ),
             ],
