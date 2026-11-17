@@ -6,6 +6,8 @@ import '../../core/storage/app_prefs.dart';
 import '../../core/ui/placeholder_page.dart';
 import '../../features/auth/presentation/code/code_page.dart';
 import '../../features/auth/presentation/phone/phone_page.dart';
+import '../../features/legal/domain/entities/legal_document.dart';
+import '../../features/legal/presentation/legal_page.dart';
 import '../../features/menu/presentation/home/home_page.dart';
 import '../../features/onboarding/presentation/onboarding_page.dart';
 import '../../features/profile/presentation/profile/profile_page.dart';
@@ -113,6 +115,15 @@ GoRouter createRouter({
             title: 'Мій QR',
             note: 'Немає активних замовлень',
           ),
+        ),
+      ),
+      GoRoute(
+        path: Routes.legalPattern,
+        builder: (_, state) => LegalPage(
+          type:
+              LegalDocumentType.values
+                  .asNameMap()[state.pathParameters['type']] ??
+              LegalDocumentType.terms,
         ),
       ),
       GoRoute(
