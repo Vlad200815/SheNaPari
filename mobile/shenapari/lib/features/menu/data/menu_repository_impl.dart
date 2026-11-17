@@ -32,6 +32,10 @@ class MenuRepositoryImpl implements MenuRepository {
   );
 
   @override
+  Future<Result<Dish>> getDish(int id) =>
+      apiCall(() => _api.getDish(id), (dto) => dto.toEntity(baseUrl: _baseUrl));
+
+  @override
   Future<Result<BreakSlot?>> getNextBreak() =>
       apiCallNullable(_api.getNextBreak, (dto) => dto.toEntity());
 }

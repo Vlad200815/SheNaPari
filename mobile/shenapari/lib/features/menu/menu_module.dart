@@ -5,6 +5,8 @@ import 'data/menu_api.dart';
 import 'data/menu_repository_impl.dart';
 import 'domain/menu_repository.dart';
 import 'domain/usecases/get_menu_use_case.dart';
+import 'domain/entities/dish.dart';
+import 'presentation/dish/dish_cubit.dart';
 import 'presentation/home/home_cubit.dart';
 
 void registerMenu(GetIt sl) {
@@ -14,5 +16,8 @@ void registerMenu(GetIt sl) {
       () => MenuRepositoryImpl(sl(), baseUrl: sl<Dio>().options.baseUrl),
     )
     ..registerFactory(() => GetMenuUseCase(sl()))
-    ..registerFactory(() => HomeCubit(sl(), sl()));
+    ..registerFactory(() => HomeCubit(sl(), sl()))
+    ..registerFactoryParam<DishCubit, int, Dish?>(
+      (id, initial) => DishCubit(sl(), dishId: id, initial: initial),
+    );
 }

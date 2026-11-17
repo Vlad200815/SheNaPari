@@ -6,8 +6,11 @@ import '../../core/storage/app_prefs.dart';
 import '../../core/ui/placeholder_page.dart';
 import '../../features/auth/presentation/code/code_page.dart';
 import '../../features/auth/presentation/phone/phone_page.dart';
+import '../../features/cart/presentation/cart_page.dart';
 import '../../features/legal/domain/entities/legal_document.dart';
 import '../../features/legal/presentation/legal_page.dart';
+import '../../features/menu/domain/entities/dish.dart';
+import '../../features/menu/presentation/dish/dish_page.dart';
 import '../../features/menu/presentation/home/home_page.dart';
 import '../../features/onboarding/presentation/onboarding_page.dart';
 import '../../features/profile/presentation/profile/profile_page.dart';
@@ -75,13 +78,7 @@ GoRouter createRouter({
           ),
           StatefulShellBranch(
             routes: [
-              GoRoute(
-                path: Routes.cart,
-                builder: (_, _) => const PlaceholderPage(
-                  title: 'Кошик',
-                  note: 'Кошик з’явиться на наступному кроці',
-                ),
-              ),
+              GoRoute(path: Routes.cart, builder: (_, _) => const CartPage()),
             ],
           ),
           StatefulShellBranch(
@@ -124,6 +121,22 @@ GoRouter createRouter({
               LegalDocumentType.values
                   .asNameMap()[state.pathParameters['type']] ??
               LegalDocumentType.terms,
+        ),
+      ),
+      GoRoute(
+        path: Routes.dishPattern,
+        builder: (_, state) => DishPage(
+          dishId: int.tryParse(state.pathParameters['id'] ?? '') ?? 0,
+          // The menu passes the dish it has; after a restart it is null
+          // and the screen loads the dish by id.
+          initial: state.extra is Dish ? state.extra! as Dish : null,
+        ),
+      ),
+      GoRoute(
+        path: Routes.checkout,
+        builder: (_, _) => const PlaceholderPage(
+          title: 'Оформлення',
+          note: 'Вибір перерви й оплата — на наступному кроці',
         ),
       ),
       GoRoute(
