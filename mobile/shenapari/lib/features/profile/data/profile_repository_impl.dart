@@ -18,4 +18,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
     () => _api.updateMe(UpdateMeDto(name: name)),
     (dto) => dto.toEntity(),
   );
+
+  @override
+  Future<Result<void>> deleteAccount() => apiCallVoid(_api.deleteMe);
 }
