@@ -13,4 +13,12 @@ abstract interface class OrdersRepository {
     required int? breakSlotId,
     required PaymentProvider provider,
   });
+
+  /// The customer's orders, newest first.
+  Future<Result<List<Order>>> getMyOrders();
+
+  Future<Result<Order>> getOrder(String id);
+
+  /// Until cooking starts; later `order.cannot_cancel` (409).
+  Future<Result<Order>> cancel(String id);
 }

@@ -15,6 +15,8 @@ import 'package:shenapari/features/cart/presentation/cart_cubit.dart';
 import 'package:shenapari/features/auth/domain/usecases/sign_out_use_case.dart';
 import 'package:shenapari/features/auth/presentation/widgets/code_field.dart';
 import 'package:shenapari/features/menu/domain/menu_repository.dart';
+import 'package:shenapari/features/orders/domain/entities/order.dart';
+import 'package:shenapari/features/orders/domain/order_events.dart';
 import 'package:shenapari/features/orders/domain/orders_repository.dart';
 import 'package:shenapari/features/onboarding/presentation/onboarding_page.dart';
 import 'package:shenapari/features/profile/domain/profile_repository.dart';
@@ -30,6 +32,7 @@ const _nameTitle = 'Як вас звати?';
 late FakeAuthRepository _auth;
 late FakeProfileRepository _profile;
 late FakeOrdersRepository _orders;
+late FakeOrderEvents _orderEvents;
 
 /// Starts the whole app the way bootstrap() does, with fake storage and
 /// fake repositories instead of the network.
@@ -56,7 +59,9 @@ Future<void> _pumpApp(
     ..unregister<MenuRepository>()
     ..registerSingleton<MenuRepository>(FakeMenuRepository())
     ..unregister<OrdersRepository>()
-    ..registerSingleton<OrdersRepository>(_orders = FakeOrdersRepository());
+    ..registerSingleton<OrdersRepository>(_orders = FakeOrdersRepository())
+    ..unregister<OrderEvents>()
+    ..registerSingleton<OrderEvents>(_orderEvents = FakeOrderEvents());
 
   await tester.pumpWidget(
     App(
@@ -272,9 +277,22 @@ void main() {
     expect(_orders.placed.single.items.single.quantity, 1);
     expect(sl<CartCubit>().state.isEmpty, isTrue);
 
-    await _tap(tester, 'До меню');
-    expect(find.text('Замовлення №7 оплачено'), findsNothing);
-    expect(find.text('Чізбургер'), findsOneWidget, reason: 'back on the menu');
+    await _tap(tester, 'Відстежити замовлення');
+    expect(find.text('Замовлення №7'), findsOneWidget);
+    expect(find.text('Готується'), findsOneWidget, reason: 'a step ahead');
+
+    // The cook marks it ready; SignalR says so; the QR appears.
+    _orders.kitchen('order-7', OrderStatus.ready, pickupToken: 'token-7');
+    _orderEvents.changed('order-7');
+    await tester.pumpAndSettle();
+    expect(find.text('Покажи цей код на видачі'), findsOneWidget);
+    expect(find.text('Скасувати замовлення'), findsNothing);
+
+    // Back lands on the orders tab, where it is listed as active.
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.text('Активні'), findsOneWidget);
+    expect(find.text('Готово — забирай'), findsOneWidget);
   });
 
   group('delete account', () {

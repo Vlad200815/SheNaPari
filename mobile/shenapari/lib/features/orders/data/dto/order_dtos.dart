@@ -35,8 +35,7 @@ class CreateOrderItemDto {
   Map<String, dynamic> toJson() => _$CreateOrderItemDtoToJson(this);
 }
 
-/// An order as the client sees it (backend `OrderDto`). The status history
-/// and the pickup token are read in the order-tracking step.
+/// An order as the client sees it (backend `OrderDto`).
 @JsonSerializable(createToJson: false)
 class OrderDto {
   const OrderDto({
@@ -48,6 +47,9 @@ class OrderDto {
     required this.items,
     this.breakSlot,
     this.estimatedReadyAt,
+    this.readyAt,
+    this.history = const [],
+    this.pickupToken,
   });
 
   factory OrderDto.fromJson(Map<String, dynamic> json) =>
@@ -61,6 +63,11 @@ class OrderDto {
   final List<OrderItemDto> items;
   final BreakSlotDto? breakSlot;
   final DateTime? estimatedReadyAt;
+  final DateTime? readyAt;
+  final List<OrderStatusChangeDto> history;
+
+  /// Only while the order is ready: what the QR at pickup encodes.
+  final String? pickupToken;
 
   Order toEntity() => Order(
     id: id,
@@ -71,6 +78,9 @@ class OrderDto {
     items: [for (final item in items) item.toEntity()],
     breakSlot: breakSlot?.toEntity(),
     estimatedReadyAt: estimatedReadyAt?.toLocal(),
+    readyAt: readyAt?.toLocal(),
+    history: [for (final change in history) change.toEntity()],
+    pickupToken: pickupToken,
   );
 
   /// `PickedUp` → [OrderStatus.pickedUp]; anything new → `unknown`.
@@ -104,6 +114,28 @@ class OrderItemDto {
     name: name,
     quantity: quantity,
     unitPriceKopecks: toKopecks(unitPrice),
+  );
+}
+
+@JsonSerializable(createToJson: false)
+class OrderStatusChangeDto {
+  const OrderStatusChangeDto({
+    required this.status,
+    required this.at,
+    this.reason,
+  });
+
+  factory OrderStatusChangeDto.fromJson(Map<String, dynamic> json) =>
+      _$OrderStatusChangeDtoFromJson(json);
+
+  final String status;
+  final DateTime at;
+  final String? reason;
+
+  OrderStatusChange toEntity() => OrderStatusChange(
+    status: OrderDto.parseStatus(status),
+    at: at.toLocal(),
+    reason: reason,
   );
 }
 
