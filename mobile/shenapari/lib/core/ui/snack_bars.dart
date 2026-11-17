@@ -9,35 +9,64 @@ import 'app_text.dart';
 /// A soft card instead of a solid red bar: pale red background, thin red
 /// border and an icon, so the error is clear without shouting. The text is
 /// dark: red text on a pale background would fail the 4.5:1 contrast check.
-void showFailureSnackBar(BuildContext context, Failure failure) {
+void showFailureSnackBar(BuildContext context, Failure failure) => _show(
+  context,
+  _MessageCard(
+    message: failure.message,
+    icon: Icons.error_outline,
+    accent: ColorName.red,
+    background: ColorName.redLight,
+  ),
+);
+
+/// A neutral note in the same style, e.g. "copied to the clipboard".
+void showInfoSnackBar(BuildContext context, String message) => _show(
+  context,
+  _MessageCard(
+    message: message,
+    icon: Icons.info_outline,
+    accent: ColorName.primary500,
+    background: ColorName.primary100,
+  ),
+);
+
+void _show(BuildContext context, Widget card) {
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
     ..showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
-        // The card below draws everything; the bar itself stays invisible.
+        // The card draws everything; the bar itself stays invisible.
         backgroundColor: Colors.transparent,
         elevation: 0,
         padding: EdgeInsets.zero,
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         duration: const Duration(seconds: 4),
-        content: _ErrorCard(message: failure.message),
+        content: card,
       ),
     );
 }
 
-class _ErrorCard extends StatelessWidget {
-  const _ErrorCard({required this.message});
+class _MessageCard extends StatelessWidget {
+  const _MessageCard({
+    required this.message,
+    required this.icon,
+    required this.accent,
+    required this.background,
+  });
 
   final String message;
+  final IconData icon;
+  final Color accent;
+  final Color background;
 
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: ColorName.redLight,
+        color: background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: ColorName.red.withValues(alpha: 0.25)),
+        border: Border.all(color: accent.withValues(alpha: 0.25)),
         boxShadow: [
           BoxShadow(
             color: ColorName.black.withValues(alpha: 0.08),
@@ -50,7 +79,7 @@ class _ErrorCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            const Icon(Icons.error_outline, color: ColorName.red, size: 22),
+            Icon(icon, color: accent, size: 22),
             const SizedBox(width: 12),
             Expanded(
               child: Text(

@@ -11,8 +11,11 @@ String? appRedirect({
   final target = switch (status) {
     SessionStatus.unknown => Routes.splash,
     SessionStatus.unauthenticated when !onboardingSeen => Routes.onboarding,
+    // Sign-in screens and the legal documents linked from them.
     SessionStatus.unauthenticated =>
-      location.startsWith('/auth/') ? location : Routes.phone,
+      location.startsWith('/auth/') || location.startsWith('/legal/')
+          ? location
+          : Routes.phone,
     SessionStatus.needsProfile => Routes.registrationProfile,
     SessionStatus.authenticated =>
       _entryScreens.contains(location) ? Routes.home : location,
