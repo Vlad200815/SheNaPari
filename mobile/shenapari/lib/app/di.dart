@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../core/core_module.dart';
 import '../core/storage/token_storage.dart';
 import '../features/auth/auth_module.dart';
+import '../features/cart/cart_module.dart';
 import '../features/legal/legal_module.dart';
 import '../features/menu/menu_module.dart';
 import '../features/profile/profile_module.dart';
@@ -25,4 +26,5 @@ void setupDi({required SharedPreferences prefs, TokenStorage? tokenStorage}) {
   registerProfile(sl);
   registerMenu(sl);
   registerLegal(sl, prefs: prefs);
+  registerCart(sl, prefs: prefs);
 }

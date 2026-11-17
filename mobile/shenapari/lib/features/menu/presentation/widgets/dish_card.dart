@@ -7,12 +7,26 @@ import '../../../../core/ui/format_price.dart';
 import '../../../../gen/colors.gen.dart';
 import '../../domain/entities/dish.dart';
 
-/// A dish in the menu grid: photo, name, weight and price.
+/// A dish in the menu grid: photo, name, weight, price and a quick «+».
 class DishCard extends StatelessWidget {
-  const DishCard({super.key, required this.dish, this.onTap});
+  const DishCard({
+    super.key,
+    required this.dish,
+    this.onTap,
+    this.onAdd,
+    this.inCart = 0,
+  });
 
   final Dish dish;
+
+  /// Opens the dish details.
   final VoidCallback? onTap;
+
+  /// Adds one portion to the cart.
+  final VoidCallback? onAdd;
+
+  /// Portions already in the cart; shown on the button instead of «+».
+  final int inCart;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +63,18 @@ class DishCard extends StatelessWidget {
               ),
               Text('${dish.weightG} г', style: AppText.small()),
               const SizedBox(height: 4),
-              Text(formatPrice(dish.priceKopecks), style: AppText.title()),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      formatPrice(dish.priceKopecks),
+                      style: AppText.title(),
+                    ),
+                  ),
+                  if (onAdd != null)
+                    _AddButton(dish: dish, inCart: inCart, onTap: onAdd!),
+                ],
+              ),
             ],
           ),
         ),
@@ -61,15 +86,16 @@ class DishCard extends StatelessWidget {
 /// A dish photo with a neutral stand-in while loading, on error or when the
 /// dish has no photo at all.
 class DishImage extends StatelessWidget {
-  const DishImage({super.key, required this.url});
+  const DishImage({super.key, required this.url, this.radius = 8});
 
   final String? url;
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
     final url = this.url;
     return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(radius),
       child: url == null
           ? const _NoImage()
           : CachedNetworkImage(
@@ -114,6 +140,58 @@ class _PopularBadge extends StatelessWidget {
           style: AppText.small(
             color: ColorName.typography900,
             fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A yellow circle with «+», or with the count once the dish is in the cart.
+class _AddButton extends StatelessWidget {
+  const _AddButton({
+    required this.dish,
+    required this.inCart,
+    required this.onTap,
+  });
+
+  final Dish dish;
+  final int inCart;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    // container: its own node, not merged into the card's big tap target.
+    return Semantics(
+      container: true,
+      button: true,
+      label: inCart == 0
+          ? 'Додати ${dish.name} в кошик'
+          : 'Додати ще, в кошику $inCart',
+      excludeSemantics: true,
+      child: Material(
+        color: ColorName.primary400,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onTap,
+          child: SizedBox.square(
+            dimension: 36,
+            child: Center(
+              child: inCart == 0
+                  ? const Icon(
+                      Icons.add_rounded,
+                      color: ColorName.black,
+                      size: 22,
+                    )
+                  : Text(
+                      '$inCart',
+                      style: AppText.small(
+                        color: ColorName.black,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+            ),
           ),
         ),
       ),
