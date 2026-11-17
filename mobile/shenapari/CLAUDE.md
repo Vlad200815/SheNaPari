@@ -1,38 +1,55 @@
-# Shenapari — Flutter Mobile App
+# ШеНаПарі — Flutter-застосунок
 
-This is the user-facing Flutter mobile app (iOS + Android) for the Shenapari B2B SaaS platform.
+Клієнт для замовлення їжі в університетській їдальні (iOS + Android). Бекенд — `../../backend` (ASP.NET Core), опис API й тестові акаунти в `../../backend/README.md`.
 
-## Architecture
+## Команди
 
-Clean Architecture with feature-first vertical slices + BLoC (MVVM base classes).
-
-```
-lib/src/
-  app/            — config, constants, localization, navigation (go_router routes)
-  core/           — base classes (BasePage/BaseViewModel/BaseView), DI, network, session, widgets
-  features/       — vertical slices by business capability:
-    auth/         — phone OTP login
-    menu/         — product catalog browsing
-    cart/         — shopping cart
-    ordering/     — order placement, details, rating
-    profile/      — user profile, registration
-    info/         — onboarding, legal, notifications, support
-    root/         — root shell, tab navigation
+```bash
+flutter pub get
+dart run build_runner build -d          # freezed, json_serializable, retrofit, flutter_gen
+flutter analyze
+flutter test
+flutter run --dart-define-from-file=env/dev.json             # Android-емулятор
+flutter run --dart-define-from-file=env/ios_simulator.json   # iOS-симулятор
+flutter run --dart-define=API_BASE_URL=http://<IP Mac>:5041  # справжній телефон у тій самій Wi-Fi
 ```
 
-Each feature follows: `data/` (models, repos impl, remote sources) → `domain/` (entities, repo interfaces, use cases) → `presentation/` (pages, view models, widgets) → `di/` (feature-level DI registration).
+## Архітектура
 
-## Key conventions
+Clean Architecture + Cubit/Bloc + Feature-First. Залежності: `presentation → domain ← data`.
 
-- Every screen: `BasePage<VM, State, Event, Action>` — typed ViewModel lifecycle
-- State management: `BaseViewModel` extends BLoC; one ViewModel per screen
-- DI: `get_it` — each feature has its own locator (e.g. `AuthLocator`), wired in `Di.setup()` in `core/di/di.dart`
-- Navigation: `go_router` — routes in `lib/src/app/navigation.dart`
-- Networking: Dio + Retrofit + 3-interceptor stack (DeviceHeaders → Auth → Retry)
-- Tokens: `flutter_secure_storage` (Keystore/Keychain)
-- Code gen: `build_runner` (freezed, json_serializable, retrofit_generator, flutter_gen)
-- Localization: `easy_localization` (`assets/translations/en.json` / `uk.json`)
+```
+lib/
+  main.dart            — лише bootstrap()
+  app/                 — bootstrap, DI (di.dart), env, router (redirect за статусом сесії), splash
+  core/                — технічне, без бізнес-логіки:
+    result/            — sealed Result<T> (Ok/Err) і Failure
+    network/           — Dio, AuthInterceptor, ApiEnvelope, apiCall
+    session/           — SessionRepository (єдине джерело правди про вхід), SessionCubit
+    storage/           — TokenStorage (secure storage), AppPrefs (прапорці)
+    ui/                — тема, AppText, AppButton, снекбари
+  features/<feature>/
+    data/              — Retrofit API, *Dto (з toEntity()), *RepositoryImpl
+    domain/            — entities, інтерфейс репозиторію, use cases
+    presentation/<екран>/ — *_cubit.dart, *_state.dart, *_page.dart, widgets/
+    <feature>_module.dart — реєстрація в get_it
+```
 
-## TDD
+## Правила коду
 
-Tests first (Red → Green → Refactor). Use `bloc_test` for ViewModel tests, `mocktail` for mocks.
+- **Кожна відповідь API — конверт** `{succeeded, message, data, errors:[коди]}` з правдивим HTTP-статусом. Розпаковує лише `apiCall` / `apiCallVoid` у `core/network`. Тип `Failure` визначається за HTTP-статусом (400 Validation, 401 Unauthorized, 403 Forbidden, 404 NotFound, 409 Conflict, інше Server). `failure.message` — готовий текст українською, `failure.code` — код на кшталт `order.canteen_paused` (усі в `backend/.../Common/Errors.cs`). Рішення на екрані — за типом або кодом, не за текстом.
+- Репозиторії повертають `Result<T>`, без винятків і без try/catch усередині.
+- Енуми з API приходять рядками; у кожного енума є `unknown`, парсимо через `values.asNameMap()[s] ?? unknown`.
+- domain — чистий Dart: без Flutter, Dio, `json_annotation`. DTO (суфікс `Dto`) не виходять за межі `data/`.
+- Use case лише там, де є кілька кроків або логіка клієнта. Правила, які перевіряє сервер, не дублюємо.
+- Cubit за замовчуванням, Bloc для debounce і стрімів (SignalR). Стан — `freezed` з полем `status`. Cubit не має полів, що дублюють `state`, і не знає про `BuildContext`.
+- Після входу/виходу ніхто не викликає `context.go` вручну: `SessionRepository` змінює статус, роутер робить redirect сам.
+- Refresh токена — лише в `AuthInterceptor` (один спільний refresh на паралельні 401).
+- DI: `get_it` (`sl`), модуль на фічу; Cubit — `registerFactory`. `sl` викликаємо лише в модулях і `BlocProvider`.
+- Код і коментарі англійською, тексти для користувача українською.
+
+## Тести
+
+Тест спершу, потім код. `bloc_test` для Cubit, `mocktail` для моків. Тести дзеркалять `lib/`. Мінімум: Cubit (успіх і помилка), use case, `toEntity()` з перетвореннями.
+
+Старі екрани (BasePage) видалено з `lib/src`; їхній вигляд можна підглянути в історії: `git show 87bf227:mobile/shenapari/lib/src/<шлях>`.
