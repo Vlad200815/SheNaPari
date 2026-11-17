@@ -15,6 +15,7 @@ import 'package:shenapari/features/cart/presentation/cart_cubit.dart';
 import 'package:shenapari/features/auth/domain/usecases/sign_out_use_case.dart';
 import 'package:shenapari/features/auth/presentation/widgets/code_field.dart';
 import 'package:shenapari/features/menu/domain/menu_repository.dart';
+import 'package:shenapari/features/orders/domain/orders_repository.dart';
 import 'package:shenapari/features/onboarding/presentation/onboarding_page.dart';
 import 'package:shenapari/features/profile/domain/profile_repository.dart';
 
@@ -28,6 +29,7 @@ const _nameTitle = 'Як вас звати?';
 
 late FakeAuthRepository _auth;
 late FakeProfileRepository _profile;
+late FakeOrdersRepository _orders;
 
 /// Starts the whole app the way bootstrap() does, with fake storage and
 /// fake repositories instead of the network.
@@ -52,7 +54,9 @@ Future<void> _pumpApp(
     ..unregister<ProfileRepository>()
     ..registerSingleton<ProfileRepository>(_profile)
     ..unregister<MenuRepository>()
-    ..registerSingleton<MenuRepository>(FakeMenuRepository());
+    ..registerSingleton<MenuRepository>(FakeMenuRepository())
+    ..unregister<OrdersRepository>()
+    ..registerSingleton<OrdersRepository>(_orders = FakeOrdersRepository());
 
   await tester.pumpWidget(
     App(
@@ -238,6 +242,38 @@ void main() {
     await _tap(tester, 'Вийти');
     expect(sl<CartCubit>().state.isEmpty, isTrue);
     semantics.dispose();
+  });
+
+  testWidgets('cart → checkout → paid: the cart is emptied', (tester) async {
+    await _pumpApp(
+      tester,
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+    // The card is below the 600 px test screen: scroll to it first.
+    await tester.ensureVisible(find.text('Чізбургер'));
+    await tester.pumpAndSettle();
+    await _tap(tester, 'Чізбургер');
+    await _tap(tester, 'Додати · 85 ₴');
+    await tester.tap(find.byTooltip('Кошик'));
+    await tester.pumpAndSettle();
+    // Let the «Додано в кошик» snack bar go away: it covers the button.
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+
+    await _tap(tester, 'Оформити замовлення');
+    // No breaks left today in the fake: «as soon as possible» is chosen.
+    expect(find.text('Якнайшвидше'), findsOneWidget);
+    await _tap(tester, 'Оплатити · 85 ₴');
+
+    expect(find.text('Замовлення №7 оплачено'), findsOneWidget);
+    expect(_orders.placed.single.breakSlotId, isNull);
+    expect(_orders.placed.single.items.single.quantity, 1);
+    expect(sl<CartCubit>().state.isEmpty, isTrue);
+
+    await _tap(tester, 'До меню');
+    expect(find.text('Замовлення №7 оплачено'), findsNothing);
+    expect(find.text('Чізбургер'), findsOneWidget, reason: 'back on the menu');
   });
 
   group('delete account', () {
