@@ -44,6 +44,9 @@ class $AssetsImagesGen {
   /// Directory path: assets/images/onboarding
   $AssetsImagesOnboardingGen get onboarding => const $AssetsImagesOnboardingGen();
 
+  /// Directory path: assets/images/splash
+  $AssetsImagesSplashGen get splash => const $AssetsImagesSplashGen();
+
   /// File path: assets/images/star-rating.riv
   String get starRating => 'assets/images/star-rating.riv';
 
@@ -151,6 +154,22 @@ class $AssetsImagesOnboardingGen {
 
   /// List of all assets
   List<dynamic> get values => [background, orderInSeconds, realtimeNotifications, welcome];
+}
+
+class $AssetsImagesSplashGen {
+  const $AssetsImagesSplashGen();
+
+  /// File path: assets/images/splash/dark_background.png
+  AssetGenImage get darkBackground => const AssetGenImage('assets/images/splash/dark_background.png');
+
+  /// File path: assets/images/splash/light_background.png
+  AssetGenImage get lightBackground => const AssetGenImage('assets/images/splash/light_background.png');
+
+  /// File path: assets/images/splash/logo.png
+  AssetGenImage get logo => const AssetGenImage('assets/images/splash/logo.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [darkBackground, lightBackground, logo];
 }
 
 class $AssetsLegalPrivacyPolicyGen {
