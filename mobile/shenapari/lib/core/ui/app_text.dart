@@ -15,6 +15,26 @@ abstract final class AppText {
         color: color,
       );
 
+  /// 20 px semi-bold: section titles, prices on cards.
+  static TextStyle title({Color color = ColorName.typography900}) =>
+      GoogleFonts.poppins(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        height: 1.3,
+        color: color,
+      );
+
+  /// 14 px regular: secondary details (weight, kcal).
+  static TextStyle small({
+    Color color = ColorName.typography500,
+    FontWeight fontWeight = FontWeight.w400,
+  }) => GoogleFonts.poppins(
+    fontSize: 14,
+    fontWeight: fontWeight,
+    height: 1.4,
+    color: color,
+  );
+
   /// 16 px medium: input text, emphasised body.
   static TextStyle medium({Color color = ColorName.typography900}) =>
       _body(FontWeight.w500, color);
