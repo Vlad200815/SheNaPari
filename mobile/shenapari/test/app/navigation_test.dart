@@ -111,7 +111,7 @@ void main() {
     await _tap(tester, 'Продовжити');
 
     expect(_profile.savedName, 'Влад');
-    expect(find.text('Головна'), findsWidgets);
+    expect(find.byTooltip('Головна'), findsOneWidget);
   });
 
   testWidgets('splash is replaced by onboarding at once, without a slide', (
@@ -132,7 +132,7 @@ void main() {
     await _enterCode(tester, FakeAuthRepository.validCode);
 
     expect(find.text(_nameTitle), findsNothing);
-    expect(find.text('Головна'), findsWidgets);
+    expect(find.byTooltip('Головна'), findsOneWidget);
   });
 
   testWidgets('wrong code shows the server message and stays', (tester) async {
@@ -164,7 +164,7 @@ void main() {
       stored: const StoredSession(tokens: _tokens, needsProfile: false),
     );
 
-    expect(find.text('Головна'), findsWidgets);
+    expect(find.byTooltip('Головна'), findsOneWidget);
     expect(find.text(_phoneTitle), findsNothing);
     expect(find.text('Чізбургер'), findsOneWidget, reason: 'menu is shown');
     expect(find.text('85 ₴'), findsOneWidget);
@@ -189,7 +189,8 @@ void main() {
       stored: const StoredSession(tokens: _tokens, needsProfile: false),
     );
 
-    await _tap(tester, 'Профіль');
+    await tester.tap(find.byTooltip('Профіль'));
+    await tester.pumpAndSettle();
     await _tap(tester, 'Вийти');
 
     expect(find.text(_phoneTitle), findsOneWidget);
