@@ -78,3 +78,8 @@ public static class OrderErrors
     public static readonly Error EtaRequired = new("order.eta_required", "Щоб прийняти замовлення, вкажіть час готовності", 400);
     public static readonly Error NotReady = new("order.not_ready", "Замовлення ще не готове", 409);
 }
+
+public static class LegalErrors
+{
+    public static readonly Error NotFound = new("legal.not_found", "Документ не знайдено", 404);
+}
