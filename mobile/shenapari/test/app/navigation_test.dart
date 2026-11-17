@@ -12,6 +12,7 @@ import 'package:shenapari/core/storage/token_storage.dart';
 import 'package:shenapari/features/auth/domain/auth_repository.dart';
 import 'package:shenapari/features/auth/domain/usecases/sign_out_use_case.dart';
 import 'package:shenapari/features/auth/presentation/widgets/code_field.dart';
+import 'package:shenapari/features/menu/domain/menu_repository.dart';
 import 'package:shenapari/features/onboarding/presentation/onboarding_page.dart';
 import 'package:shenapari/features/profile/domain/profile_repository.dart';
 
@@ -47,7 +48,9 @@ Future<void> _pumpApp(
     ..unregister<AuthRepository>()
     ..registerSingleton<AuthRepository>(_auth)
     ..unregister<ProfileRepository>()
-    ..registerSingleton<ProfileRepository>(_profile);
+    ..registerSingleton<ProfileRepository>(_profile)
+    ..unregister<MenuRepository>()
+    ..registerSingleton<MenuRepository>(FakeMenuRepository());
 
   await tester.pumpWidget(
     App(
@@ -163,6 +166,8 @@ void main() {
 
     expect(find.text('Головна'), findsWidgets);
     expect(find.text(_phoneTitle), findsNothing);
+    expect(find.text('Чізбургер'), findsOneWidget, reason: 'menu is shown');
+    expect(find.text('85 ₴'), findsOneWidget);
   });
 
   testWidgets('unfinished profile reopens the name step', (tester) async {
