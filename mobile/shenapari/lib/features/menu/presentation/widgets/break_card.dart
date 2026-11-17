@@ -93,13 +93,9 @@ class _BreakCardState extends State<BreakCard> {
       container: true,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          // Brand yellow; the text on it is dark, since white on yellow is
-          // only 1.7:1 and hard to read.
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [ColorName.primary300, ColorName.primary400],
-          ),
+          // The same solid yellow as the selected filter chip, with black
+          // text on it (white on yellow would be unreadable).
+          color: ColorName.primary400,
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
@@ -130,15 +126,16 @@ class _BreakCardState extends State<BreakCard> {
                             children: [
                               Text(
                                 title,
-                                style: AppText.title().copyWith(
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                style: AppText.title(color: ColorName.black)
+                                    .copyWith(
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                               ),
                               Text(
                                 subtitle,
                                 style: AppText.small(
-                                  color: ColorName.typography900,
+                                  color: ColorName.black,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -210,7 +207,7 @@ class _IconCircle extends StatelessWidget {
         shape: BoxShape.circle,
         color: ColorName.white.withValues(alpha: 0.5),
       ),
-      child: Icon(icon, color: ColorName.typography900, size: 24),
+      child: Icon(icon, color: ColorName.black, size: 24),
     );
   }
 }
@@ -236,7 +233,7 @@ class _ProgressBar extends StatelessWidget {
               FractionallySizedBox(
                 alignment: Alignment.centerLeft,
                 widthFactor: value,
-                child: const ColoredBox(color: ColorName.typography900),
+                child: const ColoredBox(color: ColorName.black),
               ),
             ],
           ),
@@ -257,7 +254,7 @@ class _Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const color = ColorName.typography900;
+    const color = ColorName.black;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
