@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../core/session/session_cubit.dart';
 import '../core/ui/app_theme.dart';
+import '../features/cart/presentation/cart_cubit.dart';
 import 'di.dart';
 
 class App extends StatelessWidget {
@@ -13,8 +14,12 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<SessionCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sl<SessionCubit>()),
+        // The shared cart: a singleton, so `.value` keeps it alive.
+        BlocProvider.value(value: sl<CartCubit>()),
+      ],
       child: MaterialApp.router(
         title: 'ШеНаПарі',
         theme: appTheme,

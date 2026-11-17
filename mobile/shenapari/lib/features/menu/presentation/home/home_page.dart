@@ -9,6 +9,8 @@ import '../../../../core/ui/app_text.dart';
 import '../../../../core/ui/app_theme.dart';
 import '../../../../core/ui/snack_bars.dart';
 import '../../../../gen/colors.gen.dart';
+import '../../../cart/domain/entities/cart.dart';
+import '../../../cart/presentation/cart_cubit.dart';
 import '../widgets/break_card.dart';
 import '../widgets/dish_card.dart';
 import '../widgets/filter_chips.dart';
@@ -100,7 +102,19 @@ class _MenuView extends StatelessWidget {
               sliver: SliverGrid.builder(
                 gridDelegate: _gridDelegate,
                 itemCount: dishes.length,
-                itemBuilder: (context, index) => DishCard(dish: dishes[index]),
+                itemBuilder: (context, index) {
+                  final dish = dishes[index];
+                  return BlocSelector<CartCubit, Cart, int>(
+                    selector: (cart) => cart.quantityOf(dish.id),
+                    builder: (context, inCart) => DishCard(
+                      dish: dish,
+                      inCart: inCart,
+                      onTap: () =>
+                          context.push(Routes.dish(dish.id), extra: dish),
+                      onAdd: () => context.read<CartCubit>().add(dish),
+                    ),
+                  );
+                },
               ),
             ),
         ],

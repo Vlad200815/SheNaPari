@@ -103,5 +103,16 @@ class FakeMenuRepository implements MenuRepository {
   ]);
 
   @override
+  Future<Result<Dish>> getDish(int id) async {
+    final dishes = (await getDishes() as Ok<List<Dish>>).value;
+    for (final dish in dishes) {
+      if (dish.id == id) return Ok(dish);
+    }
+    return const Err(
+      NotFoundFailure('Страву не знайдено', code: 'menu.dish_not_found'),
+    );
+  }
+
+  @override
   Future<Result<BreakSlot?>> getNextBreak() async => const Ok(null);
 }
