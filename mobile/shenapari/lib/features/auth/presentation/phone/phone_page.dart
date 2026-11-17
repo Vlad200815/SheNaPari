@@ -92,9 +92,7 @@ class _TermsTextState extends State<_TermsText> {
 
   @override
   Widget build(BuildContext context) {
-    final link = AppText.regular(
-      color: ColorName.primary600,
-    ).copyWith(decoration: TextDecoration.underline);
+    final link = AppText.regular(color: ColorName.primary600);
     return Text.rich(
       TextSpan(
         style: AppText.regular(),
