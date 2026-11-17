@@ -7,7 +7,7 @@ import 'package:shenapari/core/session/session_repository_impl.dart';
 import 'package:shenapari/core/session/session_status.dart';
 import 'package:shenapari/core/storage/in_memory_token_storage.dart';
 import 'package:shenapari/features/auth/domain/auth_repository.dart';
-import 'package:shenapari/features/auth/domain/usecases/sign_out.dart';
+import 'package:shenapari/features/auth/domain/usecases/sign_out_use_case.dart';
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
 
@@ -30,7 +30,7 @@ void main() {
       () => auth.logout(refreshToken: 'r'),
     ).thenAnswer((_) async => const Ok(null));
 
-    await SignOut(auth, session)();
+    await SignOutUseCase(auth, session)();
 
     verify(() => auth.logout(refreshToken: 'r')).called(1);
     expect(session.status, SessionStatus.unauthenticated);
@@ -41,7 +41,7 @@ void main() {
       () => auth.logout(refreshToken: 'r'),
     ).thenAnswer((_) async => const Err(NetworkFailure()));
 
-    await SignOut(auth, session)();
+    await SignOutUseCase(auth, session)();
 
     expect(session.status, SessionStatus.unauthenticated);
     expect(session.tokens, isNull);

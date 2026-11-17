@@ -42,7 +42,7 @@ lib/
 - Репозиторії повертають `Result<T>`, без винятків і без try/catch усередині.
 - Енуми з API приходять рядками; у кожного енума є `unknown`, парсимо через `values.asNameMap()[s] ?? unknown`.
 - domain — чистий Dart: без Flutter, Dio, `json_annotation`. DTO (суфікс `Dto`) не виходять за межі `data/`.
-- Use case лише там, де є кілька кроків або логіка клієнта. Правила, які перевіряє сервер, не дублюємо.
+- Use case лише там, де є кілька кроків або логіка клієнта. Правила, які перевіряє сервер, не дублюємо. Клас і файл мають суфікс `UseCase` / `_use_case.dart` (`VerifyCodeUseCase`), метод — `call()`.
 - Cubit за замовчуванням, Bloc для debounce і стрімів (SignalR). Стан — `freezed` з полем `status`. Cubit не має полів, що дублюють `state`, і не знає про `BuildContext`.
 - Після входу/виходу ніхто не викликає `context.go` вручну: `SessionRepository` змінює статус, роутер робить redirect сам.
 - Refresh токена — лише в `AuthInterceptor` (один спільний refresh на паралельні 401).

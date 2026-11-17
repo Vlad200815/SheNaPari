@@ -8,7 +8,7 @@ import 'package:shenapari/core/session/session_status.dart';
 import 'package:shenapari/core/storage/in_memory_token_storage.dart';
 import 'package:shenapari/features/profile/domain/entities/user.dart';
 import 'package:shenapari/features/profile/domain/profile_repository.dart';
-import 'package:shenapari/features/profile/domain/usecases/complete_registration.dart';
+import 'package:shenapari/features/profile/domain/usecases/complete_registration_use_case.dart';
 
 class _MockProfileRepository extends Mock implements ProfileRepository {}
 
@@ -18,13 +18,13 @@ const _user = User(id: '1', role: UserRole.customer, name: 'Влад');
 void main() {
   late _MockProfileRepository profile;
   late SessionRepositoryImpl session;
-  late CompleteRegistration completeRegistration;
+  late CompleteRegistrationUseCase completeRegistration;
 
   setUp(() async {
     profile = _MockProfileRepository();
     session = SessionRepositoryImpl(InMemoryTokenStorage());
     await session.save(_tokens, isNewUser: true);
-    completeRegistration = CompleteRegistration(profile, session);
+    completeRegistration = CompleteRegistrationUseCase(profile, session);
   });
 
   tearDown(() => session.dispose());

@@ -4,8 +4,8 @@ import '../auth_repository.dart';
 /// Revokes the refresh token on the server and clears the local session.
 /// The session is cleared even when the request fails (no network): the
 /// user asked to sign out, and the token expires on the server anyway.
-class SignOut {
-  SignOut(this._auth, this._session);
+class SignOutUseCase {
+  SignOutUseCase(this._auth, this._session);
 
   final AuthRepository _auth;
   final SessionRepository _session;

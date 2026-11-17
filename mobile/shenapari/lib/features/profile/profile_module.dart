@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'data/profile_api.dart';
 import 'data/profile_repository_impl.dart';
 import 'domain/profile_repository.dart';
-import 'domain/usecases/complete_registration.dart';
+import 'domain/usecases/complete_registration_use_case.dart';
 import 'presentation/registration_profile/registration_cubit.dart';
 
 void registerProfile(GetIt sl) {
@@ -12,6 +12,6 @@ void registerProfile(GetIt sl) {
     ..registerLazySingleton<ProfileRepository>(
       () => ProfileRepositoryImpl(sl()),
     )
-    ..registerFactory(() => CompleteRegistration(sl(), sl()))
+    ..registerFactory(() => CompleteRegistrationUseCase(sl(), sl()))
     ..registerFactory(() => RegistrationCubit(sl()));
 }
