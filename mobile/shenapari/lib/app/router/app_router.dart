@@ -1,8 +1,9 @@
-import 'package:flutter/widgets.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/session/session_repository.dart';
 import '../../core/storage/app_prefs.dart';
+import '../../core/ui/placeholder_page.dart';
 import '../../features/auth/presentation/code/code_page.dart';
 import '../../features/auth/presentation/phone/phone_page.dart';
 import '../../features/menu/presentation/home/home_page.dart';
@@ -73,12 +74,53 @@ GoRouter createRouter({
           StatefulShellBranch(
             routes: [
               GoRoute(
+                path: Routes.cart,
+                builder: (_, _) => const PlaceholderPage(
+                  title: 'Кошик',
+                  note: 'Кошик з’явиться на наступному кроці',
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.orders,
+                builder: (_, _) => const PlaceholderPage(
+                  title: 'Замовлення',
+                  note: 'Історія замовлень з’явиться на кроці із замовленнями',
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: Routes.profile,
                 builder: (_, _) => ProfilePage(onSignOut: signOut),
               ),
             ],
           ),
         ],
+      ),
+      // Outside the shell: these open over the tab bar.
+      GoRoute(
+        path: Routes.myQr,
+        pageBuilder: (_, state) => MaterialPage(
+          key: state.pageKey,
+          fullscreenDialog: true,
+          child: const PlaceholderPage(
+            title: 'Мій QR',
+            note: 'Немає активних замовлень',
+          ),
+        ),
+      ),
+      GoRoute(
+        path: Routes.notifications,
+        builder: (_, _) => const PlaceholderPage(
+          title: 'Сповіщення',
+          note: 'Тут з’являться зміни статусу ваших замовлень',
+        ),
       ),
     ],
   );

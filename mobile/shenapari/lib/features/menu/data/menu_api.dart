@@ -18,4 +18,8 @@ abstract class MenuApi {
 
   @GET('/dishes')
   Future<ApiEnvelope<List<DishDto>>> getDishes();
+
+  /// `data` is null when no break is scheduled.
+  @GET('/breaks/next')
+  Future<ApiEnvelope<BreakSlotDto>> getNextBreak();
 }

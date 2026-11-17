@@ -76,9 +76,10 @@ class _Chip extends StatelessWidget {
         ),
         child: Text(
           label,
+          // White on primary400 is only 1.7:1, so the text stays dark.
           style: AppText.small(
-            color: selected ? ColorName.white : ColorName.typography900,
-            fontWeight: FontWeight.w600,
+            color: ColorName.typography900,
+            fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
           ),
         ),
       ),

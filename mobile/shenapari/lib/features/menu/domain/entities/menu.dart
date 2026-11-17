@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import 'break_slot.dart';
 import 'canteen.dart';
 import 'category.dart';
 import 'dish.dart';
@@ -10,6 +11,7 @@ class Menu extends Equatable {
     required this.canteen,
     required this.categories,
     required this.dishes,
+    this.nextBreak,
   });
 
   final Canteen canteen;
@@ -18,8 +20,11 @@ class Menu extends Equatable {
   final List<Category> categories;
   final List<Dish> dishes;
 
+  /// Null when no break is scheduled.
+  final BreakSlot? nextBreak;
+
   bool get hasPopular => dishes.any((dish) => dish.isPopular);
 
   @override
-  List<Object?> get props => [canteen, categories, dishes];
+  List<Object?> get props => [canteen, categories, dishes, nextBreak];
 }

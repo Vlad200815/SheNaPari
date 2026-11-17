@@ -11,5 +11,11 @@ abstract final class Routes {
       Uri(path: code, queryParameters: {'phone': phone}).toString();
   static const registrationProfile = '/registration-profile';
   static const home = '/home';
+  static const cart = '/cart';
+  static const orders = '/orders';
   static const profile = '/profile';
+
+  /// Pushed over the tabs: the QR of the active order for pickup.
+  static const myQr = '/my-qr';
+  static const notifications = '/notifications';
 }

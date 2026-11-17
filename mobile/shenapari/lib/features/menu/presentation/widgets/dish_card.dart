@@ -112,7 +112,7 @@ class _PopularBadge extends StatelessWidget {
         child: Text(
           'Хіт',
           style: AppText.small(
-            color: ColorName.white,
+            color: ColorName.typography900,
             fontWeight: FontWeight.w600,
           ),
         ),

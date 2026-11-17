@@ -1,5 +1,6 @@
 import '../../../core/network/api_call.dart';
 import '../../../core/result/result.dart';
+import '../domain/entities/break_slot.dart';
 import '../domain/entities/canteen.dart';
 import '../domain/entities/category.dart';
 import '../domain/entities/dish.dart';
@@ -29,4 +30,8 @@ class MenuRepositoryImpl implements MenuRepository {
     _api.getDishes,
     (dtos) => [for (final dto in dtos) dto.toEntity(baseUrl: _baseUrl)],
   );
+
+  @override
+  Future<Result<BreakSlot?>> getNextBreak() =>
+      apiCallNullable(_api.getNextBreak, (dto) => dto.toEntity());
 }
