@@ -39,8 +39,6 @@ dependencies:
   #  sheet: ^1.0.0
 
   # OTP code
-  pinput: ^6.0.2
-
   # Markdown
   flutter_markdown_plus: ^1.0.7
 
