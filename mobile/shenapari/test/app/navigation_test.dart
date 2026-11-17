@@ -216,26 +216,27 @@ void main() {
     // Buttons are found by their screen-reader labels.
     final semantics = tester.ensureSemantics();
 
-    // Quick «+» on the card: the button now shows 1.
+    // Quick «+» on the card: one portion in the cart, the card keeps «+».
     final add = find.bySemanticsLabel('Додати Чізбургер в кошик');
     await tester.ensureVisible(add);
     await tester.pumpAndSettle();
     await tester.tap(add);
     await tester.pumpAndSettle();
     expect(sl<CartCubit>().state.count, 1);
+    expect(add, findsOneWidget);
 
-    // The card opens the dish; two more portions from there.
+    // The dish screen starts from what is in the cart, not from 1 on top.
     await _tap(tester, 'Чізбургер');
-    expect(find.text('Додати · 85 ₴'), findsOneWidget);
+    expect(find.text('Оновити · 85 ₴'), findsOneWidget);
     await tester.tap(find.bySemanticsLabel('Більше'));
     await tester.pumpAndSettle();
-    await _tap(tester, 'Додати · 170 ₴');
-    expect(find.text('Додано в кошик'), findsOneWidget);
+    await _tap(tester, 'Оновити · 170 ₴');
+    expect(find.text('Кошик оновлено'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Кошик'));
     await tester.pumpAndSettle();
-    expect(find.text('255 ₴'), findsWidgets);
-    expect(find.text('Разом · 3 порції'), findsOneWidget);
+    expect(find.text('170 ₴'), findsWidgets);
+    expect(find.text('Разом · 2 порції'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Профіль'));
     await tester.pumpAndSettle();
