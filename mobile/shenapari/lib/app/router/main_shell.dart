@@ -1,6 +1,10 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../core/ui/app_text.dart';
+import '../../features/cart/domain/entities/cart.dart';
+import '../../features/cart/presentation/cart_cubit.dart';
 import '../../gen/assets.gen.dart';
 import '../../gen/colors.gen.dart';
 import 'routes.dart';
@@ -30,11 +34,12 @@ class MainShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget tab(int index) => Expanded(
+    Widget tab(int index, {int badge = 0}) => Expanded(
       child: _TabButton(
         tab: _tabs[index],
         selected: index == navigationShell.currentIndex,
         onTap: () => _openTab(index),
+        badge: badge,
       ),
     );
 
@@ -59,7 +64,10 @@ class MainShell extends StatelessWidget {
             child: Row(
               children: [
                 tab(0),
-                tab(1),
+                BlocSelector<CartCubit, Cart, int>(
+                  selector: (cart) => cart.count,
+                  builder: (_, count) => tab(1, badge: count),
+                ),
                 const SizedBox(width: 80, child: _QrButtonSlot()),
                 tab(2),
                 tab(3),
@@ -84,11 +92,15 @@ class _TabButton extends StatelessWidget {
     required this.tab,
     required this.selected,
     required this.onTap,
+    this.badge = 0,
   });
 
   final _Tab tab;
   final bool selected;
   final VoidCallback onTap;
+
+  /// A count on the icon (portions in the cart); hidden when 0.
+  final int badge;
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +109,7 @@ class _TabButton extends StatelessWidget {
     return Semantics(
       selected: selected,
       button: true,
-      label: tab.label,
+      label: badge == 0 ? tab.label : '${tab.label}, $badge',
       excludeSemantics: true,
       child: Tooltip(
         message: tab.label,
@@ -109,10 +121,21 @@ class _TabButton extends StatelessWidget {
               scale: selected ? 1.1 : 1,
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeOut,
-              child: tab.icon.svg(
-                width: 24,
-                height: 24,
-                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  tab.icon.svg(
+                    width: 24,
+                    height: 24,
+                    colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                  ),
+                  if (badge > 0)
+                    Positioned(
+                      top: -6,
+                      right: -10,
+                      child: _Badge(count: badge),
+                    ),
+                ],
               ),
             ),
           ),
@@ -159,6 +182,34 @@ class _QrButtonSlot extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _Badge extends StatelessWidget {
+  const _Badge({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(minWidth: 18),
+      height: 18,
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: ColorName.red,
+        borderRadius: BorderRadius.circular(9),
+        border: Border.all(color: ColorName.white, width: 1.5),
+      ),
+      child: Text(
+        count > 99 ? '99+' : '$count',
+        style: AppText.small(
+          color: ColorName.white,
+          fontWeight: FontWeight.w700,
+        ).copyWith(fontSize: 10, height: 1.1),
+      ),
     );
   }
 }
