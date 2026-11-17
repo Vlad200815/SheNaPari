@@ -6,6 +6,7 @@ import 'package:shenapari/app/bootstrap.dart';
 import 'package:shenapari/app/di.dart';
 import 'package:shenapari/app/router/app_router.dart';
 import 'package:shenapari/app/splash_page.dart';
+import 'package:shenapari/core/result/failure.dart';
 import 'package:shenapari/core/session/auth_tokens.dart';
 import 'package:shenapari/core/storage/in_memory_token_storage.dart';
 import 'package:shenapari/core/storage/token_storage.dart';
@@ -196,6 +197,61 @@ void main() {
     expect(find.text(_phoneTitle), findsOneWidget);
     expect(_auth.logoutCalls, 1);
     expect(await sl<TokenStorage>().read(), isNull);
+  });
+
+  group('delete account', () {
+    Future<void> openDeleteDialog(WidgetTester tester) async {
+      await _pumpApp(
+        tester,
+        prefs: _returning,
+        stored: const StoredSession(tokens: _tokens, needsProfile: false),
+      );
+      await tester.tap(find.byTooltip('Профіль'));
+      await tester.pumpAndSettle();
+      await _tap(tester, 'Видалити акаунт');
+      expect(find.text('Видалити акаунт?'), findsOneWidget);
+    }
+
+    testWidgets('cancel keeps the account', (tester) async {
+      await openDeleteDialog(tester);
+
+      await _tap(tester, 'Скасувати');
+
+      expect(find.text('Видалити акаунт?'), findsNothing);
+      expect(_profile.deleteCalls, 0);
+      expect(await sl<TokenStorage>().read(), isNotNull);
+    });
+
+    testWidgets('confirm deletes and returns to the phone screen', (
+      tester,
+    ) async {
+      await openDeleteDialog(tester);
+
+      await _tap(tester, 'Видалити');
+
+      expect(_profile.deleteCalls, 1);
+      expect(find.text(_phoneTitle), findsOneWidget);
+      expect(await sl<TokenStorage>().read(), isNull);
+    });
+
+    testWidgets('an active order: stays signed in and sees why', (
+      tester,
+    ) async {
+      await openDeleteDialog(tester);
+      _profile.deleteFailure = const ConflictFailure(
+        'Спершу заберіть або скасуйте активне замовлення',
+        code: 'profile.has_active_order',
+      );
+
+      await _tap(tester, 'Видалити');
+
+      expect(
+        find.text('Спершу заберіть або скасуйте активне замовлення'),
+        findsOneWidget,
+      );
+      expect(find.text(_phoneTitle), findsNothing);
+      expect(await sl<TokenStorage>().read(), isNotNull);
+    });
   });
 
   testWidgets('first launch after reinstall ignores a leftover session', (
