@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shenapari/app/router/app_redirect.dart';
 import 'package:shenapari/app/router/routes.dart';
 import 'package:shenapari/core/session/session_status.dart';
+import 'package:shenapari/features/legal/domain/entities/legal_document.dart';
 
 String? _redirect(
   SessionStatus status,
@@ -62,6 +63,15 @@ void main() {
     test('auth screens stay', () {
       expect(_redirect(SessionStatus.unauthenticated, Routes.phone), isNull);
       expect(_redirect(SessionStatus.unauthenticated, Routes.code), isNull);
+    });
+
+    test('legal documents open before signing in', () {
+      for (final type in LegalDocumentType.values) {
+        expect(
+          _redirect(SessionStatus.unauthenticated, Routes.legal(type)),
+          isNull,
+        );
+      }
     });
 
     test('protected screens go to phone', () {
