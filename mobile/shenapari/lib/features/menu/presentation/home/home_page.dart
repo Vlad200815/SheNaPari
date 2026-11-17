@@ -1,12 +1,264 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../core/ui/placeholder_page.dart';
+import '../../../../app/di.dart';
+import '../../../../core/ui/app_button.dart';
+import '../../../../core/ui/app_text.dart';
+import '../../../../core/ui/app_theme.dart';
+import '../../../../core/ui/snack_bars.dart';
+import '../../../../gen/colors.gen.dart';
+import '../../domain/entities/menu.dart';
+import '../widgets/dish_card.dart';
+import '../widgets/filter_chips.dart';
+import 'home_cubit.dart';
+import 'home_state.dart';
 
+/// The menu: canteen name, filters and the grid of dishes.
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const PlaceholderPage(title: 'Головна');
+    return BlocProvider(
+      create: (_) => sl<HomeCubit>()..load(),
+      child: BlocListener<HomeCubit, HomeState>(
+        // A failed refresh keeps the old menu; tell the user with a snack bar.
+        listenWhen: (previous, current) =>
+            current.status == HomeStatus.loaded &&
+            current.failure != null &&
+            previous.failure != current.failure,
+        listener: (context, state) =>
+            showFailureSnackBar(context, state.failure!),
+        child: Scaffold(
+          backgroundColor: ColorName.secondary100,
+          body: SafeArea(
+            bottom: false,
+            child: BlocBuilder<HomeCubit, HomeState>(
+              builder: (context, state) => switch (state.status) {
+                HomeStatus.loading => const _HomeSkeleton(),
+                HomeStatus.failure => _LoadError(
+                  message: state.failure!.message,
+                  onRetry: context.read<HomeCubit>().load,
+                ),
+                HomeStatus.loaded => _MenuView(state: state),
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MenuView extends StatelessWidget {
+  const _MenuView({required this.state});
+
+  final HomeState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<HomeCubit>();
+    final menu = state.menu!;
+    final dishes = state.visibleDishes;
+    return RefreshIndicator(
+      color: ColorName.primary400,
+      onRefresh: cubit.refresh,
+      child: CustomScrollView(
+        // Pull-to-refresh must work even when the list is short.
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(child: _Header(menu: menu)),
+          SliverToBoxAdapter(
+            child: FilterChips(
+              menu: menu,
+              selected: state.filter,
+              onSelected: cubit.selectFilter,
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
+          if (dishes.isEmpty)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Text(
+                  'Меню поки порожнє',
+                  style: AppText.regular(color: ColorName.typography500),
+                ),
+              ),
+            )
+          else
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                AppDimens.horizontalPadding,
+                0,
+                AppDimens.horizontalPadding,
+                24,
+              ),
+              sliver: SliverGrid.builder(
+                gridDelegate: _gridDelegate,
+                itemCount: dishes.length,
+                itemBuilder: (context, index) => DishCard(dish: dishes[index]),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+const _gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+  crossAxisCount: 2,
+  mainAxisSpacing: 12,
+  crossAxisSpacing: 12,
+  childAspectRatio: 0.68,
+);
+
+class _Header extends StatelessWidget {
+  const _Header({required this.menu});
+
+  final Menu menu;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppDimens.horizontalPadding,
+        16,
+        AppDimens.horizontalPadding,
+        16,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(menu.canteen.name, style: AppText.small()),
+          Text('Що будемо їсти?', style: AppText.title()),
+          if (!menu.canteen.isAcceptingOrders) ...[
+            const SizedBox(height: 12),
+            const _PausedBanner(),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _PausedBanner extends StatelessWidget {
+  const _PausedBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: ColorName.redLight,
+        borderRadius: BorderRadius.circular(AppDimens.radius),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Text(
+          'Кухня тимчасово не приймає замовлення. Меню можна переглядати.',
+          style: AppText.small(color: ColorName.red),
+        ),
+      ),
+    );
+  }
+}
+
+class _LoadError extends StatelessWidget {
+  const _LoadError({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(AppDimens.horizontalPadding),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Icon(Icons.cloud_off, size: 48, color: ColorName.secondary400),
+          const SizedBox(height: 16),
+          Text(
+            message,
+            style: AppText.regular(color: ColorName.typography500),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          AppButton.primary(text: 'Спробувати ще раз', onPressed: onRetry),
+        ],
+      ),
+    );
+  }
+}
+
+/// Grey boxes in the shape of the menu while it loads.
+class _HomeSkeleton extends StatelessWidget {
+  const _HomeSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      slivers: [
+        const SliverPadding(
+          padding: EdgeInsets.fromLTRB(
+            AppDimens.horizontalPadding,
+            16,
+            AppDimens.horizontalPadding,
+            16,
+          ),
+          sliver: SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _Bone(width: 120, height: 16),
+                SizedBox(height: 8),
+                _Bone(width: 200, height: 24),
+                SizedBox(height: 16),
+                Row(
+                  children: [
+                    _Bone(width: 60, height: 40),
+                    SizedBox(width: 8),
+                    _Bone(width: 100, height: 40),
+                    SizedBox(width: 8),
+                    _Bone(width: 90, height: 40),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimens.horizontalPadding,
+          ),
+          sliver: SliverGrid.builder(
+            gridDelegate: _gridDelegate,
+            itemCount: 6,
+            itemBuilder: (_, _) => const _Bone(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Bone extends StatelessWidget {
+  const _Bone({this.width, this.height});
+
+  final double? width;
+  final double? height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: ColorName.secondary50,
+        borderRadius: BorderRadius.circular(AppDimens.radius),
+      ),
+    );
   }
 }
