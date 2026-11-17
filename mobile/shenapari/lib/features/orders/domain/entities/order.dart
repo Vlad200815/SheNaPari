@@ -37,6 +37,23 @@ class OrderItem extends Equatable {
   List<Object?> get props => [dishId, name, quantity, unitPriceKopecks];
 }
 
+/// One step in the order's life: when it got [status], and why (for a
+/// cancellation by the kitchen).
+class OrderStatusChange extends Equatable {
+  const OrderStatusChange({
+    required this.status,
+    required this.at,
+    this.reason,
+  });
+
+  final OrderStatus status;
+  final DateTime at;
+  final String? reason;
+
+  @override
+  List<Object?> get props => [status, at, reason];
+}
+
 class Order extends Equatable {
   const Order({
     required this.id,
@@ -47,6 +64,9 @@ class Order extends Equatable {
     required this.items,
     this.breakSlot,
     this.estimatedReadyAt,
+    this.readyAt,
+    this.history = const [],
+    this.pickupToken,
   });
 
   final String id;
@@ -66,6 +86,37 @@ class Order extends Equatable {
   /// Set when the kitchen accepts the order.
   final DateTime? estimatedReadyAt;
 
+  /// When it became ready; pickup is possible for 30 minutes after.
+  final DateTime? readyAt;
+
+  /// Oldest first.
+  final List<OrderStatusChange> history;
+
+  /// What the QR encodes; the server sends it only while the order is ready.
+  final String? pickupToken;
+
+  /// Still on the kitchen's board.
+  bool get isActive => switch (status) {
+    OrderStatus.paid ||
+    OrderStatus.accepted ||
+    OrderStatus.cooking ||
+    OrderStatus.ready => true,
+    _ => false,
+  };
+
+  /// The customer may cancel until cooking starts (backend rule, shown here
+  /// only to decide whether to offer the button; the server checks again).
+  bool get canCancel =>
+      status == OrderStatus.paid || status == OrderStatus.accepted;
+
+  /// When this order got [status], if it ever did.
+  DateTime? reachedAt(OrderStatus status) {
+    for (final change in history.reversed) {
+      if (change.status == status) return change.at;
+    }
+    return null;
+  }
+
   @override
   List<Object?> get props => [
     id,
@@ -76,5 +127,8 @@ class Order extends Equatable {
     items,
     breakSlot,
     estimatedReadyAt,
+    readyAt,
+    history,
+    pickupToken,
   ];
 }
