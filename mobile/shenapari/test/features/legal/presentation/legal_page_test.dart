@@ -6,6 +6,7 @@ import 'package:shenapari/features/legal/domain/entities/legal_document.dart';
 import 'package:shenapari/features/legal/domain/legal_repository.dart';
 import 'package:shenapari/features/legal/presentation/legal_cubit.dart';
 import 'package:shenapari/features/legal/presentation/legal_page.dart';
+import 'package:shenapari/gen/colors.gen.dart';
 
 class _FakeLegalRepository implements LegalRepository {
   _FakeLegalRepository(this.content);
@@ -74,5 +75,27 @@ void main() {
     expect(launched, isNotEmpty, reason: 'the link was tapped');
     expect(copied, 'support@example.com');
     expect(find.textContaining('скопіювали'), findsOneWidget);
+  });
+
+  testWidgets('links in the text are brand yellow', (tester) async {
+    _content = 'Пишіть на [support@example.com](mailto:support@example.com).';
+
+    await tester.pumpWidget(
+      const MaterialApp(home: LegalPage(type: LegalDocumentType.terms)),
+    );
+    await tester.pumpAndSettle();
+
+    final spans = <TextSpan>[];
+    for (final text in tester.widgetList<RichText>(find.byType(RichText))) {
+      text.text.visitChildren((span) {
+        if (span is TextSpan) spans.add(span);
+        return true;
+      });
+    }
+    final link = spans.singleWhere((s) => s.text == 'support@example.com');
+    final plain = spans.singleWhere((s) => s.text == 'Пишіть на ');
+
+    expect(link.style?.color, ColorName.primary400);
+    expect(plain.style?.color, isNot(ColorName.primary400));
   });
 }
