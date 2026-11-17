@@ -26,10 +26,13 @@ void main() {
     when(
       () => repository.getDishes(),
     ).thenAnswer((_) async => const Ok(sampleDishes));
+    when(
+      () => repository.getNextBreak(),
+    ).thenAnswer((_) async => Ok(sampleBreak));
   });
 
   test('puts the canteen, categories and dishes together', () async {
-    expect(await getMenu(), const Ok(sampleMenu));
+    expect(await getMenu(), Ok(sampleMenu));
   });
 
   test('drops categories without dishes', () async {
@@ -44,5 +47,15 @@ void main() {
     ).thenAnswer((_) async => const Err(NetworkFailure()));
 
     expect(await getMenu(), const Err<Menu>(NetworkFailure()));
+  });
+
+  test('no scheduled break is fine: nextBreak is null', () async {
+    when(
+      () => repository.getNextBreak(),
+    ).thenAnswer((_) async => const Ok(null));
+
+    final result = await getMenu();
+
+    expect((result as Ok<Menu>).value.nextBreak, isNull);
   });
 }

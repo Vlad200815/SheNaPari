@@ -1,15 +1,18 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../app/di.dart';
+import '../../../../app/router/routes.dart';
 import '../../../../core/ui/app_button.dart';
 import '../../../../core/ui/app_text.dart';
 import '../../../../core/ui/app_theme.dart';
 import '../../../../core/ui/snack_bars.dart';
 import '../../../../gen/colors.gen.dart';
-import '../../domain/entities/menu.dart';
+import '../widgets/break_card.dart';
 import '../widgets/dish_card.dart';
 import '../widgets/filter_chips.dart';
+import '../widgets/home_header.dart';
 import 'home_cubit.dart';
 import 'home_state.dart';
 
@@ -67,7 +70,7 @@ class _MenuView extends StatelessWidget {
         // Pull-to-refresh must work even when the list is short.
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
-          SliverToBoxAdapter(child: _Header(menu: menu)),
+          SliverToBoxAdapter(child: _Header(state: state)),
           SliverToBoxAdapter(
             child: FilterChips(
               menu: menu,
@@ -114,50 +117,34 @@ const _gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
 );
 
 class _Header extends StatelessWidget {
-  const _Header({required this.menu});
+  const _Header({required this.state});
 
-  final Menu menu;
+  final HomeState state;
 
   @override
   Widget build(BuildContext context) {
+    final menu = state.menu!;
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppDimens.horizontalPadding,
         16,
         AppDimens.horizontalPadding,
-        16,
+        20,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(menu.canteen.name, style: AppText.small()),
-          Text('Що будемо їсти?', style: AppText.title()),
-          if (!menu.canteen.isAcceptingOrders) ...[
-            const SizedBox(height: 12),
-            const _PausedBanner(),
-          ],
+          HomeHeader(
+            firstName: state.firstName,
+            onNotifications: () => context.push(Routes.notifications),
+          ),
+          const SizedBox(height: 20),
+          BreakCard(
+            canteen: menu.canteen,
+            nextBreak: menu.nextBreak,
+            onBreakStarted: context.read<HomeCubit>().refresh,
+          ),
         ],
-      ),
-    );
-  }
-}
-
-class _PausedBanner extends StatelessWidget {
-  const _PausedBanner();
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: ColorName.redLight,
-        borderRadius: BorderRadius.circular(AppDimens.radius),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Text(
-          'Кухня тимчасово не приймає замовлення. Меню можна переглядати.',
-          style: AppText.small(color: ColorName.red),
-        ),
       ),
     );
   }
@@ -212,10 +199,12 @@ class _HomeSkeleton extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _Bone(width: 120, height: 16),
+                _Bone(width: 100, height: 16),
                 SizedBox(height: 8),
-                _Bone(width: 200, height: 24),
-                SizedBox(height: 16),
+                _Bone(width: 220, height: 30),
+                SizedBox(height: 20),
+                _Bone(height: 150),
+                SizedBox(height: 20),
                 Row(
                   children: [
                     _Bone(width: 60, height: 40),

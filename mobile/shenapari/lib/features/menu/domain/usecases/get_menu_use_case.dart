@@ -2,8 +2,9 @@ import '../../../../core/result/result.dart';
 import '../entities/menu.dart';
 import '../menu_repository.dart';
 
-/// Loads the canteen, categories and dishes in parallel and puts them
-/// together. Any failure fails the whole menu: half a menu is not useful.
+/// Loads the canteen, categories, dishes and the next break in parallel and
+/// puts them together. Any failure fails the whole menu: half a menu is not
+/// useful.
 class GetMenuUseCase {
   GetMenuUseCase(this._menu);
 
@@ -14,6 +15,7 @@ class GetMenuUseCase {
       _menu.getCanteen(),
       _menu.getCategories(),
       _menu.getDishes(),
+      _menu.getNextBreak(),
     ).wait;
 
     switch (results) {
@@ -21,6 +23,7 @@ class GetMenuUseCase {
         Ok(value: final canteen),
         Ok(value: final categories),
         Ok(value: final dishes),
+        Ok(value: final nextBreak),
       ):
         final used = {for (final dish in dishes) dish.categoryId};
         return Ok(
@@ -32,11 +35,13 @@ class GetMenuUseCase {
                 if (used.contains(category.id)) category,
             ],
             dishes: dishes,
+            nextBreak: nextBreak,
           ),
         );
-      case (Err(:final failure), _, _) ||
-          (_, Err(:final failure), _) ||
-          (_, _, Err(:final failure)):
+      case (Err(:final failure), _, _, _) ||
+          (_, Err(:final failure), _, _) ||
+          (_, _, Err(:final failure), _) ||
+          (_, _, _, Err(:final failure)):
         return Err(failure);
     }
   }
