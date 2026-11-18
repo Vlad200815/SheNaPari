@@ -25,6 +25,7 @@ abstract final class Routes {
   static const myProfile = '/profile';
   static const settings = '/settings';
   static const faq = '/faq';
+  static const support = '/support';
 
   /// Pushed over the tabs: the QR of the active order for pickup.
   static const myQr = '/my-qr';
