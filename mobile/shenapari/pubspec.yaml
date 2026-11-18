@@ -134,6 +134,7 @@ dependencies:
   screen_brightness: ^2.1.11
   wakelock_plus: ^1.8.0
   no_screenshot: ^2.0.1
+  easy_localization: ^3.0.8
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -210,6 +211,9 @@ flutter:
     - assets/images/auth/
     - assets/images/home/
     - assets/images/splash/
+
+    # Translations (easy_localization)
+    - assets/translations/
 
 
 

@@ -14,6 +14,7 @@ import '../../domain/entities/order.dart';
 import '../widgets/order_texts.dart';
 import '../widgets/order_widgets.dart';
 import 'order_cubit.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// One order: status steps (live), the QR once ready, what was ordered and
 /// cancellation while the kitchen has not started cooking.
@@ -41,8 +42,10 @@ class OrderPage extends StatelessWidget {
             ),
             title: Text(
               state.order == null
-                  ? 'Замовлення'
-                  : 'Замовлення №${state.order!.number}',
+                  ? LocaleKeys.orders_title.tr()
+                  : LocaleKeys.orders_number.tr(
+                      namedArgs: {'number': '${state.order!.number}'},
+                    ),
               style: AppText.title(),
             ),
           ),
@@ -51,7 +54,7 @@ class OrderPage extends StatelessWidget {
               child: CircularProgressIndicator(color: ColorName.primary400),
             ),
             OrderLoadStatus.failure => _LoadError(
-              message: state.failure!.message,
+              message: state.failure!.text,
               onRetry: context.read<OrderCubit>().load,
             ),
             OrderLoadStatus.loaded => _OrderView(
@@ -112,7 +115,7 @@ class _OrderView extends StatelessWidget {
               order.pickupToken != null) ...[
             const SizedBox(height: 16),
             AppButton.primary(
-              text: 'Показати QR',
+              text: LocaleKeys.orders_show_qr.tr(),
               onPressed: () => context.push(Routes.myQrFor(order.id)),
             ),
           ],
@@ -155,7 +158,7 @@ class _OrderView extends StatelessWidget {
                 const Divider(height: 20, color: ColorName.secondary200),
                 Row(
                   children: [
-                    Text('Разом', style: AppText.medium()),
+                    Text(LocaleKeys.orders_total.tr(), style: AppText.medium()),
                     const Spacer(),
                     Text(
                       formatPrice(order.totalKopecks),
@@ -167,7 +170,9 @@ class _OrderView extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Оформлено ${formatOrderDate(order.createdAt)}',
+                    LocaleKeys.orders_placed.tr(
+                      namedArgs: {'date': formatOrderDate(order.createdAt)},
+                    ),
                     style: AppText.small(),
                   ),
                 ),
@@ -177,7 +182,7 @@ class _OrderView extends StatelessWidget {
           if (order.canCancel) ...[
             const SizedBox(height: 24),
             AppButton.outlined(
-              text: 'Скасувати замовлення',
+              text: LocaleKeys.orders_cancel.tr(),
               loading: cancelling,
               onPressed: () async {
                 if (await _confirmCancel(context, order)) await cubit.cancel();
@@ -185,8 +190,7 @@ class _OrderView extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              'Скасувати можна, доки кухня не почала готувати. '
-              'Гроші буде повернуто.',
+              LocaleKeys.orders_cancel_hint.tr(),
               style: AppText.small(),
               textAlign: TextAlign.center,
             ),
@@ -198,13 +202,15 @@ class _OrderView extends StatelessWidget {
 
   static String _endedHint(Order order) {
     if (order.status == OrderStatus.notPickedUp) {
-      return 'Замовлення не забрали протягом 30 хвилин після готовності';
+      return LocaleKeys.orders_not_picked_up_text.tr();
     }
     final reason = order.history
         .where((c) => c.status == OrderStatus.cancelled)
         .lastOrNull
         ?.reason;
-    return reason == null ? 'Гроші повернуто' : 'Причина: $reason';
+    return reason == null
+        ? LocaleKeys.orders_refunded.tr()
+        : LocaleKeys.orders_reason.tr(namedArgs: {'reason': reason});
   }
 }
 
@@ -216,25 +222,24 @@ Future<bool> _confirmCancel(BuildContext context, Order order) async {
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       title: Text(
-        'Скасувати замовлення №${order.number}?',
+        LocaleKeys.orders_cancel_title.tr(
+          namedArgs: {'number': '${order.number}'},
+        ),
         style: AppText.title(),
       ),
-      content: Text(
-        'Кухня не готуватиме його, а гроші буде повернуто.',
-        style: AppText.small(),
-      ),
+      content: Text(LocaleKeys.orders_cancel_text.tr(), style: AppText.small()),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
           child: Text(
-            'Ні',
+            LocaleKeys.common_no.tr(),
             style: AppText.medium(color: ColorName.typography500),
           ),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(
-            'Скасувати',
+            LocaleKeys.common_cancel.tr(),
             style: AppText.medium(
               color: ColorName.red,
             ).copyWith(fontWeight: FontWeight.w700),
@@ -286,7 +291,10 @@ class _LoadError extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          AppButton.primary(text: 'Спробувати ще раз', onPressed: onRetry),
+          AppButton.primary(
+            text: LocaleKeys.common_retry.tr(),
+            onPressed: onRetry,
+          ),
         ],
       ),
     );

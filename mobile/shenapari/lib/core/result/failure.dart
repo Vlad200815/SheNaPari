@@ -8,7 +8,8 @@ import 'package:equatable/equatable.dart';
 sealed class Failure extends Equatable {
   const Failure(this.message, {this.code});
 
-  /// Ready-to-show text in Ukrainian (`message` from the server).
+  /// The server's text, in the app's language (`Accept-Language`). Empty
+  /// for failures made on the client; show `failure.text` (core/l10n).
   final String message;
 
   /// Stable machine code from the server (`errors[0]`), for example
@@ -26,7 +27,7 @@ sealed class Failure extends Equatable {
 
 /// No connection or timeout. Produced only by the client.
 final class NetworkFailure extends Failure {
-  const NetworkFailure() : super('Немає з’єднання з сервером');
+  const NetworkFailure() : super('');
 }
 
 /// 400.

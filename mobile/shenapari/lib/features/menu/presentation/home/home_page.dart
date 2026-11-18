@@ -17,6 +17,7 @@ import '../widgets/filter_chips.dart';
 import '../widgets/home_header.dart';
 import 'home_cubit.dart';
 import 'home_state.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// The menu: canteen name, filters and the grid of dishes.
 class HomePage extends StatelessWidget {
@@ -45,7 +46,7 @@ class HomePage extends StatelessWidget {
               builder: (context, state) => switch (state.status) {
                 HomeStatus.loading => const _HomeSkeleton(),
                 HomeStatus.failure => _LoadError(
-                  message: state.failure!.message,
+                  message: state.failure!.text,
                   onRetry: context.read<HomeCubit>().load,
                 ),
                 HomeStatus.loaded => _MenuView(state: state),
@@ -89,7 +90,7 @@ class _MenuView extends StatelessWidget {
               hasScrollBody: false,
               child: Center(
                 child: Text(
-                  'Меню поки порожнє',
+                  LocaleKeys.home_menu_empty.tr(),
                   style: AppText.regular(color: ColorName.typography500),
                 ),
               ),
@@ -190,7 +191,10 @@ class _LoadError extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          AppButton.primary(text: 'Спробувати ще раз', onPressed: onRetry),
+          AppButton.primary(
+            text: LocaleKeys.common_retry.tr(),
+            onPressed: onRetry,
+          ),
         ],
       ),
     );

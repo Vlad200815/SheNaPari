@@ -19,6 +19,7 @@ import '../home/break_countdown.dart';
 import '../widgets/dish_card.dart';
 import 'dish_cubit.dart';
 import 'dish_state.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// A dish: big photo on top, details on a white sheet, and a bottom bar
 /// with the portion stepper and «Додати · 170 ₴».
@@ -47,7 +48,7 @@ class DishPage extends StatelessWidget {
             DishStatus.loading => const Center(
               child: CircularProgressIndicator(color: ColorName.primary400),
             ),
-            DishStatus.failure => _LoadError(message: state.failure!.message),
+            DishStatus.failure => _LoadError(message: state.failure!.text),
             DishStatus.loaded => _DishView(state: state),
           },
           bottomNavigationBar: state.status == DishStatus.loaded
@@ -107,7 +108,7 @@ class _DishView extends StatelessWidget {
           left: AppDimens.horizontalPadding,
           child: _RoundButton(
             icon: Icons.arrow_back_rounded,
-            label: 'Назад',
+            label: LocaleKeys.common_back.tr(),
             onTap: () => _back(context),
           ),
         ),
@@ -161,13 +162,23 @@ class _Sheet extends StatelessWidget {
             runSpacing: 8,
             children: [
               if (dish.isPopular)
-                const _MetaPill(
+                _MetaPill(
                   icon: Icons.local_fire_department_rounded,
-                  text: 'Хіт',
+                  text: LocaleKeys.home_hit.tr(),
                   highlighted: true,
                 ),
-              _MetaPill(icon: Icons.scale_outlined, text: '${dish.weightG} г'),
-              _MetaPill(icon: Icons.bolt_rounded, text: '${dish.kcal} ккал'),
+              _MetaPill(
+                icon: Icons.scale_outlined,
+                text: LocaleKeys.home_weight.tr(
+                  namedArgs: {'grams': '${dish.weightG}'},
+                ),
+              ),
+              _MetaPill(
+                icon: Icons.bolt_rounded,
+                text: LocaleKeys.home_kcal.tr(
+                  namedArgs: {'kcal': '${dish.kcal}'},
+                ),
+              ),
             ],
           ),
           if (nextBreak != null) ...[
@@ -177,7 +188,7 @@ class _Sheet extends StatelessWidget {
           if (dish.description case final description?) ...[
             const SizedBox(height: 20),
             Text(
-              'Склад',
+              LocaleKeys.dish_composition.tr(),
               style: AppText.medium().copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 6),
@@ -265,7 +276,7 @@ class _PickupHint extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Забереш на перерві без черги',
+                  LocaleKeys.dish_pickup_hint.tr(),
                   style: AppText.medium().copyWith(fontWeight: FontWeight.w600),
                 ),
                 Text(
@@ -290,7 +301,10 @@ class _AddToCartBar extends StatelessWidget {
   /// stepper started from its amount, so «Оновити» does not add on top.
   void _save(BuildContext context, {required bool inCart}) {
     context.read<CartCubit>().setQuantity(state.dish!, state.quantity);
-    showInfoSnackBar(context, inCart ? 'Кошик оновлено' : 'Додано в кошик');
+    showInfoSnackBar(
+      context,
+      inCart ? LocaleKeys.dish_cart_updated.tr() : LocaleKeys.dish_added.tr(),
+    );
     _back(context);
   }
 
@@ -331,7 +345,9 @@ class _AddToCartBar extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: AppButton.primary(
-                  text: inCart ? 'Оновити · $total' : 'Додати · $total',
+                  text: inCart
+                      ? LocaleKeys.dish_update.tr(namedArgs: {'total': total})
+                      : LocaleKeys.dish_add.tr(namedArgs: {'total': total}),
                   onPressed: () => _save(context, inCart: inCart),
                 ),
               ),
@@ -403,7 +419,10 @@ class _LoadError extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
-            AppButton.outlined(text: 'Назад', onPressed: () => _back(context)),
+            AppButton.outlined(
+              text: LocaleKeys.common_back.tr(),
+              onPressed: () => _back(context),
+            ),
           ],
         ),
       ),

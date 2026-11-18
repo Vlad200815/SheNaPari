@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/ui/app_text.dart';
 import '../../../../gen/colors.gen.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// "Привіт, Влад" + "Що будемо їсти?" and the notifications bell.
 class HomeHeader extends StatelessWidget {
@@ -20,7 +21,10 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final greeting = firstName == null ? 'Привіт!' : 'Привіт, $firstName';
+    final name = firstName;
+    final greeting = name == null
+        ? LocaleKeys.home_greeting.tr()
+        : LocaleKeys.home_greeting_name.tr(namedArgs: {'name': name});
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -31,7 +35,7 @@ class HomeHeader extends StatelessWidget {
               Text(greeting, style: AppText.small()),
               const SizedBox(height: 2),
               Text(
-                'Що будемо їсти?',
+                LocaleKeys.home_question.tr(),
                 style: AppText.heading().copyWith(fontSize: 26),
               ),
             ],
@@ -54,7 +58,9 @@ class _BellButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: hasUnread ? 'Сповіщення, є нові' : 'Сповіщення',
+      label: hasUnread
+          ? LocaleKeys.home_notifications_unread.tr()
+          : LocaleKeys.home_notifications.tr(),
       child: Material(
         color: ColorName.white,
         shape: const CircleBorder(),

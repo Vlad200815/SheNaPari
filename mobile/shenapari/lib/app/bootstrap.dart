@@ -1,9 +1,12 @@
 import 'dart:developer' as developer;
 
+import 'package:easy_localization/easy_localization.dart'
+    show AssetLoader, EasyLocalization, RootBundleAssetLoader;
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../core/l10n/app_locale.dart';
 import '../core/session/session_repository.dart';
 import '../core/storage/app_prefs.dart';
 import '../core/storage/token_storage.dart';
@@ -19,13 +22,17 @@ Future<void> bootstrap() async {
   FlutterNativeSplash.preserve(widgetsBinding: binding);
 
   try {
+    await EasyLocalization.ensureInitialized();
     setupDi(prefs: await SharedPreferences.getInstance());
     runApp(
-      App(
-        router: createRouter(
-          session: sl(),
-          prefs: sl(),
-          signOut: sl<SignOutUseCase>().call,
+      localized(
+        locale: sl<AppLocale>().locale,
+        child: App(
+          router: createRouter(
+            session: sl(),
+            prefs: sl(),
+            signOut: sl<SignOutUseCase>().call,
+          ),
         ),
       ),
     );
@@ -58,3 +65,22 @@ Future<void> startSession({
   }
   await session.restore();
 }
+
+/// The texts in `assets/translations`, starting in [locale] (see
+/// [AppLocale]). The choice is kept in AppPrefs, not by easy_localization.
+Widget localized({
+  required Locale locale,
+  required Widget child,
+  AssetLoader assetLoader = const RootBundleAssetLoader(),
+}) => EasyLocalization(
+  supportedLocales: AppLocale.supportedLocales,
+  path: 'assets/translations',
+  startLocale: locale,
+  fallbackLocale: const Locale('uk'),
+  saveLocale: false,
+  // Off by default; on, `plural` uses the real rules (1 порція, 2 порції,
+  // 5 порцій) instead of only zero/one/other.
+  ignorePluralRules: false,
+  assetLoader: assetLoader,
+  child: child,
+);
