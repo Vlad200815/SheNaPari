@@ -7,6 +7,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
+import '../../../../core/device/qr_display_mode.dart';
 import '../../../../core/ui/app_button.dart';
 import '../../../../core/ui/app_text.dart';
 import '../../../../gen/colors.gen.dart';
@@ -19,7 +20,10 @@ import '../widgets/order_widgets.dart';
 /// frosted yellow glass. Tapping the glass, swiping the sheet down or ✕
 /// closes it. Opened with [myQrPage] (a see-through route).
 class MyQrPage extends StatelessWidget {
-  const MyQrPage({super.key});
+  const MyQrPage({super.key, this.orderId});
+
+  /// Open on this order (from its screen); otherwise the first ready one.
+  final String? orderId;
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +64,13 @@ class MyQrPage extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: reduceMotion
-                ? const _Sheet()
+                ? _Sheet(orderId: orderId)
                 : SlideTransition(
                     position: Tween(
                       begin: const Offset(0, 1),
                       end: Offset.zero,
                     ).animate(curved),
-                    child: const _Sheet(),
+                    child: _Sheet(orderId: orderId),
                   ),
           ),
         ],
@@ -77,7 +81,7 @@ class MyQrPage extends StatelessWidget {
 
 /// The route for [MyQrPage]: not opaque, so the app shows through the glass.
 /// Opens a little slower than it closes, which feels responsive.
-Page<void> myQrPage(LocalKey key) => CustomTransitionPage(
+Page<void> myQrPage(LocalKey key, {String? orderId}) => CustomTransitionPage(
   key: key,
   opaque: false,
   barrierColor: Colors.transparent,
@@ -85,11 +89,13 @@ Page<void> myQrPage(LocalKey key) => CustomTransitionPage(
   reverseTransitionDuration: const Duration(milliseconds: 220),
   // MyQrPage animates itself (glass + sheet).
   transitionsBuilder: (_, _, _, child) => child,
-  child: const MyQrPage(),
+  child: MyQrPage(orderId: orderId),
 );
 
 class _Sheet extends StatelessWidget {
-  const _Sheet();
+  const _Sheet({required this.orderId});
+
+  final String? orderId;
 
   @override
   Widget build(BuildContext context) {
@@ -135,9 +141,14 @@ class _Sheet extends StatelessWidget {
                       const SizedBox(height: 20),
                       Flexible(
                         child: BlocBuilder<OrdersCubit, OrdersState>(
-                          builder: (context, state) => AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 200),
-                            child: _content(context, state),
+                          builder: (context, state) => _QrDisplayScope(
+                            // Brightness up, screen on, no screenshots —
+                            // only while a ready code is actually shown.
+                            active: state.readyCount > 0,
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: _content(context, state),
+                            ),
                           ),
                         ),
                       ),
@@ -185,6 +196,9 @@ class _Sheet extends StatelessWidget {
       // A stable key: live updates must not reset the chosen page.
       OrdersStatus.loaded => _OrderPager(
         key: const ValueKey('pager'),
+        initialIndex: orderId == null
+            ? 0
+            : orders.indexWhere((o) => o.id == orderId).clamp(0, orders.length),
         orders: orders,
       ),
     };
@@ -210,7 +224,9 @@ class _OrderPage extends StatelessWidget {
 /// so swiping is a shortcut, not the only way; each chip says the status
 /// in words, not only by colour.
 class _OrderPager extends StatefulWidget {
-  const _OrderPager({super.key, required this.orders});
+  const _OrderPager({super.key, required this.orders, this.initialIndex = 0});
+
+  final int initialIndex;
 
   final List<Order> orders;
 
@@ -219,8 +235,8 @@ class _OrderPager extends StatefulWidget {
 }
 
 class _OrderPagerState extends State<_OrderPager> {
-  final _pages = PageController();
-  var _index = 0;
+  late final _pages = PageController(initialPage: _index);
+  late var _index = widget.initialIndex;
 
   @override
   void didUpdateWidget(_OrderPager oldWidget) {
@@ -568,4 +584,48 @@ class _Decor extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Turns [QrDisplayMode] on while [active] and off when it stops being
+/// active or the sheet closes.
+class _QrDisplayScope extends StatefulWidget {
+  const _QrDisplayScope({required this.active, required this.child});
+
+  final bool active;
+  final Widget child;
+
+  @override
+  State<_QrDisplayScope> createState() => _QrDisplayScopeState();
+}
+
+class _QrDisplayScopeState extends State<_QrDisplayScope> {
+  final _mode = sl<QrDisplayMode>();
+  var _on = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _sync();
+  }
+
+  @override
+  void didUpdateWidget(_QrDisplayScope oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _sync();
+  }
+
+  void _sync() {
+    if (widget.active == _on) return;
+    _on = widget.active;
+    _on ? _mode.enter() : _mode.exit();
+  }
+
+  @override
+  void dispose() {
+    if (_on) _mode.exit();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

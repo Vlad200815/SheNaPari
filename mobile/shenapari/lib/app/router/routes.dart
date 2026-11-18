@@ -23,6 +23,10 @@ abstract final class Routes {
 
   /// Pushed over the tabs: the QR of the active order for pickup.
   static const myQr = '/my-qr';
+
+  /// «Мій QR» opened on one order (from its screen).
+  static String myQrFor(String orderId) =>
+      Uri(path: myQr, queryParameters: {'order': orderId}).toString();
   static const notifications = '/notifications';
 
   /// Dish details, over the tabs.

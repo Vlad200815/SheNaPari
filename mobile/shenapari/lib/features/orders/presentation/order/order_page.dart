@@ -84,31 +84,38 @@ class _OrderView extends StatelessWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(AppDimens.horizontalPadding),
         children: [
-          if (order.status == OrderStatus.ready && order.pickupToken != null)
-            Center(child: PickupQr(order: order))
-          else
-            _Card(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          order.statusLabel,
-                          style: AppText.title().copyWith(fontSize: 22),
-                        ),
-                        Text(
-                          ended ? _endedHint(order) : order.whenLabel,
-                          style: AppText.small(),
-                        ),
-                      ],
-                    ),
+          _Card(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        order.statusLabel,
+                        style: AppText.title().copyWith(fontSize: 22),
+                      ),
+                      Text(
+                        ended ? _endedHint(order) : order.whenLabel,
+                        style: AppText.small(),
+                      ),
+                    ],
                   ),
-                  StatusChip(order: order),
-                ],
-              ),
+                ),
+                StatusChip(order: order),
+              ],
             ),
+          ),
+          // One QR look everywhere: the button opens the same sheet as the
+          // tab bar's «Мій QR», already on this order.
+          if (order.status == OrderStatus.ready &&
+              order.pickupToken != null) ...[
+            const SizedBox(height: 16),
+            AppButton.primary(
+              text: 'Показати QR',
+              onPressed: () => context.push(Routes.myQrFor(order.id)),
+            ),
+          ],
           if (!ended) ...[
             const SizedBox(height: 16),
             _Card(child: StatusSteps(order: order)),

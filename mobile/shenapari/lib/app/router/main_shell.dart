@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../core/ui/app_text.dart';
+import '../../features/orders/presentation/orders/orders_cubit.dart';
+import '../di.dart';
 import '../../features/cart/domain/entities/cart.dart';
 import '../../features/cart/presentation/cart_cubit.dart';
 import '../../gen/assets.gen.dart';
@@ -43,35 +45,39 @@ class MainShell extends StatelessWidget {
       ),
     );
 
-    return Scaffold(
-      body: navigationShell,
-      bottomNavigationBar: DecoratedBox(
-        decoration: BoxDecoration(
-          color: ColorName.white,
-          boxShadow: [
-            BoxShadow(
-              color: ColorName.black.withValues(alpha: 0.06),
-              blurRadius: 16,
-              offset: const Offset(0, -4),
-            ),
-          ],
-        ),
-        // Keeps the buttons above the iPhone home indicator.
-        child: SafeArea(
-          top: false,
-          child: SizedBox(
-            height: 54,
-            child: Row(
-              children: [
-                tab(0),
-                BlocSelector<CartCubit, Cart, int>(
-                  selector: (cart) => cart.count,
-                  builder: (_, count) => tab(1, badge: count),
-                ),
-                const SizedBox(width: 80, child: _QrButtonSlot()),
-                tab(2),
-                tab(3),
-              ],
+    // The customer's orders, live, for the glow on the QR button.
+    return BlocProvider(
+      create: (_) => sl<OrdersCubit>()..load(),
+      child: Scaffold(
+        body: navigationShell,
+        bottomNavigationBar: DecoratedBox(
+          decoration: BoxDecoration(
+            color: ColorName.white,
+            boxShadow: [
+              BoxShadow(
+                color: ColorName.black.withValues(alpha: 0.06),
+                blurRadius: 16,
+                offset: const Offset(0, -4),
+              ),
+            ],
+          ),
+          // Keeps the buttons above the iPhone home indicator.
+          child: SafeArea(
+            top: false,
+            child: SizedBox(
+              height: 54,
+              child: Row(
+                children: [
+                  tab(0),
+                  BlocSelector<CartCubit, Cart, int>(
+                    selector: (cart) => cart.count,
+                    builder: (_, count) => tab(1, badge: count),
+                  ),
+                  const SizedBox(width: 80, child: _QrButtonSlot()),
+                  tab(2),
+                  tab(3),
+                ],
+              ),
             ),
           ),
         ),
@@ -149,8 +155,6 @@ class _TabButton extends StatelessWidget {
 class _QrButtonSlot extends StatelessWidget {
   const _QrButtonSlot();
 
-  static const _size = 68.0;
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -159,31 +163,167 @@ class _QrButtonSlot extends StatelessWidget {
       children: [
         Positioned(
           top: -24,
-          child: Semantics(
-            button: true,
-            label: 'Мій QR',
-            child: Material(
-              color: ColorName.primary400,
-              shape: const CircleBorder(),
-              elevation: 6,
-              shadowColor: ColorName.primary500.withValues(alpha: 0.45),
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                onTap: () => context.push(Routes.myQr),
-                child: SizedBox.square(
-                  dimension: _size,
-                  child: Center(
-                    // The icon itself is white.
-                    child: Assets.images.icScan.svg(width: 28, height: 28),
-                  ),
-                ),
-              ),
-            ),
+          child: BlocSelector<OrdersCubit, OrdersState, int>(
+            selector: (state) => state.readyCount,
+            builder: (context, ready) => _QrButton(ready: ready),
           ),
         ),
       ],
     );
   }
+}
+
+/// The «Мій QR» button. When an order is ready it starts to glow: a soft
+/// yellow halo breathes around it and a light sweeps across it diagonally
+/// from the top-left, with a count badge — so the customer sees the code is
+/// waiting. Only this one element moves; with reduced motion the halo is
+/// shown without any animation.
+class _QrButton extends StatefulWidget {
+  const _QrButton({required this.ready});
+
+  /// Orders ready for pickup.
+  final int ready;
+
+  @override
+  State<_QrButton> createState() => _QrButtonState();
+}
+
+class _QrButtonState extends State<_QrButton>
+    with SingleTickerProviderStateMixin {
+  static const _size = 68.0;
+
+  /// One sweep plus a pause; slow enough to never feel like flashing.
+  late final _cycle = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 2600),
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncAnimation();
+  }
+
+  @override
+  void didUpdateWidget(_QrButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncAnimation();
+  }
+
+  void _syncAnimation() {
+    final animate =
+        widget.ready > 0 && !MediaQuery.disableAnimationsOf(context);
+    if (animate && !_cycle.isAnimating) {
+      _cycle.repeat();
+    } else if (!animate && _cycle.isAnimating) {
+      _cycle
+        ..stop()
+        ..value = 0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _cycle.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ready = widget.ready > 0;
+    final animate = _cycle.isAnimating;
+    return Semantics(
+      button: true,
+      label: ready ? 'Мій QR, готово: ${widget.ready}' : 'Мій QR',
+      excludeSemantics: true,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          if (ready)
+            // The halo: fades in and out (opacity only).
+            Positioned.fill(
+              child: AnimatedBuilder(
+                animation: _cycle,
+                builder: (context, child) => Opacity(
+                  opacity: animate ? _breath(_cycle.value) : 0.8,
+                  child: child,
+                ),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: ColorName.primary400.withValues(alpha: 0.9),
+                        blurRadius: 26,
+                        spreadRadius: 6,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          Material(
+            color: ColorName.primary400,
+            shape: const CircleBorder(),
+            elevation: 6,
+            shadowColor: ColorName.primary500.withValues(alpha: 0.45),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: () => context.push(Routes.myQr),
+              child: SizedBox.square(
+                dimension: _size,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // The icon itself is white.
+                    Assets.images.icScan.svg(width: 28, height: 28),
+                    if (animate)
+                      IgnorePointer(
+                        child: AnimatedBuilder(
+                          animation: _cycle,
+                          builder: (context, child) {
+                            // Top-left → bottom-right during the first 45 %
+                            // of the cycle, then out of sight.
+                            final t = (_cycle.value / 0.45).clamp(0.0, 1.0);
+                            final d = -_size + t * _size * 2;
+                            return Transform.translate(
+                              offset: Offset(d, d),
+                              child: child,
+                            );
+                          },
+                          child: Transform.rotate(
+                            angle: 0.785398, // 45°, across the motion
+                            child: Container(
+                              width: 22,
+                              height: _size * 1.8,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    ColorName.white.withValues(alpha: 0),
+                                    ColorName.white.withValues(alpha: 0.75),
+                                    ColorName.white.withValues(alpha: 0),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          if (ready)
+            Positioned(top: -2, right: -2, child: _Badge(count: widget.ready)),
+        ],
+      ),
+    );
+  }
+
+  /// 0.45 → 1 → 0.45 over the cycle: a slow breath.
+  static double _breath(double t) => 0.45 + 0.55 * (1 - (2 * t - 1).abs());
 }
 
 class _Badge extends StatelessWidget {

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'device/qr_display_mode.dart';
 import 'network/dio_factory.dart';
 import 'session/session_cubit.dart';
 import 'session/session_repository.dart';
@@ -28,5 +29,6 @@ void registerCore(
     ..registerLazySingleton<Dio>(
       () => createDio(baseUrl: apiBaseUrl, session: sl()),
     )
-    ..registerFactory(() => SessionCubit(sl()));
+    ..registerFactory(() => SessionCubit(sl()))
+    ..registerLazySingleton<QrDisplayMode>(DeviceQrDisplayMode.new);
 }
