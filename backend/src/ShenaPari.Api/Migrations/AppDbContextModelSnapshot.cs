@@ -214,6 +214,10 @@ namespace ShenaPari.Api.Migrations
                     b.Property<long?>("EstimatedReadyAt")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Number")
                         .HasColumnType("INTEGER");
 
