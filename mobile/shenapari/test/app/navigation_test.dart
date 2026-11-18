@@ -302,6 +302,19 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Активні'), findsOneWidget);
     expect(find.text('Готово — забирай'), findsOneWidget);
+
+    // «Мій QR»: a sheet over frosted glass with the ready order's code.
+    final semantics = tester.ensureSemantics();
+    await tester.tap(find.bySemanticsLabel('Мій QR'));
+    await tester.pumpAndSettle();
+    expect(find.text('Твій QR-код'), findsOneWidget);
+    expect(find.text('Покажи код на видачі — і забирай'), findsOneWidget);
+    expect(find.bySemanticsLabel('QR-код замовлення №7'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.close_rounded));
+    await tester.pumpAndSettle();
+    expect(find.text('Твій QR-код'), findsNothing);
+    semantics.dispose();
   });
 
   testWidgets('bell: dot for unread, list, open the order, dot gone', (
