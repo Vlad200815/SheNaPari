@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import '../../core/l10n/l10n.dart';
 
 /// A stand-in for a screen that is not designed yet: a title, an optional
 /// note and buttons that let us walk through the navigation.
@@ -25,7 +26,10 @@ class PlaceholderPage extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Заглушка', style: theme.textTheme.labelLarge),
+              Text(
+                LocaleKeys.common_placeholder.tr(),
+                style: theme.textTheme.labelLarge,
+              ),
               if (note != null) ...[
                 const SizedBox(height: 8),
                 Text(note!, textAlign: TextAlign.center),

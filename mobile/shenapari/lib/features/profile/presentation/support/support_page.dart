@@ -6,6 +6,7 @@ import '../../../../core/ui/app_text.dart';
 import '../../../../core/ui/app_theme.dart';
 import '../../../../core/ui/snack_bars.dart';
 import '../../../../gen/colors.gen.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// «Підтримка»: one big button per way to reach us, like ToSim's
 /// «Відділ турботи». Each opens the app for it (Telegram, mail); when the
@@ -25,7 +26,7 @@ class SupportPage extends StatelessWidget {
       backgroundColor: ColorName.secondary100,
       appBar: AppBar(
         backgroundColor: ColorName.secondary100,
-        title: Text('Підтримка', style: AppText.title()),
+        title: Text(LocaleKeys.support_title.tr(), style: AppText.title()),
       ),
       body: Stack(
         children: [
@@ -39,7 +40,7 @@ class SupportPage extends StatelessWidget {
             ),
             children: [
               Text(
-                'Зв’яжіться з нами\nзручним для вас способом',
+                LocaleKeys.support_intro.tr(),
                 style: AppText.medium(color: ColorName.typography500),
                 textAlign: TextAlign.center,
               ),
@@ -59,7 +60,7 @@ class SupportPage extends StatelessWidget {
               const SizedBox(height: 14),
               _ContactButton(
                 icon: Icons.mail_outline_rounded,
-                label: 'Пошта',
+                label: LocaleKeys.support_mail.tr(),
                 detail: email,
                 background: ColorName.primary400,
                 foreground: ColorName.black,
@@ -68,7 +69,9 @@ class SupportPage extends StatelessWidget {
                   Uri(
                     scheme: 'mailto',
                     path: email,
-                    queryParameters: {'subject': 'ШеНаПарі: питання'},
+                    queryParameters: {
+                      'subject': LocaleKeys.support_mail_subject.tr(),
+                    },
                   ),
                   copy: email,
                 ),
@@ -94,7 +97,10 @@ class SupportPage extends StatelessWidget {
     if (opened || !context.mounted) return;
     await Clipboard.setData(ClipboardData(text: copy));
     if (!context.mounted) return;
-    showInfoSnackBar(context, 'Не вдалося відкрити, скопіювали: $copy');
+    showInfoSnackBar(
+      context,
+      LocaleKeys.common_copied_instead.tr(namedArgs: {'text': copy}),
+    );
   }
 }
 

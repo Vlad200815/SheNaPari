@@ -3,11 +3,17 @@ import 'package:flutter/foundation.dart';
 
 import '../session/session_repository.dart';
 import 'auth_interceptor.dart';
+import 'language_interceptor.dart';
 
 /// Creates the Dio client for the API: the access token is added to every
 /// request and renewed on 401 (see [AuthInterceptor]).
-Dio createDio({required String baseUrl, required SessionRepository session}) {
+Dio createDio({
+  required String baseUrl,
+  required SessionRepository session,
+  required String Function() languageCode,
+}) {
   final dio = Dio(_options(baseUrl));
+  dio.interceptors.add(LanguageInterceptor(languageCode));
   dio.interceptors.add(
     AuthInterceptor(
       session: session,

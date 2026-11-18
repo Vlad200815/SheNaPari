@@ -28,6 +28,10 @@ import 'package:shenapari/features/onboarding/presentation/onboarding_page.dart'
 import 'package:shenapari/features/profile/domain/profile_repository.dart';
 
 import '../fakes.dart';
+import 'package:easy_localization/easy_localization.dart' show EasyLocalization;
+import 'package:shenapari/core/l10n/app_locale.dart';
+import '../l10n_helper.dart';
+import 'package:shenapari/core/l10n/app_language.dart';
 
 const _tokens = AuthTokens(accessToken: 'access', refreshToken: 'refresh');
 const _returning = {'launched_before': true, 'onboarding_seen': true};
@@ -46,6 +50,7 @@ late FakeQrDisplayMode _qrMode;
 /// fake repositories instead of the network.
 Future<void> _pumpApp(
   WidgetTester tester, {
+  Locale phoneLocale = const Locale('uk'),
   Map<String, Object> prefs = const {},
   StoredSession? stored,
   Set<String> knownPhones = const {},
@@ -83,15 +88,25 @@ Future<void> _pumpApp(
       const FakeAccessibilityFeatures(disableAnimations: true);
   addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
 
+  tester.platformDispatcher.localeTestValue = phoneLocale;
+  tester.platformDispatcher.localesTestValue = [phoneLocale];
+  addTearDown(tester.platformDispatcher.clearLocaleTestValue);
+  addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+  await EasyLocalization.ensureInitialized();
   await tester.pumpWidget(
-    App(
-      router: createRouter(
-        session: sl(),
-        prefs: sl(),
-        signOut: sl<SignOutUseCase>().call,
+    localized(
+      locale: sl<AppLocale>().locale,
+      assetLoader: const FileAssetLoader(),
+      child: App(
+        router: createRouter(
+          session: sl(),
+          prefs: sl(),
+          signOut: sl<SignOutUseCase>().call,
+        ),
       ),
     ),
   );
+  await tester.pump();
   expect(find.byType(SplashPage), findsOneWidget, reason: 'splash first');
 
   await startSession(session: sl(), tokenStorage: sl(), prefs: sl());
@@ -192,7 +207,7 @@ void main() {
     await _pumpApp(tester, prefs: _returning);
     await _enterPhone(tester);
 
-    await tester.pageBack();
+    await _back(tester);
     await tester.pumpAndSettle();
 
     expect(find.text(_phoneTitle), findsOneWidget);
@@ -326,7 +341,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Back lands on the orders tab, where it is listed as active.
-    await tester.pageBack();
+    await _back(tester);
     await tester.pumpAndSettle();
     expect(find.text('Активні'), findsOneWidget);
     expect(find.text('Готово — забирай'), findsOneWidget);
@@ -385,9 +400,9 @@ void main() {
     await _tap(tester, 'Замовлення №7 готове!');
     expect(find.text('Замовлення №7'), findsOneWidget);
 
-    await tester.pageBack();
+    await _back(tester);
     await tester.pumpAndSettle();
-    await tester.pageBack();
+    await _back(tester);
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel('Сповіщення'), findsOneWidget);
     semantics.dispose();
@@ -447,9 +462,50 @@ void main() {
     await _tap(tester, 'Зберегти');
     expect(find.text('Збережено'), findsOneWidget);
 
-    await tester.pageBack();
+    await _back(tester);
     await tester.pumpAndSettle();
     expect(find.text('Привіт, Владислав!'), findsOneWidget);
+  });
+
+  testWidgets('a phone in English: the app opens in English', (tester) async {
+    await _pumpApp(
+      tester,
+      phoneLocale: const Locale('en', 'US'),
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+
+    expect(find.byTooltip('Home'), findsOneWidget);
+    expect(find.byTooltip('More'), findsOneWidget);
+    expect(find.text('What are we eating?'), findsOneWidget);
+  });
+
+  testWidgets('settings → «Мова»: the texts switch at once and stay', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+    await _openMyProfile(tester);
+    await _tap(tester, 'Налаштування');
+    expect(find.text('Як у системі'), findsOneWidget);
+
+    await _tap(tester, 'Мова');
+    await _tap(tester, 'English');
+
+    expect(find.text('Settings'), findsOneWidget);
+    expect(find.text('English'), findsOneWidget, reason: 'the row shows it');
+    expect(sl<AppPrefs>().language, AppLanguage.en);
+    expect(sl<AppLocale>().languageCode, 'en', reason: 'Accept-Language');
+
+    // Back on the tabs, everything is English too.
+    await _back(tester, tooltip: 'Back');
+    await tester.pumpAndSettle();
+    await _back(tester, tooltip: 'Back');
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Home'), findsOneWidget);
   });
 
   testWidgets('settings: switch off order push and animations', (tester) async {
@@ -559,3 +615,8 @@ void main() {
     expect(await sl<TokenStorage>().read(), isNull);
   });
 }
+
+/// The app bar's back button. Not `tester.pageBack()`: that one looks for
+/// the English «Back» tooltip, and the app's system texts are Ukrainian.
+Future<void> _back(WidgetTester tester, {String tooltip = 'Назад'}) =>
+    tester.tap(find.byTooltip(tooltip).last);

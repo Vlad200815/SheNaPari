@@ -63,11 +63,14 @@ class $AssetsLegalGen {
   /// File path: assets/legal/privacy.md
   String get privacy => 'assets/legal/privacy.md';
 
+  /// File path: assets/legal/refund.md
+  String get refund => 'assets/legal/refund.md';
+
   /// File path: assets/legal/terms.md
   String get terms => 'assets/legal/terms.md';
 
   /// List of all assets
-  List<String> get values => [privacy, terms];
+  List<String> get values => [privacy, refund, terms];
 }
 
 class $AssetsImagesAuthGen {

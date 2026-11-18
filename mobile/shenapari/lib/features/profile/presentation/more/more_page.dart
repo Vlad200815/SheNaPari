@@ -12,6 +12,8 @@ import '../../../legal/domain/entities/legal_document.dart';
 import '../../domain/entities/user.dart';
 import '../widgets/profile_ui.dart';
 import 'me_cubit.dart';
+import '../../../../core/l10n/l10n.dart';
+import '../../../legal/presentation/legal_texts.dart';
 
 /// The «Більше» tab: who is signed in, and everything that is not food —
 /// help and documents (notifications live behind the bell on the home screen).
@@ -43,14 +45,14 @@ class MorePage extends StatelessWidget {
                   MenuRow(
                     icon: Icons.help_outline_rounded,
                     tint: ColorName.blue,
-                    title: 'Питання та відповіді',
+                    title: LocaleKeys.more_faq.tr(),
                     onTap: () => context.push(Routes.faq),
                   ),
                   MenuRow(
                     icon: Icons.support_agent_rounded,
                     tint: ColorName.green,
-                    title: 'Підтримка',
-                    subtitle: 'Telegram або пошта',
+                    title: LocaleKeys.more_support.tr(),
+                    subtitle: LocaleKeys.more_support_subtitle.tr(),
                     onTap: () => context.push(Routes.support),
                   ),
                 ],
@@ -134,7 +136,11 @@ class _Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  name == null || name.isEmpty ? 'Привіт!' : 'Привіт, $name!',
+                  name == null || name.isEmpty
+                      ? LocaleKeys.more_greeting.tr()
+                      : LocaleKeys.more_greeting_name.tr(
+                          namedArgs: {'name': name},
+                        ),
                   style: AppText.heading(
                     color: ColorName.black,
                   ).copyWith(fontSize: 26),
@@ -168,7 +174,7 @@ class _Header extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'Мій профіль',
+                              LocaleKeys.more_my_profile.tr(),
                               style: AppText.small(
                                 color: ColorName.black,
                                 fontWeight: FontWeight.w600,
@@ -214,8 +220,10 @@ class _AppVersion extends StatelessWidget {
       future: _version(),
       builder: (context, snapshot) => Text(
         snapshot.data == null
-            ? 'ШеНаПарі'
-            : 'ШеНаПарі · версія ${snapshot.data}',
+            ? LocaleKeys.app_name.tr()
+            : LocaleKeys.more_version.tr(
+                namedArgs: {'version': snapshot.data!},
+              ),
         style: AppText.small(color: ColorName.typography500),
         textAlign: TextAlign.center,
       ),

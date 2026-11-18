@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../l10n/app_language.dart';
+
 /// Non-secret flags kept between launches. Notifies listeners on change,
 /// so the router can re-run its redirect.
 class AppPrefs extends ChangeNotifier {
@@ -11,6 +13,7 @@ class AppPrefs extends ChangeNotifier {
   static const _onboardingSeenKey = 'onboarding_seen';
   static const _launchedBeforeKey = 'launched_before';
   static const _reduceMotionKey = 'reduce_motion';
+  static const _languageKey = 'language';
 
   bool get onboardingSeen => _prefs.getBool(_onboardingSeenKey) ?? false;
 
@@ -29,6 +32,14 @@ class AppPrefs extends ChangeNotifier {
 
   Future<void> setReduceMotion(bool value) async {
     await _prefs.setBool(_reduceMotionKey, value);
+    notifyListeners();
+  }
+
+  /// «Мова» in the app's settings; [AppLanguage.system] until changed.
+  AppLanguage get language => AppLanguage.parse(_prefs.getString(_languageKey));
+
+  Future<void> setLanguage(AppLanguage value) async {
+    await _prefs.setString(_languageKey, value.name);
     notifyListeners();
   }
 }

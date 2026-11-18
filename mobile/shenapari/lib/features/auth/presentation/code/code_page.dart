@@ -11,6 +11,7 @@ import '../widgets/auth_layout.dart';
 import '../widgets/code_field.dart';
 import 'code_cubit.dart';
 import 'code_state.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// Step 2 of sign-in: the code from the SMS for [phone].
 class CodePage extends StatelessWidget {
@@ -57,10 +58,14 @@ class _CodeViewState extends State<_CodeView> {
         }
       },
       child: AuthLayout(
-        step: 'Крок 2 з 2',
+        step: LocaleKeys.auth_step.tr(
+          namedArgs: {'current': '2', 'total': '2'},
+        ),
         image: Assets.images.auth.otpCode.image(fit: BoxFit.contain),
-        title: 'Введіть 6-значний код',
-        subtitle: 'Ми надіслали код на номер\n${formatPhone(widget.phone)}',
+        title: LocaleKeys.auth_code_title.tr(),
+        subtitle: LocaleKeys.auth_code_subtitle.tr(
+          namedArgs: {'phone': formatPhone(widget.phone)},
+        ),
         form: CodeField(
           controller: _code,
           length: CodeCubit.codeLength,
@@ -72,7 +77,7 @@ class _CodeViewState extends State<_CodeView> {
               ListenableBuilder(
                 listenable: _code,
                 builder: (context, _) => AppButton.primary(
-                  text: 'Підтвердити',
+                  text: LocaleKeys.auth_confirm.tr(),
                   loading:
                       state.status == CodeStatus.verifying ||
                       state.status == CodeStatus.success,
@@ -102,14 +107,14 @@ class _ResendButton extends StatelessWidget {
     if (state.resendIn > 0) {
       final seconds = state.resendIn.toString().padLeft(2, '0');
       return Text(
-        'Надіслати код повторно через 0:$seconds',
+        LocaleKeys.auth_resend_in.tr(namedArgs: {'seconds': seconds}),
         style: AppText.regular(color: ColorName.typography500),
       );
     }
     return TextButton(
       onPressed: state.isBusy ? null : onResend,
       child: Text(
-        'Надіслати код ще раз',
+        LocaleKeys.auth_resend.tr(),
         style: AppText.medium(color: ColorName.primary500),
       ),
     );
