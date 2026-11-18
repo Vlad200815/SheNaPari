@@ -10,7 +10,7 @@ namespace ShenaPari.Api.Controllers;
 [Route("legal")]
 public class LegalController : ControllerBase
 {
-    // GET /legal/terms, GET /legal/privacy — { version, content (Markdown) }
+    // GET /legal/terms, /legal/privacy, /legal/refund — { version, content (Markdown) }
     [HttpGet("{type}")]
     public ActionResult<Result<LegalDocumentDto>> Get(string type)
     {

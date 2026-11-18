@@ -12,7 +12,7 @@ import '../../../gen/colors.gen.dart';
 import '../domain/entities/legal_document.dart';
 import 'legal_cubit.dart';
 
-/// Terms of use or privacy policy: a title, a hint and the Markdown text in
+/// Terms of use, privacy policy or refund terms: a title, a hint and the Markdown text in
 /// a framed box with a always-visible scrollbar, so it is clear how long
 /// the document is.
 class LegalPage extends StatelessWidget {
@@ -50,6 +50,8 @@ class LegalPage extends StatelessWidget {
                       'Будь ласка, уважно прочитайте Умови використання',
                     LegalDocumentType.privacy =>
                       'Будь ласка, уважно прочитайте Політику конфіденційності',
+                    LegalDocumentType.refund =>
+                      'Коли і як повертаються кошти за замовлення',
                   },
                   style: AppText.small(),
                   textAlign: TextAlign.center,

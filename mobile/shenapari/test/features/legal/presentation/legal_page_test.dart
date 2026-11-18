@@ -42,6 +42,20 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('refund terms: own title and hint', (tester) async {
+    _content = 'Текст.';
+    await tester.pumpWidget(
+      const MaterialApp(home: LegalPage(type: LegalDocumentType.refund)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Умови повернення коштів'), findsOneWidget);
+    expect(
+      find.text('Коли і як повертаються кошти за замовлення'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('a mail link that cannot open is copied instead', (tester) async {
     _content = '[support@example.com](mailto:support@example.com)';
     String? copied;
