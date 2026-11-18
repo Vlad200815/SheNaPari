@@ -21,4 +21,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
   @override
   Future<Result<void>> deleteAccount() => apiCallVoid(_api.deleteMe);
+
+  @override
+  Future<Result<User>> setOrderPush({required bool enabled}) => apiCall(
+    () => _api.updateSettings(MeSettingsDto(orderPushEnabled: enabled)),
+    (dto) => dto.toEntity(),
+  );
 }

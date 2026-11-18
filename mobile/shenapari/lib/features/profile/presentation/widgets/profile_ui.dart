@@ -143,3 +143,82 @@ class InitialsAvatar extends StatelessWidget {
     );
   }
 }
+
+/// A row with a switch; the whole row toggles it. [onChanged] null shows
+/// it disabled (e.g. until the current value is loaded).
+class SwitchRow extends StatelessWidget {
+  const SwitchRow({
+    super.key,
+    required this.icon,
+    required this.tint,
+    required this.title,
+    required this.value,
+    required this.onChanged,
+    this.subtitle,
+  });
+
+  final IconData icon;
+  final Color tint;
+  final String title;
+  final String? subtitle;
+  final bool value;
+  final ValueChanged<bool>? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final subtitle = this.subtitle;
+    final onChanged = this.onChanged;
+    return MergeSemantics(
+      child: InkWell(
+        onTap: onChanged == null ? null : () => onChanged(!value),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 60),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Row(
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: tint.withValues(alpha: 0.22),
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                  child: Icon(icon, size: 21, color: ColorName.black),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: AppText.medium().copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      if (subtitle != null)
+                        Text(subtitle, style: AppText.small()),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Switch(
+                  value: value,
+                  onChanged: onChanged,
+                  activeThumbColor: ColorName.white,
+                  activeTrackColor: ColorName.primary400,
+                  inactiveThumbColor: ColorName.white,
+                  inactiveTrackColor: ColorName.secondary300,
+                  trackOutlineColor: const WidgetStatePropertyAll(
+                    Colors.transparent,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
