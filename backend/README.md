@@ -68,6 +68,7 @@ Paid → Accepted → Cooking → Ready → PickedUp
 | `/categories`, `/dishes`, `/breaks`, `/canteen`, `/me` | будь-хто з токеном |
 | `DELETE /me` | клієнт видаляє свій акаунт: ім'я й телефон стираються, сесії завершуються, замовлення лишаються знеособленими; 409 `profile.has_active_order`, якщо є активне замовлення |
 | `GET /me/notifications`, `POST /me/notifications/read` | клієнт: останні 50 сповіщень про замовлення (ті самі тексти, що й push) і «позначити все прочитаним» |
+| `PUT /me/settings` | клієнт: `{orderPushEnabled}` — push про свої замовлення; вимкнений push не прибирає запис у сповіщеннях |
 | `/orders/*` | клієнт |
 | `/staff/*` | кухар і вище |
 | `/admin/*` | адмін і вище (адмінів створює лише суперадмін) |
