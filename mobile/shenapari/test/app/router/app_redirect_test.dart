@@ -80,7 +80,7 @@ void main() {
         Routes.phone,
       );
       expect(
-        _redirect(SessionStatus.unauthenticated, Routes.profile),
+        _redirect(SessionStatus.unauthenticated, Routes.more),
         Routes.phone,
       );
       expect(
@@ -96,7 +96,7 @@ void main() {
         Routes.splash,
         Routes.code,
         Routes.home,
-        Routes.profile,
+        Routes.more,
       ]) {
         expect(
           _redirect(SessionStatus.needsProfile, location),
@@ -133,7 +133,7 @@ void main() {
 
     test('main screens stay', () {
       expect(_redirect(SessionStatus.authenticated, Routes.home), isNull);
-      expect(_redirect(SessionStatus.authenticated, Routes.profile), isNull);
+      expect(_redirect(SessionStatus.authenticated, Routes.more), isNull);
     });
   });
 }
