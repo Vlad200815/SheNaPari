@@ -16,6 +16,9 @@ abstract class ProfileApi {
   @PATCH('/me')
   Future<ApiEnvelope<MeDto>> updateMe(@Body() UpdateMeDto body);
 
+  @PUT('/me/settings')
+  Future<ApiEnvelope<MeDto>> updateSettings(@Body() MeSettingsDto body);
+
   @DELETE('/me')
   Future<ApiEnvelope<void>> deleteMe();
 }

@@ -467,6 +467,9 @@ namespace ShenaPari.Api.Migrations
                 {
                     b.HasBaseType("ShenaPari.Api.Entities.User");
 
+                    b.Property<bool>("OrderPushEnabled")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(20)
