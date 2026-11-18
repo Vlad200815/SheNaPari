@@ -7,6 +7,9 @@ import 'package:shenapari/app/di.dart';
 import 'package:shenapari/app/router/app_router.dart';
 import 'package:shenapari/app/splash_page.dart';
 import 'package:shenapari/core/result/failure.dart';
+import 'package:shenapari/core/result/result.dart';
+import 'package:shenapari/features/cart/domain/entities/cart.dart';
+import 'package:shenapari/features/menu/domain/entities/dish.dart';
 import 'package:shenapari/core/session/auth_tokens.dart';
 import 'package:shenapari/core/storage/in_memory_token_storage.dart';
 import 'package:shenapari/core/storage/token_storage.dart';
@@ -18,6 +21,7 @@ import 'package:shenapari/features/menu/domain/menu_repository.dart';
 import 'package:shenapari/features/orders/domain/entities/order.dart';
 import 'package:shenapari/features/orders/domain/order_events.dart';
 import 'package:shenapari/features/orders/domain/orders_repository.dart';
+import 'package:shenapari/features/notifications/domain/notifications_repository.dart';
 import 'package:shenapari/features/onboarding/presentation/onboarding_page.dart';
 import 'package:shenapari/features/profile/domain/profile_repository.dart';
 
@@ -33,6 +37,7 @@ late FakeAuthRepository _auth;
 late FakeProfileRepository _profile;
 late FakeOrdersRepository _orders;
 late FakeOrderEvents _orderEvents;
+late FakeNotificationsRepository _notifications;
 
 /// Starts the whole app the way bootstrap() does, with fake storage and
 /// fake repositories instead of the network.
@@ -61,7 +66,11 @@ Future<void> _pumpApp(
     ..unregister<OrdersRepository>()
     ..registerSingleton<OrdersRepository>(_orders = FakeOrdersRepository())
     ..unregister<OrderEvents>()
-    ..registerSingleton<OrderEvents>(_orderEvents = FakeOrderEvents());
+    ..registerSingleton<OrderEvents>(_orderEvents = FakeOrderEvents())
+    ..unregister<NotificationsRepository>()
+    ..registerSingleton<NotificationsRepository>(
+      _notifications = FakeNotificationsRepository(),
+    );
 
   await tester.pumpWidget(
     App(
@@ -293,6 +302,49 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Активні'), findsOneWidget);
     expect(find.text('Готово — забирай'), findsOneWidget);
+  });
+
+  testWidgets('bell: dot for unread, list, open the order, dot gone', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+    final semantics = tester.ensureSemantics();
+    expect(find.bySemanticsLabel('Сповіщення'), findsOneWidget);
+
+    // The kitchen marks an order ready: a notification and a live event.
+    await _orders.placeOrder(
+      items: [
+        CartItem(
+          dish: (await FakeMenuRepository().getDish(10) as Ok<Dish>).value,
+          quantity: 1,
+        ),
+      ],
+      breakSlotId: null,
+      provider: PaymentProvider.googlePay,
+    );
+    _notifications.add('Замовлення №7 готове!', orderId: 'order-7');
+    _orderEvents.changed('order-7');
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Сповіщення, є нові'), findsOneWidget);
+
+    await tester.tap(find.bySemanticsLabel('Сповіщення, є нові'));
+    await tester.pumpAndSettle();
+    expect(find.text('Замовлення №7 готове!'), findsOneWidget);
+    expect(_notifications.markReadCalls, 1);
+
+    await _tap(tester, 'Замовлення №7 готове!');
+    expect(find.text('Замовлення №7'), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Сповіщення'), findsOneWidget);
+    semantics.dispose();
   });
 
   group('delete account', () {

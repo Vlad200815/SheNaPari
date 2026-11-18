@@ -11,6 +11,8 @@ import 'package:shenapari/features/menu/domain/entities/category.dart';
 import 'package:shenapari/features/menu/domain/entities/dish.dart';
 import 'package:shenapari/features/menu/domain/menu_repository.dart';
 import 'package:shenapari/features/orders/domain/entities/order.dart';
+import 'package:shenapari/features/notifications/domain/entities/app_notification.dart';
+import 'package:shenapari/features/notifications/domain/notifications_repository.dart';
 import 'package:shenapari/features/orders/domain/order_events.dart';
 import 'package:shenapari/features/orders/domain/orders_repository.dart';
 import 'package:shenapari/features/cart/domain/entities/cart.dart';
@@ -207,4 +209,43 @@ class FakeOrderEvents implements OrderEvents {
 
   @override
   Stream<String?> get changes => _controller.stream;
+}
+
+/// Notifications kept in memory; [add] is what the server does when the
+/// kitchen changes a status.
+class FakeNotificationsRepository implements NotificationsRepository {
+  final items = <AppNotification>[];
+  int markReadCalls = 0;
+
+  void add(String title, {String? orderId}) => items.insert(
+    0,
+    AppNotification(
+      id: 'n${items.length + 1}',
+      orderId: orderId,
+      title: title,
+      body: 'Покажіть QR-код на видачі',
+      createdAt: DateTime(2026, 11, 17, 11, 30),
+      isRead: false,
+    ),
+  );
+
+  @override
+  Future<Result<List<AppNotification>>> getAll() async => Ok(List.of(items));
+
+  @override
+  Future<Result<void>> markAllRead() async {
+    markReadCalls++;
+    for (var i = 0; i < items.length; i++) {
+      final n = items[i];
+      items[i] = AppNotification(
+        id: n.id,
+        orderId: n.orderId,
+        title: n.title,
+        body: n.body,
+        createdAt: n.createdAt,
+        isRead: true,
+      );
+    }
+    return const Ok(null);
+  }
 }

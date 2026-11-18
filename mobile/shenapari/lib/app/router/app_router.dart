@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/session/session_repository.dart';
 import '../../core/storage/app_prefs.dart';
-import '../../core/ui/placeholder_page.dart';
 import '../../features/auth/presentation/code/code_page.dart';
 import '../../features/auth/presentation/phone/phone_page.dart';
 import '../../features/cart/presentation/cart_page.dart';
@@ -16,6 +15,7 @@ import '../../features/orders/presentation/checkout/checkout_page.dart';
 import '../../features/orders/presentation/my_qr/my_qr_page.dart';
 import '../../features/orders/presentation/order/order_page.dart';
 import '../../features/orders/presentation/orders/orders_page.dart';
+import '../../features/notifications/presentation/notifications_page.dart';
 import '../../features/onboarding/presentation/onboarding_page.dart';
 import '../../features/profile/presentation/profile/profile_page.dart';
 import '../../features/profile/presentation/registration_profile/registration_profile_page.dart';
@@ -138,10 +138,7 @@ GoRouter createRouter({
       GoRoute(path: Routes.checkout, builder: (_, _) => const CheckoutPage()),
       GoRoute(
         path: Routes.notifications,
-        builder: (_, _) => const PlaceholderPage(
-          title: 'Сповіщення',
-          note: 'Тут з’являться зміни статусу ваших замовлень',
-        ),
+        builder: (_, _) => const NotificationsPage(),
       ),
     ],
   );
