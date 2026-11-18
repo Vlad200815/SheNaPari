@@ -25,7 +25,7 @@ class MainShell extends StatelessWidget {
     _Tab(Assets.images.bottomNav.icHome, 'Головна'),
     _Tab(Assets.images.bottomNav.icCart, 'Кошик'),
     _Tab(Assets.images.bottomNav.icOrders, 'Замовлення'),
-    _Tab(Assets.images.bottomNav.icProfile, 'Профіль'),
+    _Tab(Assets.images.bottomNav.icMore, 'Більше'),
   ];
 
   void _openTab(int index) => navigationShell.goBranch(
