@@ -29,6 +29,11 @@ public class Order
     /// When the order actually became Ready; the "not picked up" timer counts from here.
     public DateTimeOffset? ReadyAt { get; set; }
 
+    /// "uk" or "en": the app's language when the order was placed. Its
+    /// notifications and pushes are written later, when the kitchen changes
+    /// the status, so they cannot take the language from that request.
+    public string Language { get; set; } = "uk";
+
     public List<OrderItem> Items { get; set; } = [];
     public List<OrderStatusChange> StatusChanges { get; set; } = [];
     public List<Payment> Payments { get; set; } = [];

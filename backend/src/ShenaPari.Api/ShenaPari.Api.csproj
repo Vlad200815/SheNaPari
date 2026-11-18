@@ -23,7 +23,9 @@
 
   <ItemGroup>
     <!-- Terms of use and privacy policy, served by GET /legal/{type} -->
-    <EmbeddedResource Include="Legal\*.md" />
+    <!-- WithCulture=false: terms.en.md is a file of its own, not a satellite
+         resource for the "en" culture. -->
+    <EmbeddedResource Include="Legal\*.md" WithCulture="false" />
   </ItemGroup>
 
 </Project>

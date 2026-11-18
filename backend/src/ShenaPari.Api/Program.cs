@@ -139,6 +139,13 @@ builder.Services.AddSwaggerGen(o =>
 
 var app = builder.Build();
 
+// Accept-Language: uk (default) or en. First, so that every response,
+// errors written by the auth or exception handlers included, uses it.
+app.UseRequestLocalization(o => o
+    .SetDefaultCulture("uk")
+    .AddSupportedCultures("uk", "en")
+    .AddSupportedUICultures("uk", "en"));
+
 await DbSeeder.SeedAsync(app.Services);
 
 // Unhandled exception → 500 in the envelope (details go to the log, not to the client).

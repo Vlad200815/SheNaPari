@@ -32,16 +32,32 @@ void main() {
   late _FakeLegalApi api;
   late SharedPreferences prefs;
   late LegalRepositoryImpl repository;
+  var language = 'uk';
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
+    language = 'uk';
     prefs = await SharedPreferences.getInstance();
     api = _FakeLegalApi();
     repository = LegalRepositoryImpl(
       api,
       prefs,
       loadAsset: (path) async => 'bundled $path',
+      languageCode: () => language,
     );
+  });
+
+  test('English: its own bundled copy and its own cache', () async {
+    // Ukrainian seen once and cached…
+    api.document = _fresh;
+    await repository.get(LegalDocumentType.terms);
+
+    // …then offline in English: not the Ukrainian cache, the English copy.
+    language = 'en';
+    api.document = null;
+    final document = await repository.get(LegalDocumentType.terms);
+
+    expect(document.content, 'bundled assets/legal/terms.en.md');
   });
 
   test('takes the document from the server', () async {
