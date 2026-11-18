@@ -21,6 +21,7 @@ import '../../features/profile/presentation/faq/faq_page.dart';
 import '../../features/profile/presentation/more/more_page.dart';
 import '../../features/profile/presentation/my_profile/my_profile_page.dart';
 import '../../features/profile/presentation/settings/settings_page.dart';
+import '../../features/profile/presentation/support/support_page.dart';
 import '../../features/profile/presentation/registration_profile/registration_profile_page.dart';
 import '../splash_page.dart';
 import 'app_redirect.dart';
@@ -142,6 +143,7 @@ GoRouter createRouter({
       ),
       GoRoute(path: Routes.settings, builder: (_, _) => const SettingsPage()),
       GoRoute(path: Routes.faq, builder: (_, _) => const FaqPage()),
+      GoRoute(path: Routes.support, builder: (_, _) => const SupportPage()),
       GoRoute(
         path: Routes.notifications,
         builder: (_, _) => const NotificationsPage(),
