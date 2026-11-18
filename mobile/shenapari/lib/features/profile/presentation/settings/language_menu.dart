@@ -146,8 +146,9 @@ class _Option extends StatelessWidget {
   }
 }
 
-/// A round flag (Ukrainian, American) or, for «Як у системі», a phone in a
-/// circle of the same size. Decorative: the name is always next to it.
+/// A flag as a small rounded rectangle (3:2, like a real one), or, for
+/// «Як у системі», a phone in a circle. Both take the same [size] square, so
+/// the names next to them line up. Decorative: the name is always beside it.
 class LanguageBadge extends StatelessWidget {
   const LanguageBadge(this.language, {super.key, required this.size});
 
@@ -161,29 +162,43 @@ class LanguageBadge extends StatelessWidget {
       AppLanguage.en => Assets.images.flags.us,
       AppLanguage.system => null,
     };
+    // A hairline so the flags' white parts do not melt into the menu.
+    final hairline = Border.all(color: ColorName.black.withValues(alpha: 0.08));
     return ExcludeSemantics(
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: ColorName.secondary100,
-          // A hairline so the flags' white parts do not melt into the menu.
-          border: Border.all(color: ColorName.black.withValues(alpha: 0.08)),
+      child: SizedBox.square(
+        dimension: size,
+        child: Center(
+          child: flag == null
+              ? Container(
+                  width: size,
+                  height: size,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: ColorName.secondary100,
+                    border: hairline,
+                  ),
+                  child: Icon(
+                    Icons.smartphone_rounded,
+                    size: size * 0.6,
+                    color: ColorName.typography900,
+                  ),
+                )
+              : Container(
+                  width: size,
+                  height: size * 2 / 3,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(size * 0.14),
+                    border: hairline,
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: flag.svg(
+                    fit: BoxFit.cover,
+                    // The US flag is longer than 3:2: trim its right end,
+                    // so all the stars in the top-left corner stay.
+                    alignment: Alignment.centerLeft,
+                  ),
+                ),
         ),
-        clipBehavior: Clip.antiAlias,
-        child: flag == null
-            ? Icon(
-                Icons.smartphone_rounded,
-                size: size * 0.6,
-                color: ColorName.typography900,
-              )
-            : flag.svg(
-                fit: BoxFit.cover,
-                // The US flag's stars are in its top-left corner: keep them
-                // in the circle instead of the middle stripes.
-                alignment: Alignment.centerLeft,
-              ),
       ),
     );
   }
