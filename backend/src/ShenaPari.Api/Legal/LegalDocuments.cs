@@ -6,7 +6,7 @@ using ShenaPari.Api.Dtos;
 namespace ShenaPari.Api.Legal;
 
 /// <summary>
-/// Terms of use and privacy policy. The texts are Markdown files embedded in
+/// Terms of use, privacy policy and refund terms. The texts are Markdown files embedded in
 /// the assembly (Legal/*.md); the version is a hash of the text, so it changes
 /// by itself whenever the text does and the app knows to refresh its cache.
 /// </summary>
@@ -14,11 +14,13 @@ public static class LegalDocuments
 {
     public const string Terms = "terms";
     public const string Privacy = "privacy";
+    public const string Refund = "refund";
 
     private static readonly Dictionary<string, LegalDocumentDto> Documents = new()
     {
         [Terms] = Load("terms.md"),
         [Privacy] = Load("privacy.md"),
+        [Refund] = Load("refund.md"),
     };
 
     public static LegalDocumentDto? Find(string type) => Documents.GetValueOrDefault(type);
