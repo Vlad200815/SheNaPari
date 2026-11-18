@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using ShenaPari.Api.Common;
@@ -62,6 +63,7 @@ public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier noti
             PickupToken = new Guid(RandomNumberGenerator.GetBytes(16)),
             Total = total,
             CreatedAt = now,
+            Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en" ? "en" : "uk",
             Items = items,
             Payments =
             [
@@ -104,7 +106,7 @@ public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier noti
         if (order is null) return OrderErrors.NotFound;
         if (!OrderStatusRules.CanMove(order.Status, OrderStatus.Cancelled)) return OrderErrors.CannotCancel;
 
-        Cancel(order, customerId, "Скасовано клієнтом");
+        Cancel(order, customerId, reason: null);
         await db.SaveChangesAsync();
         await notifier.StatusChangedAsync(order);
         return ToClientDto(order);
@@ -166,7 +168,8 @@ public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier noti
         if (!OrderStatusRules.CanMove(order.Status, to)) return OrderErrors.InvalidTransition;
 
         reason = string.IsNullOrWhiteSpace(reason) ? null : reason.Trim();
-        if (to == OrderStatus.Cancelled) Cancel(order, staffId, reason ?? "Скасовано кухнею");
+        // No made-up reason: the app shows «money refunded» instead, in its language.
+        if (to == OrderStatus.Cancelled) Cancel(order, staffId, reason);
         else SetStatus(order, to, staffId, reason);
         await db.SaveChangesAsync();
         await notifier.StatusChangedAsync(order);
@@ -220,7 +223,7 @@ public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier noti
     }
 
     /// Cancelling always refunds the (simulated) payment.
-    private void Cancel(Order order, Guid changedBy, string reason)
+    private void Cancel(Order order, Guid changedBy, string? reason)
     {
         foreach (var p in order.Payments.Where(p => p.Status == PaymentStatus.Paid))
             p.Status = PaymentStatus.Refunded;
