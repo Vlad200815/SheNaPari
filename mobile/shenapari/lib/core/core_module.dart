@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'device/qr_display_mode.dart';
+import 'l10n/app_locale.dart';
 import 'network/dio_factory.dart';
 import 'session/session_cubit.dart';
 import 'session/session_repository.dart';
@@ -20,6 +21,7 @@ void registerCore(
 }) {
   sl
     ..registerSingleton<AppPrefs>(AppPrefs(prefs))
+    ..registerLazySingleton<AppLocale>(() => AppLocale(sl()))
     ..registerLazySingleton<TokenStorage>(
       () => tokenStorage ?? SecureTokenStorage(),
     )
@@ -27,7 +29,11 @@ void registerCore(
       () => SessionRepositoryImpl(sl()),
     )
     ..registerLazySingleton<Dio>(
-      () => createDio(baseUrl: apiBaseUrl, session: sl()),
+      () => createDio(
+        baseUrl: apiBaseUrl,
+        session: sl(),
+        languageCode: () => sl<AppLocale>().languageCode,
+      ),
     )
     ..registerFactory(() => SessionCubit(sl()))
     ..registerLazySingleton<QrDisplayMode>(DeviceQrDisplayMode.new);

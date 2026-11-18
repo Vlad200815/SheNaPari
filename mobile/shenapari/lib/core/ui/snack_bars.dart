@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../gen/colors.gen.dart';
 import '../result/failure.dart';
 import 'app_text.dart';
+import '../l10n/l10n.dart';
 
 /// Shows the failure text from the server (already in Ukrainian).
 ///
@@ -12,7 +13,7 @@ import 'app_text.dart';
 void showFailureSnackBar(BuildContext context, Failure failure) => _show(
   context,
   _MessageCard(
-    message: failure.message,
+    message: failure.text,
     icon: Icons.error_outline,
     accent: ColorName.red,
     background: ColorName.redLight,

@@ -11,6 +11,7 @@ import '../../../../core/ui/snack_bars.dart';
 import '../../../../gen/colors.gen.dart';
 import '../widgets/profile_ui.dart';
 import 'edit_profile_cubit.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// «Мій профіль»: the name (editable) and the phone (the login, so it
 /// cannot be changed), the way to settings and sign-out.
@@ -31,14 +32,17 @@ class MyProfilePage extends StatelessWidget {
           if (state.failure != null) {
             showFailureSnackBar(context, state.failure!);
           } else {
-            showInfoSnackBar(context, 'Збережено');
+            showInfoSnackBar(context, LocaleKeys.common_saved.tr());
           }
         },
         builder: (context, state) => Scaffold(
           backgroundColor: ColorName.secondary100,
           appBar: AppBar(
             backgroundColor: ColorName.secondary100,
-            title: Text('Мій профіль', style: AppText.title()),
+            title: Text(
+              LocaleKeys.more_my_profile.tr(),
+              style: AppText.title(),
+            ),
           ),
           body: switch (state.status) {
             EditProfileStatus.loading => const Center(
@@ -51,13 +55,13 @@ class MyProfilePage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      state.failure!.message,
+                      state.failure!.text,
                       style: AppText.regular(color: ColorName.typography500),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),
                     AppButton.primary(
-                      text: 'Спробувати ще раз',
+                      text: LocaleKeys.common_retry.tr(),
                       onPressed: context.read<EditProfileCubit>().load,
                     ),
                   ],
@@ -79,7 +83,7 @@ class MyProfilePage extends StatelessWidget {
                       12,
                     ),
                     child: AppButton.primary(
-                      text: 'Зберегти',
+                      text: LocaleKeys.common_save.tr(),
                       loading: state.status == EditProfileStatus.saving,
                       onPressed: state.canSave
                           ? context.read<EditProfileCubit>().save
@@ -123,9 +127,9 @@ class _Form extends StatelessWidget {
                 readOnly: true,
                 enableInteractiveSelection: false,
                 style: AppText.medium(color: ColorName.typography500),
-                decoration: const InputDecoration(
-                  labelText: 'Телефон',
-                  helperText: 'Це ваш логін, його змінити не можна',
+                decoration: InputDecoration(
+                  labelText: LocaleKeys.profile_phone.tr(),
+                  helperText: LocaleKeys.profile_phone_hint.tr(),
                   suffixIcon: Icon(
                     Icons.lock_outline_rounded,
                     color: ColorName.secondary400,
@@ -141,7 +145,7 @@ class _Form extends StatelessWidget {
             MenuRow(
               icon: Icons.settings_outlined,
               tint: ColorName.secondary400,
-              title: 'Налаштування',
+              title: LocaleKeys.settings_title.tr(),
               onTap: () => context.push(Routes.settings),
             ),
           ],
@@ -159,7 +163,7 @@ class _Form extends StatelessWidget {
             ),
             icon: const Icon(Icons.logout_rounded),
             label: Text(
-              'Вийти із застосунку',
+              LocaleKeys.profile_sign_out.tr(),
               style: AppText.medium().copyWith(fontWeight: FontWeight.w600),
             ),
             onPressed: onSignOut,
@@ -188,9 +192,9 @@ class _NameField extends StatelessWidget {
       style: AppText.medium(),
       cursorColor: ColorName.primary400,
       decoration: InputDecoration(
-        labelText: 'Ім’я',
-        helperText: 'Його назве кухня, коли замовлення буде готове',
-        errorText: showError ? 'Від 2 до 100 символів' : null,
+        labelText: LocaleKeys.profile_name.tr(),
+        helperText: LocaleKeys.profile_name_hint.tr(),
+        errorText: showError ? LocaleKeys.profile_name_error.tr() : null,
         counterText: '',
       ),
       onChanged: context.read<EditProfileCubit>().nameChanged,

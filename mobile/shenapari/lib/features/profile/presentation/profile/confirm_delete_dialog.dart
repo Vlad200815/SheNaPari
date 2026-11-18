@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../core/ui/app_button.dart';
 import '../../../../core/ui/app_text.dart';
 import '../../../../gen/colors.gen.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// Asks "really delete?" and explains what happens. True only when the user
 /// pressed "Видалити"; tapping outside or "Скасувати" means no.
@@ -47,25 +48,24 @@ class _ConfirmDeleteDialog extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Видалити акаунт?',
+              LocaleKeys.profile_delete_title.tr(),
               style: AppText.title(),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
-              'Ваше ім’я та номер телефону буде стерто, а вхід завершиться '
-              'на всіх пристроях. Цю дію не можна скасувати.',
+              LocaleKeys.profile_delete_text.tr(),
               style: AppText.small(),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             AppButton.destructive(
-              text: 'Видалити',
+              text: LocaleKeys.profile_delete.tr(),
               onPressed: () => Navigator.of(context).pop(true),
             ),
             const SizedBox(height: 10),
             AppButton.outlined(
-              text: 'Скасувати',
+              text: LocaleKeys.common_cancel.tr(),
               onPressed: () => Navigator.of(context).pop(false),
             ),
           ],
