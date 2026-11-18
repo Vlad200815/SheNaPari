@@ -160,7 +160,8 @@ Page<void> _fade(GoRouterState state, Widget child) => CustomTransitionPage(
   // Once the fade is over the page is drawn without an opacity layer:
   // Impeller cannot pass inherited opacity to blurred shadows, and a
   // leftover layer at 100 % made it complain on every repainted frame.
-  transitionsBuilder: (_, animation, _, child) => animation.isCompleted
+  transitionsBuilder: (context, animation, _, child) =>
+      animation.isCompleted || MediaQuery.disableAnimationsOf(context)
       ? child
       : FadeTransition(opacity: animation, child: child),
 );
