@@ -2,7 +2,8 @@ import 'package:equatable/equatable.dart';
 
 enum LegalDocumentType {
   terms('Умови використання'),
-  privacy('Політика конфіденційності');
+  privacy('Політика конфіденційності'),
+  refund('Умови повернення коштів');
 
   const LegalDocumentType(this.title);
 
