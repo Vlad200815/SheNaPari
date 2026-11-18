@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:shenapari/core/device/qr_display_mode.dart';
 import 'package:shenapari/core/result/failure.dart';
 import 'package:shenapari/core/result/result.dart';
 import 'package:shenapari/core/session/auth_tokens.dart';
@@ -249,4 +250,19 @@ class FakeNotificationsRepository implements NotificationsRepository {
     }
     return const Ok(null);
   }
+}
+
+/// Records what the QR sheet asked the phone to do.
+class FakeQrDisplayMode implements QrDisplayMode {
+  var on = false;
+  var enters = 0;
+
+  @override
+  Future<void> enter() async {
+    on = true;
+    enters++;
+  }
+
+  @override
+  Future<void> exit() async => on = false;
 }

@@ -107,7 +107,10 @@ GoRouter createRouter({
       GoRoute(
         path: Routes.myQr,
         // A sheet over frosted glass, the app visible behind it.
-        pageBuilder: (_, state) => myQrPage(state.pageKey),
+        pageBuilder: (_, state) => myQrPage(
+          state.pageKey,
+          orderId: state.uri.queryParameters['order'],
+        ),
       ),
       GoRoute(
         path: Routes.orderPattern,
