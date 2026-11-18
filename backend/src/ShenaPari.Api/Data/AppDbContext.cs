@@ -21,6 +21,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<OrderStatusChange> OrderStatusChanges => Set<OrderStatusChange>();
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<Canteen> Canteens => Set<Canteen>();
+    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder c)
     {
@@ -43,6 +44,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         // Unique indexes ignore NULLs, so employees (no phone) and customers (no e-mail)
         // can share the Users table.
+        b.Entity<Notification>(e =>
+        {
+            // The bell list: one user's notifications, newest first.
+            e.HasIndex(n => new { n.UserId, n.CreatedAt });
+            e.Property(n => n.Title).HasMaxLength(200);
+            e.Property(n => n.Body).HasMaxLength(500);
+        });
+
         b.Entity<Customer>(e =>
         {
             e.HasIndex(c => c.Phone).IsUnique();

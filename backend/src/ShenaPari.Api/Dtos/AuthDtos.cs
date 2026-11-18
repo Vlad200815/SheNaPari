@@ -20,3 +20,6 @@ public record UpdateMeDto(string Name);
 
 /// Token = the Firebase device token; null switches notifications off for this device.
 public record PushTokenDto(string? Token);
+
+/// An item of GET /me/notifications.
+public record NotificationDto(Guid Id, Guid? OrderId, string Title, string Body, DateTimeOffset CreatedAt, bool IsRead);
