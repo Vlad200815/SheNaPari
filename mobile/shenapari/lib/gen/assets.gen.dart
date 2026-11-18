@@ -111,14 +111,14 @@ class $AssetsImagesBottomNavGen {
   /// File path: assets/images/bottom_nav/ic_home.svg
   SvgGenImage get icHome => const SvgGenImage('assets/images/bottom_nav/ic_home.svg');
 
+  /// File path: assets/images/bottom_nav/ic_more.svg
+  SvgGenImage get icMore => const SvgGenImage('assets/images/bottom_nav/ic_more.svg');
+
   /// File path: assets/images/bottom_nav/ic_orders.svg
   SvgGenImage get icOrders => const SvgGenImage('assets/images/bottom_nav/ic_orders.svg');
 
-  /// File path: assets/images/bottom_nav/ic_profile.svg
-  SvgGenImage get icProfile => const SvgGenImage('assets/images/bottom_nav/ic_profile.svg');
-
   /// List of all assets
-  List<SvgGenImage> get values => [icCart, icHome, icOrders, icProfile];
+  List<SvgGenImage> get values => [icCart, icHome, icMore, icOrders];
 }
 
 class $AssetsImagesHomeGen {

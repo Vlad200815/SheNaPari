@@ -1,0 +1,223 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../../../app/di.dart';
+import '../../../../app/router/routes.dart';
+import '../../../../core/ui/app_text.dart';
+import '../../../../core/ui/app_theme.dart';
+import '../../../../core/ui/snack_bars.dart';
+import '../../../../gen/colors.gen.dart';
+import '../../../legal/domain/entities/legal_document.dart';
+import '../../domain/entities/user.dart';
+import '../widgets/profile_ui.dart';
+import 'me_cubit.dart';
+
+/// The «Більше» tab: who is signed in, and everything that is not food —
+/// orders, notifications, help, documents.
+class MorePage extends StatelessWidget {
+  const MorePage({super.key});
+
+  static const supportEmail = 'supportshenapari@gmail.com';
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<MeCubit>()..load(),
+      child: Scaffold(
+        backgroundColor: ColorName.secondary100,
+        body: SafeArea(
+          bottom: false,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(
+              AppDimens.horizontalPadding,
+              20,
+              AppDimens.horizontalPadding,
+              32,
+            ),
+            children: [
+              BlocBuilder<MeCubit, User?>(
+                builder: (context, user) => _Header(user: user),
+              ),
+              const SizedBox(height: 24),
+              MenuCard(
+                children: [
+                  MenuRow(
+                    icon: Icons.receipt_long_outlined,
+                    tint: ColorName.orange,
+                    title: 'Мої замовлення',
+                    onTap: () => context.go(Routes.orders),
+                  ),
+                  MenuRow(
+                    icon: Icons.notifications_none_rounded,
+                    tint: ColorName.primary400,
+                    title: 'Сповіщення',
+                    onTap: () => context.push(Routes.notifications),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              MenuCard(
+                children: [
+                  MenuRow(
+                    icon: Icons.help_outline_rounded,
+                    tint: ColorName.blue,
+                    title: 'Питання та відповіді',
+                    onTap: () => context.push(Routes.faq),
+                  ),
+                  MenuRow(
+                    icon: Icons.mail_outline_rounded,
+                    tint: ColorName.green,
+                    title: 'Написати в підтримку',
+                    subtitle: supportEmail,
+                    onTap: () => _writeToSupport(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              MenuCard(
+                children: [
+                  MenuRow(
+                    icon: Icons.description_outlined,
+                    tint: ColorName.secondary400,
+                    title: LegalDocumentType.terms.title,
+                    onTap: () =>
+                        context.push(Routes.legal(LegalDocumentType.terms)),
+                  ),
+                  MenuRow(
+                    icon: Icons.privacy_tip_outlined,
+                    tint: ColorName.secondary400,
+                    title: LegalDocumentType.privacy.title,
+                    onTap: () =>
+                        context.push(Routes.legal(LegalDocumentType.privacy)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 28),
+              const _AppVersion(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Opens the mail app; without one, copies the address instead.
+  static Future<void> _writeToSupport(BuildContext context) async {
+    final uri = Uri(
+      scheme: 'mailto',
+      path: supportEmail,
+      queryParameters: {'subject': 'ШеНаПарі: питання'},
+    );
+    var opened = false;
+    try {
+      opened = await launchUrl(uri);
+    } on Exception {
+      opened = false;
+    }
+    if (opened || !context.mounted) return;
+    showInfoSnackBar(context, 'Напишіть нам на $supportEmail');
+  }
+}
+
+class _Header extends StatelessWidget {
+  const _Header({required this.user});
+
+  final User? user;
+
+  @override
+  Widget build(BuildContext context) {
+    final user = this.user;
+    final name = user?.name?.trim();
+    final phone = user?.phone;
+    return Row(
+      children: [
+        InitialsAvatar(name: name),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name == null || name.isEmpty ? 'Привіт!' : 'Привіт, $name!',
+                style: AppText.title().copyWith(fontSize: 22),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              if (phone != null)
+                Text(formatProfilePhone(phone), style: AppText.small()),
+              const SizedBox(height: 8),
+              Material(
+                color: ColorName.white,
+                shape: const StadiumBorder(),
+                child: InkWell(
+                  customBorder: const StadiumBorder(),
+                  onTap: () async {
+                    final cubit = context.read<MeCubit>();
+                    await context.push(Routes.myProfile);
+                    // The name may have changed there.
+                    await cubit.load();
+                  },
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 40),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Мій профіль',
+                            style: AppText.small(
+                              color: ColorName.black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Icon(
+                            Icons.chevron_right_rounded,
+                            size: 18,
+                            color: ColorName.black,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// «ШеНаПарі · версія 1.0.0»; nothing if the version cannot be read.
+class _AppVersion extends StatelessWidget {
+  const _AppVersion();
+
+  static Future<String?> _version() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      return info.version;
+    } on Object {
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String?>(
+      future: _version(),
+      builder: (context, snapshot) => Text(
+        snapshot.data == null
+            ? 'ШеНаПарі'
+            : 'ШеНаПарі · версія ${snapshot.data}',
+        style: AppText.small(color: ColorName.typography500),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
