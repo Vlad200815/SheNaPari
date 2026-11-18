@@ -9,9 +9,6 @@ plugins {
 }
 
 kotlin {
-    // Setting a toolchain fixes target mismatches for both Kotlin and Java tasks automatically
-    jvmToolchain(17)
-
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
