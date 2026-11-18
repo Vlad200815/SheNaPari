@@ -19,7 +19,12 @@ abstract final class Routes {
   /// One order, over the tabs.
   static const orderPattern = '/order/:id';
   static String order(String id) => '/order/$id';
-  static const profile = '/profile';
+  static const more = '/more';
+
+  /// Pushed over the tabs from «Більше».
+  static const myProfile = '/profile';
+  static const settings = '/settings';
+  static const faq = '/faq';
 
   /// Pushed over the tabs: the QR of the active order for pickup.
   static const myQr = '/my-qr';
