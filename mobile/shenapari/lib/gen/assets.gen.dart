@@ -70,19 +70,6 @@ class $AssetsLegalGen {
   List<String> get values => [privacy, terms];
 }
 
-class $AssetsTranslationsGen {
-  const $AssetsTranslationsGen();
-
-  /// File path: assets/translations/en.json
-  String get en => 'assets/translations/en.json';
-
-  /// File path: assets/translations/uk.json
-  String get uk => 'assets/translations/uk.json';
-
-  /// List of all assets
-  List<String> get values => [en, uk];
-}
-
 class $AssetsImagesAuthGen {
   const $AssetsImagesAuthGen();
 
@@ -178,7 +165,6 @@ class $AssetsImagesSplashGen {
 abstract final class Assets {
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsLegalGen legal = $AssetsLegalGen();
-  static const $AssetsTranslationsGen translations = $AssetsTranslationsGen();
 }
 
 class AssetGenImage {
