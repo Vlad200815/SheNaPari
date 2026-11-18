@@ -168,6 +168,9 @@ dependencies:
   material_ui: ^1.11.1
   signalr_netcore: ^1.4.4
   qr_flutter: ^4.1.0
+  screen_brightness: ^2.1.11
+  wakelock_plus: ^1.8.0
+  no_screenshot: ^2.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
