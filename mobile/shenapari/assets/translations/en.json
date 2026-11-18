@@ -1,0 +1,252 @@
+{
+  "app": {
+    "name": "SheNaPari"
+  },
+  "common": {
+    "retry": "Try again",
+    "to_menu": "To the menu",
+    "back": "Back",
+    "close": "Close",
+    "cancel": "Cancel",
+    "no": "No",
+    "continue": "Continue",
+    "save": "Save",
+    "saved": "Saved",
+    "clear": "Clear",
+    "less": "Less",
+    "more": "More",
+    "placeholder": "Placeholder",
+    "copied_instead": "Couldn’t open it, copied instead: {text}"
+  },
+  "errors": {
+    "network": "No connection to the server",
+    "generic": "Something went wrong. Please try again."
+  },
+  "tabs": {
+    "home": "Home",
+    "cart": "Cart",
+    "orders": "Orders",
+    "more": "More",
+    "my_qr": "My QR",
+    "my_qr_ready": "My QR, ready: {count}"
+  },
+  "onboarding": {
+    "welcome_title": "Welcome to the tastiest app",
+    "order_title": "Order on the fly. Pick up in seconds!",
+    "order_text": "Forget campus queues. Order during class and pick up your food as soon as the bell rings. No waiting, no lines.",
+    "calm_title": "Peace of mind in every bite",
+    "calm_text": "Get real-time updates, from the moment it hits the grill to the moment it’s handed over. We take care of the time, you take care of the appetite.",
+    "start": "Start",
+    "next": "Next",
+    "skip": "Skip"
+  },
+  "auth": {
+    "step": "Step {current} of {total}",
+    "phone_title": "Enter your phone number",
+    "phone_subtitle": "We’ll send you a 6-digit code to confirm the number",
+    "consent_prefix": "By continuing, you agree to our ",
+    "consent_terms": "Terms of Use",
+    "consent_and": " and ",
+    "consent_privacy": "Privacy Policy",
+    "code_title": "Enter the 6-digit code",
+    "code_subtitle": "We sent a code to\n{phone}",
+    "confirm": "Confirm",
+    "resend_in": "Resend the code in 0:{seconds}",
+    "resend": "Send the code again",
+    "name_title": "What’s your name?",
+    "name_subtitle": "The kitchen will show it when your order is ready",
+    "name_hint": "Name"
+  },
+  "home": {
+    "greeting": "Hi!",
+    "greeting_name": "Hi, {name}",
+    "question": "What are we eating?",
+    "notifications": "Notifications",
+    "notifications_unread": "Notifications, new ones",
+    "menu_empty": "The menu is empty for now",
+    "filter_all": "All",
+    "filter_popular": "Popular",
+    "hit": "Hit",
+    "weight": "{grams} g",
+    "kcal": "{kcal} kcal",
+    "add_to_cart": "Add {name} to the cart"
+  },
+  "break_card": {
+    "paused_title": "The kitchen is paused",
+    "paused_text": "Orders are temporarily not accepted",
+    "none_title": "No breaks yet",
+    "none_text": "The schedule will appear soon",
+    "order_now": "Order now, skip the queue",
+    "time_left": "Time until the break",
+    "next": "Next break · {time}",
+    "tomorrow": "Tomorrow · {time}",
+    "under_minute": "under a minute",
+    "minutes_left": "{minutes} min left",
+    "hours_left": "{hours} h {minutes} min left"
+  },
+  "dish": {
+    "composition": "Ingredients",
+    "pickup_hint": "Pick it up at the break, no queue",
+    "cart_updated": "Cart updated",
+    "added": "Added to the cart",
+    "update": "Update · {total}",
+    "add": "Add · {total}"
+  },
+  "cart": {
+    "title": "Cart",
+    "total": "Total · {count} {portions}",
+    "portions": {
+      "one": "portion",
+      "other": "portions"
+    },
+    "checkout": "Place order",
+    "empty_title": "Your cart is empty",
+    "empty_text": "Add dishes from the menu and we’ll have them ready by the break"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "paused": "The kitchen isn’t taking orders right now. Please try a bit later.",
+    "when": "Pick-up time",
+    "break_at": "Break at {time}",
+    "asap": "As soon as possible",
+    "asap_no_breaks": "No more breaks today, the kitchen will cook it right away",
+    "asap_text": "The kitchen will cook it as soon as it accepts the order",
+    "order": "Order",
+    "payment": "Payment",
+    "payment_simulated": "Payment is simulated in this version: no money is charged.",
+    "pay": "Pay · {total}",
+    "paid_title": "Order #{number} is paid",
+    "paid_asap": "The kitchen will start on it shortly. We’ll let you know when it’s ready.",
+    "paid_break": "Pick it up at the {time} break, no queue. We’ll let you know when it’s ready.",
+    "track": "Track the order"
+  },
+  "orders": {
+    "title": "Orders",
+    "number": "Order #{number}",
+    "empty_title": "No orders yet",
+    "empty_text": "Choose dishes from the menu and pick them up at the break",
+    "active": "Active",
+    "history": "History",
+    "status": {
+      "paid": "Paid",
+      "accepted": "Accepted",
+      "cooking": "Cooking",
+      "ready": "Ready, pick it up",
+      "picked_up": "Picked up",
+      "cancelled": "Cancelled",
+      "not_picked_up": "Not picked up",
+      "unknown": "Updating"
+    },
+    "ready_at": "Ready at about {time}",
+    "at_break": "At the {time} break",
+    "asap": "As soon as possible",
+    "steps": {
+      "paid": "Paid",
+      "paid_text": "The kitchen got the order",
+      "accepted": "Accepted",
+      "accepted_text": "The cook set the ready time",
+      "cooking": "Cooking",
+      "cooking_text": "Already on the stove",
+      "ready": "Ready",
+      "ready_text": "Show the QR at the counter",
+      "picked_up": "Picked up",
+      "picked_up_text": "Enjoy your meal!"
+    },
+    "show_qr": "Show QR",
+    "total": "Total",
+    "placed": "Placed {date}",
+    "cancel": "Cancel order",
+    "cancel_hint": "You can cancel until the kitchen starts cooking. The money will be refunded.",
+    "not_picked_up_text": "The order was not picked up within 30 minutes of being ready",
+    "refunded": "Money refunded",
+    "reason": "Reason: {reason}",
+    "cancel_title": "Cancel order #{number}?",
+    "cancel_text": "The kitchen won’t cook it, and the money will be refunded."
+  },
+  "my_qr": {
+    "title_one": "Your QR code",
+    "title_many": "Your QR codes",
+    "empty": "No active orders. The QR will appear here when an order is ready.",
+    "chip": "#{number} · {status}",
+    "ready": "Ready",
+    "qr_label": "QR code of order #{number}",
+    "show_hint": "Show the code at the counter and pick it up",
+    "waiting": "The QR will appear here as soon as the kitchen cooks order #{number} · {when}",
+    "details": "Order details"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty_title": "No notifications yet",
+    "empty_text": "They’ll appear here when the kitchen accepts an order and when it’s ready",
+    "new": "New",
+    "today": "Today, {time}",
+    "yesterday": "Yesterday, {time}"
+  },
+  "more": {
+    "greeting": "Hi!",
+    "greeting_name": "Hi, {name}!",
+    "my_profile": "My profile",
+    "faq": "Questions and answers",
+    "support": "Support",
+    "support_subtitle": "Telegram or email",
+    "version": "SheNaPari · version {version}"
+  },
+  "profile": {
+    "phone": "Phone",
+    "phone_hint": "It’s your login, it can’t be changed",
+    "name": "Name",
+    "name_hint": "The kitchen will call it when your order is ready",
+    "name_error": "From 2 to 100 characters",
+    "sign_out": "Sign out",
+    "delete_title": "Delete the account?",
+    "delete_text": "Your name and phone number will be erased, and you’ll be signed out on all devices. This can’t be undone.",
+    "delete": "Delete"
+  },
+  "settings": {
+    "title": "Settings",
+    "order_push": "Order notifications",
+    "order_push_text": "A push when the kitchen accepts an order and when it’s ready. They stay in the notifications list either way",
+    "permission": "Permission and sound",
+    "permission_text": "In the phone’s settings",
+    "reduce_motion": "Turn off animations",
+    "reduce_motion_text": "No smooth transitions, sliding sheets or shine on the QR button",
+    "language": "Language",
+    "language_system": "System default",
+    "delete_account": "Delete account"
+  },
+  "support": {
+    "title": "Support",
+    "intro": "Get in touch with us\nthe way that suits you",
+    "mail": "Email",
+    "mail_subject": "SheNaPari: a question"
+  },
+  "legal": {
+    "terms": "Terms of Use",
+    "privacy": "Privacy Policy",
+    "refund": "Refund Policy",
+    "terms_hint": "Please read the Terms of Use carefully",
+    "privacy_hint": "Please read the Privacy Policy carefully",
+    "refund_hint": "When and how money for an order is refunded"
+  },
+  "faq": {
+    "title": "Questions and answers",
+    "how_order_q": "How do I place an order?",
+    "how_order_a": "Add dishes to the cart, tap “Place order”, choose a break or “As soon as possible” and pay.",
+    "when_q": "When can I pick it up?",
+    "when_a": "At the break you chose. When the kitchen marks the order ready, you’ll get a notification and the QR button in the centre will start to glow.",
+    "pickup_q": "How do I pick up the order?",
+    "pickup_a": "Tap the QR button in the centre of the bottom bar and show the code at the counter. The order number is on the screen too.",
+    "late_q": "What if I don’t make it in time?",
+    "late_a": "A ready order waits for 30 minutes. After that it’s closed as “not picked up”.",
+    "cancel_q": "Can I cancel an order?",
+    "cancel_a": "Yes, until the kitchen starts cooking: open the order and tap “Cancel order”. The money will be refunded.",
+    "payment_q": "How does payment work?",
+    "payment_a": "In this version, Apple Pay and Google Pay payments are simulated: no money is charged.",
+    "cant_order_q": "Why can’t I place an order?",
+    "cant_order_a": "The kitchen may have paused taking orders; a banner on the home screen will say so. You can still browse the menu and order a bit later.",
+    "name_q": "How do I change my name?",
+    "name_a": "More → My profile. The phone number can’t be changed: it’s your login.",
+    "delete_q": "How do I delete my account?",
+    "delete_a": "More → My profile → Settings → “Delete account”. Pick up or cancel your active orders first."
+  }
+}

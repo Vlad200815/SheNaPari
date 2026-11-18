@@ -3,57 +3,23 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../core/ui/app_text.dart';
 import '../../../../core/ui/app_theme.dart';
 import '../../../../gen/colors.gen.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// Short answers to what customers ask most. The rules quoted here are the
 /// backend's: 30 minutes to pick up, cancel until cooking, simulated pay.
 class FaqPage extends StatelessWidget {
   const FaqPage({super.key});
 
-  static const items = [
-    (
-      'Як зробити замовлення?',
-      'Додайте страви в кошик, натисніть «Оформити замовлення», оберіть '
-          'перерву або «Якнайшвидше» і оплатіть.',
-    ),
-    (
-      'Коли можна забрати?',
-      'На перерві, яку ви обрали. Коли кухня позначить замовлення готовим, '
-          'прийде сповіщення, а кнопка з QR у центрі почне світитися.',
-    ),
-    (
-      'Як забрати замовлення?',
-      'Натисніть кнопку з QR у центрі нижньої панелі й покажіть код на '
-          'видачі. Номер замовлення теж є на екрані.',
-    ),
-    (
-      'Що буде, якщо я не встигну?',
-      'Готове замовлення чекає 30 хвилин. Після цього воно закривається як '
-          '«не забрано».',
-    ),
-    (
-      'Чи можна скасувати замовлення?',
-      'Так, доки кухня не почала готувати: відкрийте замовлення і натисніть '
-          '«Скасувати замовлення». Гроші буде повернуто.',
-    ),
-    (
-      'Як працює оплата?',
-      'У цій версії оплата через Apple Pay чи Google Pay імітується — гроші '
-          'не списуються.',
-    ),
-    (
-      'Чому не вдається оформити замовлення?',
-      'Кухня могла тимчасово призупинити прийом — про це скаже банер на '
-          'головній. Меню переглядати можна, замовити — трохи згодом.',
-    ),
-    (
-      'Як змінити ім’я?',
-      'Більше → Мій профіль. Номер телефону змінити не можна: це ваш логін.',
-    ),
-    (
-      'Як видалити акаунт?',
-      'Більше → Мій профіль → Налаштування → «Видалити акаунт». Спершу '
-          'заберіть або скасуйте активні замовлення.',
-    ),
+  static List<(String, String)> get items => [
+    (LocaleKeys.faq_how_order_q.tr(), LocaleKeys.faq_how_order_a.tr()),
+    (LocaleKeys.faq_when_q.tr(), LocaleKeys.faq_when_a.tr()),
+    (LocaleKeys.faq_pickup_q.tr(), LocaleKeys.faq_pickup_a.tr()),
+    (LocaleKeys.faq_late_q.tr(), LocaleKeys.faq_late_a.tr()),
+    (LocaleKeys.faq_cancel_q.tr(), LocaleKeys.faq_cancel_a.tr()),
+    (LocaleKeys.faq_payment_q.tr(), LocaleKeys.faq_payment_a.tr()),
+    (LocaleKeys.faq_cant_order_q.tr(), LocaleKeys.faq_cant_order_a.tr()),
+    (LocaleKeys.faq_name_q.tr(), LocaleKeys.faq_name_a.tr()),
+    (LocaleKeys.faq_delete_q.tr(), LocaleKeys.faq_delete_a.tr()),
   ];
 
   @override
@@ -62,7 +28,7 @@ class FaqPage extends StatelessWidget {
       backgroundColor: ColorName.secondary100,
       appBar: AppBar(
         backgroundColor: ColorName.secondary100,
-        title: Text('Питання та відповіді', style: AppText.title()),
+        title: Text(LocaleKeys.faq_title.tr(), style: AppText.title()),
       ),
       body: ListView.separated(
         padding: const EdgeInsets.all(AppDimens.horizontalPadding),

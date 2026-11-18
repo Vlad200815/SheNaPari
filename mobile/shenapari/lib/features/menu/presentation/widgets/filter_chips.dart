@@ -5,6 +5,7 @@ import '../../../../core/ui/app_theme.dart';
 import '../../../../gen/colors.gen.dart';
 import '../../domain/entities/menu.dart';
 import '../home/menu_filter.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// "Усі", "Популярне" (when there are popular dishes) and one chip per
 /// category, scrolled horizontally.
@@ -23,8 +24,9 @@ class FilterChips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filters = <(MenuFilter, String)>[
-      (const AllDishes(), 'Усі'),
-      if (menu.hasPopular) (const PopularDishes(), 'Популярне'),
+      (const AllDishes(), LocaleKeys.home_filter_all.tr()),
+      if (menu.hasPopular)
+        (const PopularDishes(), LocaleKeys.home_filter_popular.tr()),
       for (final category in menu.categories)
         (CategoryDishes(category.id), category.name),
     ];

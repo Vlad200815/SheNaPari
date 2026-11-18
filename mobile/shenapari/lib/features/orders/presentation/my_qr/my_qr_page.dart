@@ -15,6 +15,7 @@ import '../../domain/entities/order.dart';
 import '../orders/orders_cubit.dart';
 import '../widgets/order_texts.dart';
 import '../widgets/order_widgets.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// «Мій QR»: a white sheet over the app, which stays visible on top behind
 /// frosted yellow glass. Tapping the glass, swiping the sheet down or ✕
@@ -43,7 +44,7 @@ class MyQrPage extends StatelessWidget {
           Positioned.fill(
             child: Semantics(
               button: true,
-              label: 'Закрити',
+              label: LocaleKeys.common_close.tr(),
               child: GestureDetector(
                 onTap: () => context.pop(),
                 child: AnimatedBuilder(
@@ -130,7 +131,9 @@ class _Sheet extends StatelessWidget {
                             child: BlocSelector<OrdersCubit, OrdersState, int>(
                               selector: (state) => state.readyCount,
                               builder: (context, ready) => Text(
-                                ready > 1 ? 'Твої QR-коди' : 'Твій QR-код',
+                                ready > 1
+                                    ? LocaleKeys.my_qr_title_many.tr()
+                                    : LocaleKeys.my_qr_title_one.tr(),
                                 style: AppText.heading().copyWith(fontSize: 26),
                               ),
                             ),
@@ -176,17 +179,15 @@ class _Sheet extends StatelessWidget {
       OrdersStatus.failure => _Message(
         key: const ValueKey('failure'),
         icon: Icons.cloud_off,
-        text: state.failure!.message,
-        button: 'Спробувати ще раз',
+        text: state.failure!.text,
+        button: LocaleKeys.common_retry.tr(),
         onPressed: context.read<OrdersCubit>().load,
       ),
       OrdersStatus.loaded when orders.isEmpty => _Message(
         key: const ValueKey('none'),
         icon: Icons.qr_code_2_rounded,
-        text:
-            'Немає активних замовлень. QR з’явиться тут, коли замовлення '
-            'буде готове.',
-        button: 'До меню',
+        text: LocaleKeys.my_qr_empty.tr(),
+        button: LocaleKeys.common_to_menu.tr(),
         onPressed: () => context.go(Routes.home),
       ),
       OrdersStatus.loaded when orders.length == 1 => _OrderPage(
@@ -344,7 +345,14 @@ class _OrderChip extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  '№${order.number} · ${ready ? 'Готово' : order.statusLabel}',
+                  LocaleKeys.my_qr_chip.tr(
+                    namedArgs: {
+                      'number': '${order.number}',
+                      'status': ready
+                          ? LocaleKeys.my_qr_ready.tr()
+                          : order.statusLabel,
+                    },
+                  ),
                   style: AppText.small(
                     color: ColorName.black,
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
@@ -377,7 +385,9 @@ class _ReadyQr extends StatelessWidget {
         children: [
           Semantics(
             container: true,
-            label: 'QR-код замовлення №${order.number}',
+            label: LocaleKeys.my_qr_qr_label.tr(
+              namedArgs: {'number': '${order.number}'},
+            ),
             image: true,
             excludeSemantics: true,
             child: QrImageView(
@@ -396,8 +406,13 @@ class _ReadyQr extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          Text('Замовлення №${order.number}', style: AppText.title()),
-          Text('Покажи код на видачі — і забирай', style: AppText.small()),
+          Text(
+            LocaleKeys.orders_number.tr(
+              namedArgs: {'number': '${order.number}'},
+            ),
+            style: AppText.title(),
+          ),
+          Text(LocaleKeys.my_qr_show_hint.tr(), style: AppText.small()),
           const SizedBox(height: 12),
           _DetailsLink(order: order),
         ],
@@ -430,8 +445,12 @@ class _NotReady extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'QR з’явиться тут, щойно кухня приготує '
-                    'замовлення №${order.number} · ${order.whenLabel}',
+                    LocaleKeys.my_qr_waiting.tr(
+                      namedArgs: {
+                        'number': '${order.number}',
+                        'when': order.whenLabel,
+                      },
+                    ),
                     style: AppText.small(color: ColorName.typography900),
                   ),
                 ),
@@ -463,7 +482,7 @@ class _DetailsLink extends StatelessWidget {
           ..push(Routes.order(order.id));
       },
       child: Text(
-        'Деталі замовлення',
+        LocaleKeys.my_qr_details.tr(),
         style: AppText.medium(
           color: ColorName.typography900,
         ).copyWith(fontWeight: FontWeight.w600),
@@ -539,7 +558,7 @@ class _CloseButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: 'Закрити',
+      label: LocaleKeys.common_close.tr(),
       excludeSemantics: true,
       child: Material(
         color: ColorName.secondary100,

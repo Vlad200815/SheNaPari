@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../core/l10n/l10n.dart';
 import '../core/session/session_cubit.dart';
 import '../core/storage/app_prefs.dart';
 import '../core/ui/app_theme.dart';
@@ -22,8 +23,16 @@ class App extends StatelessWidget {
         BlocProvider.value(value: sl<CartCubit>()),
       ],
       child: MaterialApp.router(
-        title: 'ШеНаПарі',
+        onGenerateTitle: (_) => LocaleKeys.app_name.tr(),
         theme: appTheme,
+        locale: context.locale,
+        supportedLocales: context.supportedLocales,
+        // material_ui's own delegates: its widgets look up material_ui's
+        // MaterialLocalizations, not flutter_localizations' one.
+        localizationsDelegates: [
+          EasyLocalization.of(context)!.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
         routerConfig: router,
         debugShowCheckedModeBanner: false,
         // «Вимкнути анімації» in the app adds to the phone's own setting:

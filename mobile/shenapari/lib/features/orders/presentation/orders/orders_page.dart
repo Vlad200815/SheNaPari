@@ -12,6 +12,7 @@ import '../../../../gen/colors.gen.dart';
 import '../../domain/entities/order.dart';
 import '../widgets/order_widgets.dart';
 import 'orders_cubit.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// The orders tab: active ones on top, then the history.
 class OrdersPage extends StatelessWidget {
@@ -32,7 +33,7 @@ class OrdersPage extends StatelessWidget {
           backgroundColor: ColorName.secondary100,
           appBar: AppBar(
             backgroundColor: ColorName.secondary100,
-            title: Text('Замовлення', style: AppText.title()),
+            title: Text(LocaleKeys.orders_title.tr(), style: AppText.title()),
           ),
           body: switch (state.status) {
             OrdersStatus.loading => const Center(
@@ -40,15 +41,15 @@ class OrdersPage extends StatelessWidget {
             ),
             OrdersStatus.failure => _Message(
               icon: Icons.cloud_off,
-              title: state.failure!.message,
-              button: 'Спробувати ще раз',
+              title: state.failure!.text,
+              button: LocaleKeys.common_retry.tr(),
               onPressed: context.read<OrdersCubit>().load,
             ),
             OrdersStatus.loaded when state.orders.isEmpty => _Message(
               icon: Icons.receipt_long_outlined,
-              title: 'Замовлень ще немає',
-              subtitle: 'Оберіть страви в меню — і заберете їх на перерві',
-              button: 'До меню',
+              title: LocaleKeys.orders_empty_title.tr(),
+              subtitle: LocaleKeys.orders_empty_text.tr(),
+              button: LocaleKeys.common_to_menu.tr(),
               onPressed: () => context.go(Routes.home),
             ),
             OrdersStatus.loaded => _OrderList(state: state),
@@ -81,12 +82,12 @@ class _OrderList extends StatelessWidget {
         padding: const EdgeInsets.all(AppDimens.horizontalPadding),
         children: [
           if (state.active.isNotEmpty) ...[
-            const _Header('Активні'),
+            _Header(LocaleKeys.orders_active.tr()),
             ...state.active.map(card),
           ],
           if (state.past.isNotEmpty) ...[
             if (state.active.isNotEmpty) const SizedBox(height: 12),
-            const _Header('Історія'),
+            _Header(LocaleKeys.orders_history.tr()),
             ...state.past.map(card),
           ],
         ],

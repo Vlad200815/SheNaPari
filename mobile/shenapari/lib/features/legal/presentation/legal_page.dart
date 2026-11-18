@@ -11,6 +11,8 @@ import '../../../core/ui/snack_bars.dart';
 import '../../../gen/colors.gen.dart';
 import '../domain/entities/legal_document.dart';
 import 'legal_cubit.dart';
+import '../../../core/l10n/l10n.dart';
+import 'legal_texts.dart';
 
 /// Terms of use, privacy policy or refund terms: a title, a hint and the Markdown text in
 /// a framed box with a always-visible scrollbar, so it is clear how long
@@ -46,12 +48,11 @@ class LegalPage extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   switch (type) {
-                    LegalDocumentType.terms =>
-                      'Будь ласка, уважно прочитайте Умови використання',
+                    LegalDocumentType.terms => LocaleKeys.legal_terms_hint.tr(),
                     LegalDocumentType.privacy =>
-                      'Будь ласка, уважно прочитайте Політику конфіденційності',
+                      LocaleKeys.legal_privacy_hint.tr(),
                     LegalDocumentType.refund =>
-                      'Коли і як повертаються кошти за замовлення',
+                      LocaleKeys.legal_refund_hint.tr(),
                   },
                   style: AppText.small(),
                   textAlign: TextAlign.center,
@@ -120,7 +121,10 @@ class _DocumentTextState extends State<_DocumentText> {
     final text = uri.scheme == 'mailto' ? uri.path : uri.toString();
     await Clipboard.setData(ClipboardData(text: text));
     if (!mounted) return;
-    showInfoSnackBar(context, 'Не вдалося відкрити, скопіювали: $text');
+    showInfoSnackBar(
+      context,
+      LocaleKeys.common_copied_instead.tr(namedArgs: {'text': text}),
+    );
   }
 
   @override

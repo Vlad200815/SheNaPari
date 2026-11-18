@@ -6,6 +6,7 @@ import '../../../../core/ui/app_theme.dart';
 import '../../../../core/ui/format_price.dart';
 import '../../../../gen/colors.gen.dart';
 import '../../domain/entities/dish.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// A dish in the menu grid: photo, name, weight, price and a quick «+».
 class DishCard extends StatelessWidget {
@@ -52,7 +53,12 @@ class DishCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              Text('${dish.weightG} г', style: AppText.small()),
+              Text(
+                LocaleKeys.home_weight.tr(
+                  namedArgs: {'grams': '${dish.weightG}'},
+                ),
+                style: AppText.small(),
+              ),
               const SizedBox(height: 4),
               Row(
                 children: [
@@ -126,7 +132,7 @@ class _PopularBadge extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
         child: Text(
-          'Хіт',
+          LocaleKeys.home_hit.tr(),
           style: AppText.small(
             color: ColorName.typography900,
             fontWeight: FontWeight.w600,
@@ -150,7 +156,7 @@ class _AddButton extends StatelessWidget {
     return Semantics(
       container: true,
       button: true,
-      label: 'Додати ${dish.name} в кошик',
+      label: LocaleKeys.home_add_to_cart.tr(namedArgs: {'name': dish.name}),
       excludeSemantics: true,
       child: Material(
         color: ColorName.primary400,

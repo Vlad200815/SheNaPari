@@ -18,6 +18,7 @@ import '../../../menu/presentation/home/break_countdown.dart';
 import '../../domain/entities/order.dart';
 import 'checkout_cubit.dart';
 import 'checkout_state.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// When to pick up, what is ordered, how to pay — then «Оплатити».
 class CheckoutPage extends StatelessWidget {
@@ -52,14 +53,17 @@ class CheckoutPage extends StatelessWidget {
               ? null
               : AppBar(
                   backgroundColor: ColorName.secondary100,
-                  title: Text('Оформлення', style: AppText.title()),
+                  title: Text(
+                    LocaleKeys.checkout_title.tr(),
+                    style: AppText.title(),
+                  ),
                 ),
           body: switch (state.status) {
             CheckoutStatus.loading => const Center(
               child: CircularProgressIndicator(color: ColorName.primary400),
             ),
             CheckoutStatus.loadFailure => _LoadError(
-              message: state.failure!.message,
+              message: state.failure!.text,
               onRetry: context.read<CheckoutCubit>().load,
             ),
             CheckoutStatus.placed => _Placed(order: state.order!),
@@ -91,16 +95,16 @@ class _Form extends StatelessWidget {
       padding: const EdgeInsets.all(AppDimens.horizontalPadding),
       children: [
         if (!state.isAcceptingOrders) ...[
-          const _Notice(
-            'Кухня тимчасово не приймає замовлення. Спробуйте трохи пізніше.',
-          ),
+          _Notice(LocaleKeys.checkout_paused.tr()),
           const SizedBox(height: 16),
         ],
-        const _SectionTitle('Коли забрати'),
+        _SectionTitle(LocaleKeys.checkout_when.tr()),
         for (final slot in state.breaks) ...[
           _Choice(
             icon: Icons.schedule_rounded,
-            title: 'Перерва о ${formatClock(slot.startsAt)}',
+            title: LocaleKeys.checkout_break_at.tr(
+              namedArgs: {'time': formatClock(slot.startsAt)},
+            ),
             subtitle:
                 '${BreakCountdown(slot, now).timeLeft} · '
                 '${formatClock(slot.startsAt)}–${formatClock(slot.endsAt)}',
@@ -111,15 +115,15 @@ class _Form extends StatelessWidget {
         ],
         _Choice(
           icon: Icons.bolt_rounded,
-          title: 'Якнайшвидше',
+          title: LocaleKeys.checkout_asap.tr(),
           subtitle: state.breaks.isEmpty
-              ? 'Сьогодні перерв більше немає — кухня приготує одразу'
-              : 'Кухня приготує, щойно прийме замовлення',
+              ? LocaleKeys.checkout_asap_no_breaks.tr()
+              : LocaleKeys.checkout_asap_text.tr(),
           selected: state.breakSlotId == null,
           onTap: () => cubit.selectBreak(null),
         ),
         const SizedBox(height: 24),
-        const _SectionTitle('Замовлення'),
+        _SectionTitle(LocaleKeys.checkout_order.tr()),
         _Card(
           child: Column(
             children: [
@@ -153,7 +157,7 @@ class _Form extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        const _SectionTitle('Оплата'),
+        _SectionTitle(LocaleKeys.checkout_payment.tr()),
         for (final provider in const [
           PaymentProvider.applePay,
           PaymentProvider.googlePay,
@@ -171,7 +175,7 @@ class _Form extends StatelessWidget {
           const SizedBox(height: 10),
         ],
         Text(
-          'Оплата в цій версії імітується: гроші не списуються.',
+          LocaleKeys.checkout_payment_simulated.tr(),
           style: AppText.small(),
         ),
       ],
@@ -209,7 +213,9 @@ class _PayBar extends StatelessWidget {
             16,
           ),
           child: AppButton.primary(
-            text: 'Оплатити · ${formatPrice(cart.totalKopecks)}',
+            text: LocaleKeys.checkout_pay.tr(
+              namedArgs: {'total': formatPrice(cart.totalKopecks)},
+            ),
             loading: state.status == CheckoutStatus.placing,
             onPressed: state.canPay ? context.read<CheckoutCubit>().pay : null,
           ),
@@ -252,17 +258,19 @@ class _Placed extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'Замовлення №${order.number} оплачено',
+              LocaleKeys.checkout_paid_title.tr(
+                namedArgs: {'number': '${order.number}'},
+              ),
               style: AppText.title().copyWith(fontSize: 24),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
               slot == null
-                  ? 'Кухня візьме його в роботу найближчим часом. '
-                        'Ми повідомимо, коли буде готово.'
-                  : 'Забери його на перерві о ${formatClock(slot.startsAt)} '
-                        'без черги. Ми повідомимо, коли буде готово.',
+                  ? LocaleKeys.checkout_paid_asap.tr()
+                  : LocaleKeys.checkout_paid_break.tr(
+                      namedArgs: {'time': formatClock(slot.startsAt)},
+                    ),
               style: AppText.regular(color: ColorName.typography500),
               textAlign: TextAlign.center,
             ),
@@ -274,12 +282,12 @@ class _Placed extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             AppButton.primary(
-              text: 'Відстежити замовлення',
+              text: LocaleKeys.checkout_track.tr(),
               onPressed: () => context.go(Routes.order(order.id)),
             ),
             const SizedBox(height: 10),
             AppButton.outlined(
-              text: 'До меню',
+              text: LocaleKeys.common_to_menu.tr(),
               onPressed: () => context.go(Routes.home),
             ),
           ],
@@ -458,7 +466,10 @@ class _LoadError extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          AppButton.primary(text: 'Спробувати ще раз', onPressed: onRetry),
+          AppButton.primary(
+            text: LocaleKeys.common_retry.tr(),
+            onPressed: onRetry,
+          ),
         ],
       ),
     );

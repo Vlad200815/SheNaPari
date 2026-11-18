@@ -3,8 +3,8 @@ import 'package:dio/dio.dart';
 import '../result/failure.dart';
 import 'api_envelope.dart';
 
-/// Shown when the server gave no text of its own.
-const genericErrorMessage = 'Щось пішло не так. Спробуйте ще раз.';
+/// No text from the server: `failure.text` shows a generic one instead.
+const genericErrorMessage = '';
 
 /// Maps an HTTP status to a [Failure]. The decision is made by status,
 /// never by text.
