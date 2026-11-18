@@ -130,14 +130,14 @@ class $AssetsImagesBottomNavGen {
 class $AssetsImagesFlagsGen {
   const $AssetsImagesFlagsGen();
 
-  /// File path: assets/images/flags/gb.svg
-  SvgGenImage get gb => const SvgGenImage('assets/images/flags/gb.svg');
-
   /// File path: assets/images/flags/ua.svg
   SvgGenImage get ua => const SvgGenImage('assets/images/flags/ua.svg');
 
+  /// File path: assets/images/flags/us.svg
+  SvgGenImage get us => const SvgGenImage('assets/images/flags/us.svg');
+
   /// List of all assets
-  List<SvgGenImage> get values => [gb, ua];
+  List<SvgGenImage> get values => [ua, us];
 }
 
 class $AssetsImagesHomeGen {
