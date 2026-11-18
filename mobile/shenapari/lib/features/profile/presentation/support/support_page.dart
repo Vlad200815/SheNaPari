@@ -16,9 +16,8 @@ class SupportPage extends StatelessWidget {
   static const telegram = 'Vlad_Semeniuk_1';
   static const email = 'supportshenapari@gmail.com';
 
-  /// Telegram's blue darkened so white bold text on it stays readable
-  /// (≈3.9:1; the brand #2AABEE is only ≈2.6:1).
-  static const _telegramBlue = Color(0xFF1E88C7);
+  /// Telegram's own brand blue, so the button is recognised at a glance.
+  static const _telegramBlue = Color(0xFF2AABEE);
 
   @override
   Widget build(BuildContext context) {

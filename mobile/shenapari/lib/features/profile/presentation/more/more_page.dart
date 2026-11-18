@@ -14,7 +14,7 @@ import '../widgets/profile_ui.dart';
 import 'me_cubit.dart';
 
 /// The «Більше» tab: who is signed in, and everything that is not food —
-/// orders, notifications, help, documents.
+/// help and documents (notifications live behind the bell on the home screen).
 class MorePage extends StatelessWidget {
   const MorePage({super.key});
 
@@ -38,17 +38,6 @@ class MorePage extends StatelessWidget {
                 builder: (context, user) => _Header(user: user),
               ),
               const SizedBox(height: 24),
-              MenuCard(
-                children: [
-                  MenuRow(
-                    icon: Icons.notifications_none_rounded,
-                    tint: ColorName.primary400,
-                    title: 'Сповіщення',
-                    onTap: () => context.push(Routes.notifications),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
               MenuCard(
                 children: [
                   MenuRow(
@@ -82,6 +71,13 @@ class MorePage extends StatelessWidget {
                     title: LegalDocumentType.privacy.title,
                     onTap: () =>
                         context.push(Routes.legal(LegalDocumentType.privacy)),
+                  ),
+                  MenuRow(
+                    icon: Icons.currency_exchange_rounded,
+                    tint: ColorName.secondary400,
+                    title: LegalDocumentType.refund.title,
+                    onTap: () =>
+                        context.push(Routes.legal(LegalDocumentType.refund)),
                   ),
                 ],
               ),
