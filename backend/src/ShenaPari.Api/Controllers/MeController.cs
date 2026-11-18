@@ -98,6 +98,19 @@ public class MeController(AppDbContext db, PushService push, TimeProvider clock)
         return Result.Ok().ToActionResult();
     }
 
+    // PUT /me/settings  { "orderPushEnabled": false } — the customer's switches
+    [HttpPut("settings")]
+    public async Task<ActionResult<Result<MeDto>>> UpdateSettings(MeSettingsDto dto)
+    {
+        var user = await db.Users.FindAsync(User.UserId());
+        if (user is not Customer customer || !customer.IsActive)
+            return Result<MeDto>.Fail(CommonErrors.Forbidden).ToActionResult();
+
+        customer.OrderPushEnabled = dto.OrderPushEnabled;
+        await db.SaveChangesAsync();
+        return Result<MeDto>.Ok(ToDto(customer)).ToActionResult();
+    }
+
     // PUT /me/push-token  { "token": "<Firebase device token>" } — after login and on token refresh
     [HttpPut("push-token")]
     public async Task<ActionResult<Result<object?>>> SetPushToken(PushTokenDto dto)
@@ -107,5 +120,6 @@ public class MeController(AppDbContext db, PushService push, TimeProvider clock)
     }
 
     private static MeDto ToDto(User u) =>
-        new(u.Id, u.Role, u.Name, (u as Customer)?.Phone, (u as Employee)?.Email);
+        new(u.Id, u.Role, u.Name, (u as Customer)?.Phone, (u as Employee)?.Email,
+            (u as Customer)?.OrderPushEnabled);
 }

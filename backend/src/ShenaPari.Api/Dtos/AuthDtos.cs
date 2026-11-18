@@ -14,9 +14,13 @@ public record RefreshDto(string RefreshToken);
 public record AuthResponseDto(string AccessToken, string RefreshToken, bool IsNew);
 
 /// Phone is set for customers, Email for employees.
-public record MeDto(Guid Id, UserRole Role, string? Name, string? Phone, string? Email);
+/// OrderPushEnabled is null for staff (they get no order pushes).
+public record MeDto(Guid Id, UserRole Role, string? Name, string? Phone, string? Email, bool? OrderPushEnabled);
 
 public record UpdateMeDto(string Name);
+
+/// PUT /me/settings
+public record MeSettingsDto(bool OrderPushEnabled);
 
 /// Token = the Firebase device token; null switches notifications off for this device.
 public record PushTokenDto(string? Token);
