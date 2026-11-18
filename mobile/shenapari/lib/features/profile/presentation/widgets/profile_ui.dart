@@ -91,6 +91,7 @@ class MenuRow extends StatelessWidget {
                       title,
                       style: AppText.medium().copyWith(
                         fontWeight: FontWeight.w500,
+                        height: _titleHeight,
                       ),
                     ),
                     if (subtitle != null)
@@ -162,6 +163,7 @@ class SwitchRow extends StatelessWidget {
                         title,
                         style: AppText.medium().copyWith(
                           fontWeight: FontWeight.w500,
+                          height: _titleHeight,
                         ),
                       ),
                       if (subtitle != null)
@@ -189,3 +191,8 @@ class SwitchRow extends StatelessWidget {
     );
   }
 }
+
+/// Line height of a row title. The body style's 1.7 suits paragraphs; a
+/// title that wraps to a second line (e.g. «Сповіщення про замовлення»)
+/// needs its lines closer together.
+const _titleHeight = 1.3;
