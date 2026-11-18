@@ -7,6 +7,7 @@ import '../features/auth/auth_module.dart';
 import '../features/cart/cart_module.dart';
 import '../features/legal/legal_module.dart';
 import '../features/menu/menu_module.dart';
+import '../features/notifications/notifications_module.dart';
 import '../features/orders/orders_module.dart';
 import '../features/profile/profile_module.dart';
 import 'env.dart';
@@ -29,4 +30,5 @@ void setupDi({required SharedPreferences prefs, TokenStorage? tokenStorage}) {
   registerLegal(sl, prefs: prefs);
   registerCart(sl, prefs: prefs);
   registerOrders(sl);
+  registerNotifications(sl);
 }
