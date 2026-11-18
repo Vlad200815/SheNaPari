@@ -18,6 +18,7 @@ import '../widgets/home_header.dart';
 import 'home_cubit.dart';
 import 'home_state.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// The menu: canteen name, filters and the grid of dishes.
 class HomePage extends StatelessWidget {
@@ -39,7 +40,7 @@ class HomePage extends StatelessWidget {
         listener: (context, state) =>
             showFailureSnackBar(context, state.failure!),
         child: Scaffold(
-          backgroundColor: ColorName.secondary100,
+          backgroundColor: context.colors.background,
           body: SafeArea(
             bottom: false,
             child: BlocBuilder<HomeCubit, HomeState>(
@@ -91,7 +92,7 @@ class _MenuView extends StatelessWidget {
               child: Center(
                 child: Text(
                   LocaleKeys.home_menu_empty.tr(),
-                  style: AppText.regular(color: ColorName.typography500),
+                  style: AppText.regular(color: context.colors.textSecondary),
                 ),
               ),
             )
@@ -183,11 +184,11 @@ class _LoadError extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Icon(Icons.cloud_off, size: 48, color: ColorName.secondary400),
+          Icon(Icons.cloud_off, size: 48, color: context.colors.iconMuted),
           const SizedBox(height: 16),
           Text(
             message,
-            style: AppText.regular(color: ColorName.typography500),
+            style: AppText.regular(color: context.colors.textSecondary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
@@ -267,7 +268,7 @@ class _Bone extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: ColorName.secondary50,
+        color: context.colors.surfaceMuted,
         borderRadius: BorderRadius.circular(AppDimens.radius),
       ),
     );

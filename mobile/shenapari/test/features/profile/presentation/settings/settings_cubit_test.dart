@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' show ThemeMode;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shenapari/core/l10n/app_language.dart';
 import 'package:shenapari/core/l10n/app_locale.dart';
@@ -25,6 +26,21 @@ void main() {
     prefs = AppPrefs(await SharedPreferences.getInstance());
     // A phone set to German: the app has no German, so English.
     locale = AppLocale(prefs, deviceLanguageCode: () => 'de');
+  });
+
+  test('theme: follows the phone until picked, then is kept', () async {
+    final cubit = SettingsCubit(FakeProfileRepository(), prefs, locale);
+    expect(cubit.state.themeMode, ThemeMode.system);
+
+    await cubit.setThemeMode(ThemeMode.dark);
+
+    expect(cubit.state.themeMode, ThemeMode.dark);
+    expect(prefs.themeMode, ThemeMode.dark);
+    expect(
+      SettingsCubit(FakeProfileRepository(), prefs, locale).state.themeMode,
+      ThemeMode.dark,
+      reason: 'kept between launches',
+    );
   });
 
   test('language: follows the phone until picked, then is kept', () async {

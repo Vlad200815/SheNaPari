@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../../gen/colors.gen.dart';
 import 'app_text.dart';
 import '../../core/l10n/l10n.dart';
+import 'app_colors.dart';
 
 /// `−  2  +` in a rounded pill. A button turns grey at its limit.
 class QuantityStepper extends StatelessWidget {
@@ -29,7 +29,7 @@ class QuantityStepper extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: ColorName.secondary100,
+        color: context.colors.fill,
         borderRadius: BorderRadius.circular(size),
       ),
       child: Row(
@@ -83,7 +83,7 @@ class _StepButton extends StatelessWidget {
       enabled: enabled,
       label: label,
       child: Material(
-        color: enabled ? ColorName.white : Colors.transparent,
+        color: enabled ? context.colors.surface : Colors.transparent,
         shape: const CircleBorder(),
         child: InkWell(
           customBorder: const CircleBorder(),
@@ -93,7 +93,9 @@ class _StepButton extends StatelessWidget {
             child: Icon(
               icon,
               size: size * 0.5,
-              color: enabled ? ColorName.typography900 : ColorName.secondary300,
+              color: enabled
+                  ? context.colors.textPrimary
+                  : context.colors.disabled,
             ),
           ),
         ),

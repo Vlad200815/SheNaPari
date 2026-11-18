@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../gen/colors.gen.dart';
 import 'app_text.dart';
 import 'app_theme.dart';
+import 'app_colors.dart';
 
 enum _Kind { primary, outlined, destructive }
 
@@ -57,8 +58,8 @@ class AppButton extends StatelessWidget {
         ColorName.white,
       ),
       _Kind.primary => (
-        BoxDecoration(borderRadius: _radius, color: ColorName.typography200),
-        ColorName.typography500,
+        BoxDecoration(borderRadius: _radius, color: context.colors.border),
+        context.colors.textSecondary,
       ),
       _Kind.destructive => (
         BoxDecoration(borderRadius: _radius, color: ColorName.red),
@@ -67,9 +68,9 @@ class AppButton extends StatelessWidget {
       _Kind.outlined => (
         BoxDecoration(
           borderRadius: _radius,
-          border: Border.all(color: ColorName.secondary200),
+          border: Border.all(color: context.colors.border),
         ),
-        ColorName.secondary500,
+        context.colors.textSecondary,
       ),
     };
 

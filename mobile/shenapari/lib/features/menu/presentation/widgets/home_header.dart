@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../core/ui/app_text.dart';
 import '../../../../gen/colors.gen.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// "Привіт, Влад" + "Що будемо їсти?" and the notifications bell.
 class HomeHeader extends StatelessWidget {
@@ -32,7 +33,10 @@ class HomeHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(greeting, style: AppText.small()),
+              Text(
+                greeting,
+                style: AppText.small(color: context.colors.textSecondary),
+              ),
               const SizedBox(height: 2),
               Text(
                 LocaleKeys.home_question.tr(),
@@ -62,7 +66,7 @@ class _BellButton extends StatelessWidget {
           ? LocaleKeys.home_notifications_unread.tr()
           : LocaleKeys.home_notifications.tr(),
       child: Material(
-        color: ColorName.white,
+        color: context.colors.surface,
         shape: const CircleBorder(),
         elevation: 2,
         shadowColor: ColorName.black.withValues(alpha: 0.2),
@@ -74,9 +78,9 @@ class _BellButton extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.notifications_none_rounded,
-                  color: ColorName.typography900,
+                  color: context.colors.textPrimary,
                   size: 26,
                 ),
                 if (hasUnread)
@@ -89,7 +93,10 @@ class _BellButton extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: ColorName.primary500,
                         shape: BoxShape.circle,
-                        border: Border.all(color: ColorName.white, width: 1.5),
+                        border: Border.all(
+                          color: context.colors.surface,
+                          width: 1.5,
+                        ),
                       ),
                     ),
                   ),

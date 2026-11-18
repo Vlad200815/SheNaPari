@@ -2,8 +2,8 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/ui/app_text.dart';
 import '../../../../core/ui/app_theme.dart';
-import '../../../../gen/colors.gen.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// Short answers to what customers ask most. The rules quoted here are the
 /// backend's: 30 minutes to pick up, cancel until cooking, simulated pay.
@@ -25,9 +25,9 @@ class FaqPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorName.secondary100,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: ColorName.secondary100,
+        backgroundColor: context.colors.background,
         title: Text(LocaleKeys.faq_title.tr(), style: AppText.title()),
       ),
       body: ListView.separated(
@@ -50,7 +50,7 @@ class _Question extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: ColorName.white,
+      color: context.colors.surface,
       borderRadius: BorderRadius.circular(16),
       clipBehavior: Clip.antiAlias,
       child: Theme(
@@ -59,8 +59,8 @@ class _Question extends StatelessWidget {
         child: ExpansionTile(
           tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          iconColor: ColorName.black,
-          collapsedIconColor: ColorName.secondary400,
+          iconColor: context.colors.textPrimary,
+          collapsedIconColor: context.colors.iconMuted,
           title: Text(
             question,
             style: AppText.medium().copyWith(fontWeight: FontWeight.w600),

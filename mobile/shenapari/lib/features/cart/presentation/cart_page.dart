@@ -13,6 +13,7 @@ import '../../menu/presentation/widgets/dish_card.dart';
 import '../domain/entities/cart.dart';
 import 'cart_cubit.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/ui/app_colors.dart';
 
 /// The cart tab: dishes with steppers, the total and «Оформити замовлення».
 class CartPage extends StatelessWidget {
@@ -22,9 +23,9 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CartCubit, Cart>(
       builder: (context, cart) => Scaffold(
-        backgroundColor: ColorName.secondary100,
+        backgroundColor: context.colors.background,
         appBar: AppBar(
-          backgroundColor: ColorName.secondary100,
+          backgroundColor: context.colors.background,
           title: Text(LocaleKeys.cart_title.tr(), style: AppText.title()),
           actions: [
             if (!cart.isEmpty)
@@ -33,7 +34,7 @@ class CartPage extends StatelessWidget {
                 child: Text(
                   LocaleKeys.common_clear.tr(),
                   style: AppText.small(
-                    color: ColorName.typography500,
+                    color: context.colors.textSecondary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -70,7 +71,7 @@ class _CartList extends StatelessWidget {
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 24),
             decoration: BoxDecoration(
-              color: ColorName.redLight,
+              color: context.colors.dangerSoft,
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Icon(
@@ -95,7 +96,7 @@ class _CartRow extends StatelessWidget {
     final dish = item.dish;
     final cart = context.read<CartCubit>();
     return Material(
-      color: ColorName.white,
+      color: context.colors.surface,
       borderRadius: BorderRadius.circular(16),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -118,7 +119,7 @@ class _CartRow extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: AppText.small(
-                        color: ColorName.typography900,
+                        color: context.colors.textPrimary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -158,11 +159,11 @@ class _CheckoutBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: ColorName.white,
+        color: context.colors.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
-            color: ColorName.black.withValues(alpha: 0.06),
+            color: context.colors.shadow,
             blurRadius: 16,
             offset: const Offset(0, -4),
           ),
@@ -187,7 +188,7 @@ class _CheckoutBar extends StatelessWidget {
                       'portions': LocaleKeys.cart_portions.plural(cart.count),
                     },
                   ),
-                  style: AppText.regular(color: ColorName.typography500),
+                  style: AppText.regular(color: context.colors.textSecondary),
                 ),
                 const Spacer(),
                 Text(formatPrice(cart.totalKopecks), style: AppText.title()),
@@ -220,8 +221,8 @@ class _EmptyCart extends StatelessWidget {
             child: Container(
               width: 96,
               height: 96,
-              decoration: const BoxDecoration(
-                color: ColorName.primary100,
+              decoration: BoxDecoration(
+                color: context.colors.accentSoft,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -240,7 +241,7 @@ class _EmptyCart extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             LocaleKeys.cart_empty_text.tr(),
-            style: AppText.small(),
+            style: AppText.small(color: context.colors.textSecondary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),

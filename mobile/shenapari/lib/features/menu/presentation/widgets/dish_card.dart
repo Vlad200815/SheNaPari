@@ -7,6 +7,7 @@ import '../../../../core/ui/format_price.dart';
 import '../../../../gen/colors.gen.dart';
 import '../../domain/entities/dish.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// A dish in the menu grid: photo, name, weight, price and a quick «+».
 class DishCard extends StatelessWidget {
@@ -23,7 +24,7 @@ class DishCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: ColorName.white,
+      color: context.colors.surface,
       borderRadius: BorderRadius.circular(AppDimens.radius),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -47,7 +48,7 @@ class DishCard extends StatelessWidget {
               Text(
                 dish.name,
                 style: AppText.small(
-                  color: ColorName.typography900,
+                  color: context.colors.textPrimary,
                   fontWeight: FontWeight.w600,
                 ),
                 maxLines: 2,
@@ -57,7 +58,7 @@ class DishCard extends StatelessWidget {
                 LocaleKeys.home_weight.tr(
                   namedArgs: {'grams': '${dish.weightG}'},
                 ),
-                style: AppText.small(),
+                style: AppText.small(color: context.colors.textSecondary),
               ),
               const SizedBox(height: 4),
               Row(
@@ -98,7 +99,7 @@ class DishImage extends StatelessWidget {
               imageUrl: url,
               fit: BoxFit.cover,
               placeholder: (_, _) =>
-                  const ColoredBox(color: ColorName.secondary50),
+                  ColoredBox(color: context.colors.surfaceMuted),
               errorWidget: (_, _, _) => const _NoImage(),
             ),
     );
@@ -110,10 +111,14 @@ class _NoImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ColoredBox(
-      color: ColorName.secondary50,
+    return ColoredBox(
+      color: context.colors.surfaceMuted,
       child: Center(
-        child: Icon(Icons.restaurant, color: ColorName.secondary300, size: 36),
+        child: Icon(
+          Icons.restaurant,
+          color: context.colors.iconMuted,
+          size: 36,
+        ),
       ),
     );
   }
@@ -134,7 +139,7 @@ class _PopularBadge extends StatelessWidget {
         child: Text(
           LocaleKeys.home_hit.tr(),
           style: AppText.small(
-            color: ColorName.typography900,
+            color: ColorName.black,
             fontWeight: FontWeight.w600,
           ),
         ),
