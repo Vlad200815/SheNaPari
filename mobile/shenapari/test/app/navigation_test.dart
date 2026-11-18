@@ -470,6 +470,22 @@ void main() {
     expect(media.disableAnimations, isTrue, reason: 'applies app-wide at once');
   });
 
+  testWidgets('«Більше» → «Підтримка»: Telegram and mail', (tester) async {
+    await _pumpApp(
+      tester,
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+    await tester.tap(find.byTooltip('Більше'));
+    await tester.pumpAndSettle();
+    expect(find.text('Мої замовлення'), findsNothing, reason: 'the tab has it');
+
+    await _tap(tester, 'Підтримка');
+
+    expect(find.text('Telegram'), findsOneWidget);
+    expect(find.text('supportshenapari@gmail.com'), findsOneWidget);
+  });
+
   group('delete account', () {
     Future<void> openDeleteDialog(WidgetTester tester) async {
       await _pumpApp(
