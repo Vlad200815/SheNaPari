@@ -18,6 +18,7 @@ class User extends Equatable {
     this.name,
     this.phone,
     this.email,
+    this.orderPushEnabled,
   });
 
   final String id;
@@ -30,6 +31,9 @@ class User extends Equatable {
   /// Set for staff.
   final String? email;
 
+  /// Push about own orders; null for staff.
+  final bool? orderPushEnabled;
+
   @override
-  List<Object?> get props => [id, role, name, phone, email];
+  List<Object?> get props => [id, role, name, phone, email, orderPushEnabled];
 }

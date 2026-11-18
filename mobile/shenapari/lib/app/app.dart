@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../core/session/session_cubit.dart';
+import '../core/storage/app_prefs.dart';
 import '../core/ui/app_theme.dart';
 import '../features/cart/presentation/cart_cubit.dart';
 import 'di.dart';
@@ -25,6 +26,21 @@ class App extends StatelessWidget {
         theme: appTheme,
         routerConfig: router,
         debugShowCheckedModeBanner: false,
+        // «Вимкнути анімації» in the app adds to the phone's own setting:
+        // every animation in the app checks MediaQuery.disableAnimations.
+        builder: (context, child) => ListenableBuilder(
+          listenable: sl<AppPrefs>(),
+          builder: (context, _) {
+            final media = MediaQuery.of(context);
+            return MediaQuery(
+              data: media.copyWith(
+                disableAnimations:
+                    media.disableAnimations || sl<AppPrefs>().reduceMotion,
+              ),
+              child: child!,
+            );
+          },
+        ),
       ),
     );
   }

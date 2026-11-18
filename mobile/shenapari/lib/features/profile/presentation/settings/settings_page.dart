@@ -10,23 +10,39 @@ import '../../../../gen/colors.gen.dart';
 import '../profile/confirm_delete_dialog.dart';
 import '../profile/delete_account_cubit.dart';
 import '../widgets/profile_ui.dart';
+import 'settings_cubit.dart';
 
-/// «Налаштування»: notification permission (managed by the phone) and,
+/// «Налаштування»: order push on/off, the phone's notification permission,
+/// «Вимкнути анімації» and,
 /// set apart at the bottom, account deletion.
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<DeleteAccountCubit>(),
-      child: BlocListener<DeleteAccountCubit, DeleteAccountState>(
-        listenWhen: (previous, current) => previous.status != current.status,
-        listener: (context, state) {
-          if (state.status == DeleteAccountStatus.failure) {
-            showFailureSnackBar(context, state.failure!);
-          }
-        },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sl<DeleteAccountCubit>()),
+        BlocProvider(create: (_) => sl<SettingsCubit>()..load()),
+      ],
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<DeleteAccountCubit, DeleteAccountState>(
+            listenWhen: (previous, current) =>
+                previous.status != current.status,
+            listener: (context, state) {
+              if (state.status == DeleteAccountStatus.failure) {
+                showFailureSnackBar(context, state.failure!);
+              }
+            },
+          ),
+          BlocListener<SettingsCubit, SettingsState>(
+            listenWhen: (previous, current) =>
+                current.failure != null && previous.failure != current.failure,
+            listener: (context, state) =>
+                showFailureSnackBar(context, state.failure!),
+          ),
+        ],
         child: Scaffold(
           backgroundColor: ColorName.secondary100,
           appBar: AppBar(
@@ -40,16 +56,55 @@ class SettingsPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  MenuCard(
-                    children: [
-                      MenuRow(
-                        icon: Icons.notifications_active_outlined,
-                        tint: ColorName.primary400,
-                        title: 'Сповіщення',
-                        subtitle: 'Дозвіл і звук — у налаштуваннях телефону',
-                        onTap: openAppSettings,
-                      ),
-                    ],
+                  BlocBuilder<SettingsCubit, SettingsState>(
+                    builder: (context, state) {
+                      final cubit = context.read<SettingsCubit>();
+                      final orderPush = state.orderPush;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          MenuCard(
+                            children: [
+                              SwitchRow(
+                                icon: Icons.notifications_active_outlined,
+                                tint: ColorName.primary400,
+                                title: 'Сповіщення про замовлення',
+                                subtitle:
+                                    'Push, коли кухня прийняла замовлення і '
+                                    'коли воно готове. У списку сповіщень '
+                                    'вони лишаться',
+                                value: orderPush ?? true,
+                                onChanged: orderPush == null
+                                    ? null
+                                    : cubit.setOrderPush,
+                              ),
+                              const MenuRow(
+                                icon: Icons.settings_suggest_outlined,
+                                tint: ColorName.secondary400,
+                                title: 'Дозвіл і звук',
+                                subtitle: 'У налаштуваннях телефону',
+                                onTap: openAppSettings,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          MenuCard(
+                            children: [
+                              SwitchRow(
+                                icon: Icons.motion_photos_off_outlined,
+                                tint: ColorName.blue,
+                                title: 'Вимкнути анімації',
+                                subtitle:
+                                    'Без плавних переходів, виїзду шторок і '
+                                    'відблиску на кнопці QR',
+                                value: state.reduceMotion,
+                                onChanged: cubit.setReduceMotion,
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   const Spacer(),
                   const _DeleteAccountButton(),
