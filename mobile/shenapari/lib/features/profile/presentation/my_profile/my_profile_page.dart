@@ -105,8 +105,6 @@ class _Form extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppDimens.horizontalPadding),
       children: [
-        Center(child: InitialsAvatar(name: state.trimmed, size: 88)),
-        const SizedBox(height: 24),
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
