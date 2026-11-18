@@ -128,7 +128,7 @@ class FakeMenuRepository implements MenuRepository {
   Future<Result<List<BreakSlot>>> getTodayBreaks() async => const Ok([]);
 }
 
-/// Accepts any order as №7, priced from the cart, and keeps it so the
+/// Accepts orders as №7, №8…, priced from the cart, and keeps them so the
 /// tracking screens can read it. [kitchen] moves it on like the cook would.
 class FakeOrdersRepository implements OrdersRepository {
   final placed =
@@ -143,9 +143,10 @@ class FakeOrdersRepository implements OrdersRepository {
   }) async {
     placed.add((items: items, breakSlotId: breakSlotId, provider: provider));
     final now = DateTime(2026, 11, 17, 11);
+    final number = 7 + orders.length;
     final order = Order(
-      id: 'order-7',
-      number: 7,
+      id: 'order-$number',
+      number: number,
       status: OrderStatus.paid,
       totalKopecks: items.fold(0, (sum, item) => sum + item.totalKopecks),
       createdAt: now,
