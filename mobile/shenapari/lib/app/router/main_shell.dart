@@ -10,6 +10,7 @@ import '../../features/cart/presentation/cart_cubit.dart';
 import '../../gen/assets.gen.dart';
 import '../../gen/colors.gen.dart';
 import 'routes.dart';
+import '../../core/l10n/l10n.dart';
 
 /// The tab bar around the main screens. Each tab keeps its own stack.
 ///
@@ -21,11 +22,11 @@ class MainShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
   /// Same order as the shell branches in `app_router.dart`.
-  static final _tabs = [
-    _Tab(Assets.images.bottomNav.icHome, 'Головна'),
-    _Tab(Assets.images.bottomNav.icCart, 'Кошик'),
-    _Tab(Assets.images.bottomNav.icOrders, 'Замовлення'),
-    _Tab(Assets.images.bottomNav.icMore, 'Більше'),
+  static List<_Tab> get _tabs => [
+    _Tab(Assets.images.bottomNav.icHome, LocaleKeys.tabs_home.tr()),
+    _Tab(Assets.images.bottomNav.icCart, LocaleKeys.tabs_cart.tr()),
+    _Tab(Assets.images.bottomNav.icOrders, LocaleKeys.tabs_orders.tr()),
+    _Tab(Assets.images.bottomNav.icMore, LocaleKeys.tabs_more.tr()),
   ];
 
   void _openTab(int index) => navigationShell.goBranch(
@@ -233,7 +234,11 @@ class _QrButtonState extends State<_QrButton>
     final animate = _cycle.isAnimating;
     return Semantics(
       button: true,
-      label: ready ? 'Мій QR, готово: ${widget.ready}' : 'Мій QR',
+      label: ready
+          ? LocaleKeys.tabs_my_qr_ready.tr(
+              namedArgs: {'count': '${widget.ready}'},
+            )
+          : LocaleKeys.tabs_my_qr.tr(),
       excludeSemantics: true,
       child: Stack(
         clipBehavior: Clip.none,

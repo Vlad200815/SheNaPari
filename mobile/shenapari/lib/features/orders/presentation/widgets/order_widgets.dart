@@ -5,6 +5,7 @@ import '../../../../core/ui/format_price.dart';
 import '../../../../gen/colors.gen.dart';
 import '../../domain/entities/order.dart';
 import 'order_texts.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// The status in a rounded pill.
 class StatusChip extends StatelessWidget {
@@ -54,7 +55,9 @@ class OrderCard extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Замовлення №${order.number}',
+                    LocaleKeys.orders_number.tr(
+                      namedArgs: {'number': '${order.number}'},
+                    ),
                     style: AppText.medium().copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -111,12 +114,32 @@ class StatusSteps extends StatelessWidget {
 
   final Order order;
 
-  static const _steps = [
-    (OrderStatus.paid, 'Оплачено', 'Кухня отримала замовлення'),
-    (OrderStatus.accepted, 'Прийнято', 'Кухар назвав час готовності'),
-    (OrderStatus.cooking, 'Готується', 'Вже на плиті'),
-    (OrderStatus.ready, 'Готово', 'Покажи QR на видачі'),
-    (OrderStatus.pickedUp, 'Видано', 'Смачного!'),
+  static List<(OrderStatus, String, String)> get _steps => [
+    (
+      OrderStatus.paid,
+      LocaleKeys.orders_steps_paid.tr(),
+      LocaleKeys.orders_steps_paid_text.tr(),
+    ),
+    (
+      OrderStatus.accepted,
+      LocaleKeys.orders_steps_accepted.tr(),
+      LocaleKeys.orders_steps_accepted_text.tr(),
+    ),
+    (
+      OrderStatus.cooking,
+      LocaleKeys.orders_steps_cooking.tr(),
+      LocaleKeys.orders_steps_cooking_text.tr(),
+    ),
+    (
+      OrderStatus.ready,
+      LocaleKeys.orders_steps_ready.tr(),
+      LocaleKeys.orders_steps_ready_text.tr(),
+    ),
+    (
+      OrderStatus.pickedUp,
+      LocaleKeys.orders_steps_picked_up.tr(),
+      LocaleKeys.orders_steps_picked_up_text.tr(),
+    ),
   ];
 
   @override

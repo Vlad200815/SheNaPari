@@ -9,6 +9,7 @@ import '../../../../core/ui/snack_bars.dart';
 import '../../../../gen/colors.gen.dart';
 import 'registration_cubit.dart';
 import 'registration_state.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// The last sign-in step for a new customer: the name the kitchen calls out.
 class RegistrationProfilePage extends StatelessWidget {
@@ -37,13 +38,13 @@ class RegistrationProfilePage extends StatelessWidget {
                   children: [
                     const SizedBox(height: 48),
                     Text(
-                      'Як вас звати?',
+                      LocaleKeys.auth_name_title.tr(),
                       style: AppText.heading(),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Ім’я покаже кухня, коли замовлення буде готове',
+                      LocaleKeys.auth_name_subtitle.tr(),
                       style: AppText.regular(color: ColorName.secondary500),
                       textAlign: TextAlign.center,
                     ),
@@ -56,7 +57,7 @@ class RegistrationProfilePage extends StatelessWidget {
                       style: AppText.medium(),
                       cursorColor: ColorName.primary400,
                       decoration: InputDecoration(
-                        hintText: 'Ім’я',
+                        hintText: LocaleKeys.auth_name_hint.tr(),
                         hintStyle: AppText.medium(
                           color: ColorName.typography400,
                         ),
@@ -69,7 +70,7 @@ class RegistrationProfilePage extends StatelessWidget {
                     const Spacer(),
                     BlocBuilder<RegistrationCubit, RegistrationState>(
                       builder: (context, state) => AppButton.primary(
-                        text: 'Продовжити',
+                        text: LocaleKeys.common_continue.tr(),
                         loading: state.isBusy,
                         onPressed: state.canSubmit
                             ? context.read<RegistrationCubit>().submit

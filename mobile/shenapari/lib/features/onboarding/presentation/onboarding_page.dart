@@ -5,6 +5,7 @@ import '../../../core/ui/app_theme.dart';
 import '../../../gen/assets.gen.dart';
 import 'widgets/onboarding_slide.dart';
 import 'widgets/page_dots.dart';
+import '../../../core/l10n/l10n.dart';
 
 /// Three intro slides shown once after install. [onDone] marks them as seen;
 /// the router then moves on to sign-in by itself.
@@ -21,26 +22,22 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final _controller = PageController();
   int _page = 0;
 
-  static final _slides = [
+  static List<OnboardingSlide> get _slides => [
     OnboardingSlide(
       image: Assets.images.onboarding.welcome,
-      title: 'Ласкаво просимо до найсмачнішого додатка',
-      text: 'ШеНаПарі',
+      title: LocaleKeys.onboarding_welcome_title.tr(),
+      text: LocaleKeys.app_name.tr(),
       highlightText: true,
     ),
     OnboardingSlide(
       image: Assets.images.onboarding.orderInSeconds,
-      title: 'Замовляй на льоту. Забирай за секунди!',
-      text:
-          'Забудь про черги в кампусі. Роби замовлення під час пари та забирай '
-          'їжу щойно пролунає дзвоник. Без очікування та черг.',
+      title: LocaleKeys.onboarding_order_title.tr(),
+      text: LocaleKeys.onboarding_order_text.tr(),
     ),
     OnboardingSlide(
       image: Assets.images.onboarding.realtimeNotifications,
-      title: 'Спокій у кожному шматочку',
-      text:
-          'Отримуй сповіщення в реальному часі: від моменту потрапляння на гриль '
-          'до самої видачі. Ми дбаємо про час — ти про апетит.',
+      title: LocaleKeys.onboarding_calm_title.tr(),
+      text: LocaleKeys.onboarding_calm_text.tr(),
     ),
   ];
 
@@ -84,7 +81,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
               child: Column(
                 children: [
                   AppButton.primary(
-                    text: _isLast ? 'Почати' : 'Далі',
+                    text: _isLast
+                        ? LocaleKeys.onboarding_start.tr()
+                        : LocaleKeys.onboarding_next.tr(),
                     onPressed: _isLast ? widget.onDone : _next,
                   ),
                   const SizedBox(height: 10),
@@ -92,7 +91,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   Visibility.maintain(
                     visible: !_isLast,
                     child: AppButton.outlined(
-                      text: 'Пропустити',
+                      text: LocaleKeys.onboarding_skip.tr(),
                       onPressed: widget.onDone,
                     ),
                   ),

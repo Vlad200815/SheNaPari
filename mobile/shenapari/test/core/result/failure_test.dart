@@ -1,10 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shenapari/core/l10n/l10n.dart';
 import 'package:shenapari/core/result/failure.dart';
 
 void main() {
   group('Failure', () {
-    test('NetworkFailure has a ready-to-show Ukrainian message', () {
-      expect(const NetworkFailure().message, isNotEmpty);
+    test('NetworkFailure has a ready-to-show text', () {
+      expect(const NetworkFailure().text, 'Немає з’єднання з сервером');
     });
 
     test('server-driven failures carry the message from the server', () {

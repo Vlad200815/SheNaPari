@@ -12,6 +12,7 @@ import '../../../gen/colors.gen.dart';
 import '../../menu/presentation/home/break_countdown.dart';
 import '../domain/entities/app_notification.dart';
 import 'notifications_cubit.dart';
+import '../../../core/l10n/l10n.dart';
 
 /// What the kitchen told the customer about their orders, newest first.
 class NotificationsPage extends StatelessWidget {
@@ -32,7 +33,10 @@ class NotificationsPage extends StatelessWidget {
           backgroundColor: ColorName.secondary100,
           appBar: AppBar(
             backgroundColor: ColorName.secondary100,
-            title: Text('Сповіщення', style: AppText.title()),
+            title: Text(
+              LocaleKeys.notifications_title.tr(),
+              style: AppText.title(),
+            ),
           ),
           body: switch (state.status) {
             NotificationsStatus.loading => const Center(
@@ -40,16 +44,14 @@ class NotificationsPage extends StatelessWidget {
             ),
             NotificationsStatus.failure => _Empty(
               icon: Icons.cloud_off,
-              title: state.failure!.message,
-              button: 'Спробувати ще раз',
+              title: state.failure!.text,
+              button: LocaleKeys.common_retry.tr(),
               onPressed: context.read<NotificationsCubit>().load,
             ),
-            NotificationsStatus.loaded when state.items.isEmpty => const _Empty(
+            NotificationsStatus.loaded when state.items.isEmpty => _Empty(
               icon: Icons.notifications_none_rounded,
-              title: 'Сповіщень поки немає',
-              subtitle:
-                  'Тут з’явиться, коли кухня прийме замовлення і коли воно '
-                  'буде готове',
+              title: LocaleKeys.notifications_empty_title.tr(),
+              subtitle: LocaleKeys.notifications_empty_text.tr(),
             ),
             NotificationsStatus.loaded => RefreshIndicator(
               color: ColorName.primary400,
@@ -125,7 +127,7 @@ class _NotificationTile extends StatelessWidget {
                         ),
                         if (isNew)
                           Semantics(
-                            label: 'Нове',
+                            label: LocaleKeys.notifications_new.tr(),
                             child: Container(
                               width: 8,
                               height: 8,
@@ -168,8 +170,8 @@ String formatWhen(DateTime time, DateTime now) {
     now.day,
   ).difference(DateTime.utc(time.year, time.month, time.day)).inDays;
   return switch (days) {
-    0 => 'Сьогодні, $clock',
-    1 => 'Вчора, $clock',
+    0 => LocaleKeys.notifications_today.tr(namedArgs: {'time': clock}),
+    1 => LocaleKeys.notifications_yesterday.tr(namedArgs: {'time': clock}),
     _ =>
       '${time.day.toString().padLeft(2, '0')}.'
           '${time.month.toString().padLeft(2, '0')}, $clock',

@@ -12,6 +12,7 @@ import '../../../gen/colors.gen.dart';
 import '../../menu/presentation/widgets/dish_card.dart';
 import '../domain/entities/cart.dart';
 import 'cart_cubit.dart';
+import '../../../core/l10n/l10n.dart';
 
 /// The cart tab: dishes with steppers, the total and «Оформити замовлення».
 class CartPage extends StatelessWidget {
@@ -24,13 +25,13 @@ class CartPage extends StatelessWidget {
         backgroundColor: ColorName.secondary100,
         appBar: AppBar(
           backgroundColor: ColorName.secondary100,
-          title: Text('Кошик', style: AppText.title()),
+          title: Text(LocaleKeys.cart_title.tr(), style: AppText.title()),
           actions: [
             if (!cart.isEmpty)
               TextButton(
                 onPressed: context.read<CartCubit>().clear,
                 child: Text(
-                  'Очистити',
+                  LocaleKeys.common_clear.tr(),
                   style: AppText.small(
                     color: ColorName.typography500,
                     fontWeight: FontWeight.w600,
@@ -180,7 +181,12 @@ class _CheckoutBar extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Разом · ${cart.count} ${_portions(cart.count)}',
+                  LocaleKeys.cart_total.tr(
+                    namedArgs: {
+                      'count': '${cart.count}',
+                      'portions': LocaleKeys.cart_portions.plural(cart.count),
+                    },
+                  ),
                   style: AppText.regular(color: ColorName.typography500),
                 ),
                 const Spacer(),
@@ -189,23 +195,13 @@ class _CheckoutBar extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             AppButton.primary(
-              text: 'Оформити замовлення',
+              text: LocaleKeys.cart_checkout.tr(),
               onPressed: () => context.push(Routes.checkout),
             ),
           ],
         ),
       ),
     );
-  }
-
-  /// 1 порція, 2 порції, 5 порцій, 11 порцій, 21 порція.
-  static String _portions(int count) {
-    final lastTwo = count % 100;
-    final last = count % 10;
-    if (lastTwo >= 11 && lastTwo <= 14) return 'порцій';
-    if (last == 1) return 'порція';
-    if (last >= 2 && last <= 4) return 'порції';
-    return 'порцій';
   }
 }
 
@@ -237,19 +233,19 @@ class _EmptyCart extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            'Кошик порожній',
+            LocaleKeys.cart_empty_title.tr(),
             style: AppText.title(),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
-            'Додайте страви з меню, і ми приготуємо їх до перерви',
+            LocaleKeys.cart_empty_text.tr(),
             style: AppText.small(),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
           AppButton.primary(
-            text: 'До меню',
+            text: LocaleKeys.common_to_menu.tr(),
             onPressed: () => context.go(Routes.home),
           ),
         ],

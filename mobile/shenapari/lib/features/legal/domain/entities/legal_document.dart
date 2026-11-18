@@ -1,15 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-enum LegalDocumentType {
-  terms('Умови використання'),
-  privacy('Політика конфіденційності'),
-  refund('Умови повернення коштів');
-
-  const LegalDocumentType(this.title);
-
-  /// Shown as the page title.
-  final String title;
-}
+/// Its title for the screen is in `legal_texts.dart` (presentation).
+enum LegalDocumentType { terms, privacy, refund }
 
 class LegalDocument extends Equatable {
   const LegalDocument({
