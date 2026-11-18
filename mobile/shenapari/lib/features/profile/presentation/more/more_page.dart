@@ -2,13 +2,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
 import '../../../../core/ui/app_text.dart';
 import '../../../../core/ui/app_theme.dart';
-import '../../../../core/ui/snack_bars.dart';
 import '../../../../gen/colors.gen.dart';
 import '../../../legal/domain/entities/legal_document.dart';
 import '../../domain/entities/user.dart';
@@ -19,8 +17,6 @@ import 'me_cubit.dart';
 /// orders, notifications, help, documents.
 class MorePage extends StatelessWidget {
   const MorePage({super.key});
-
-  static const supportEmail = 'supportshenapari@gmail.com';
 
   @override
   Widget build(BuildContext context) {
@@ -45,12 +41,6 @@ class MorePage extends StatelessWidget {
               MenuCard(
                 children: [
                   MenuRow(
-                    icon: Icons.receipt_long_outlined,
-                    tint: ColorName.orange,
-                    title: 'Мої замовлення',
-                    onTap: () => context.go(Routes.orders),
-                  ),
-                  MenuRow(
                     icon: Icons.notifications_none_rounded,
                     tint: ColorName.primary400,
                     title: 'Сповіщення',
@@ -68,11 +58,11 @@ class MorePage extends StatelessWidget {
                     onTap: () => context.push(Routes.faq),
                   ),
                   MenuRow(
-                    icon: Icons.mail_outline_rounded,
+                    icon: Icons.support_agent_rounded,
                     tint: ColorName.green,
-                    title: 'Написати в підтримку',
-                    subtitle: supportEmail,
-                    onTap: () => _writeToSupport(context),
+                    title: 'Підтримка',
+                    subtitle: 'Telegram або пошта',
+                    onTap: () => context.push(Routes.support),
                   ),
                 ],
               ),
@@ -102,23 +92,6 @@ class MorePage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  /// Opens the mail app; without one, copies the address instead.
-  static Future<void> _writeToSupport(BuildContext context) async {
-    final uri = Uri(
-      scheme: 'mailto',
-      path: supportEmail,
-      queryParameters: {'subject': 'ШеНаПарі: питання'},
-    );
-    var opened = false;
-    try {
-      opened = await launchUrl(uri);
-    } on Exception {
-      opened = false;
-    }
-    if (opened || !context.mounted) return;
-    showInfoSnackBar(context, 'Напишіть нам на $supportEmail');
   }
 }
 
