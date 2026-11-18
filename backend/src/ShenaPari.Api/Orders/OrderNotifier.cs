@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using ShenaPari.Api.Data;
 using ShenaPari.Api.Dtos;
@@ -42,13 +43,20 @@ public class OrderNotifier(IHubContext<OrdersHub> hub, PushService push, CampusC
             .SendAsync("OrderStatusChanged",
                 new OrderStatusChangedEvent(order.Id, order.Number, order.Status, order.EstimatedReadyAt));
 
-        if (message is not null)
+        // The list under the bell always gets it; the push only if wanted.
+        if (message is not null && await WantsPushAsync(order.CustomerId))
             await push.SendToUserAsync(order.CustomerId, message);
     }
 
     /// Kitchen paused or resumed taking orders → everyone connected.
     public Task CanteenChangedAsync(CanteenDto canteen) =>
         hub.Clients.All.SendAsync("CanteenChanged", canteen);
+
+    private async Task<bool> WantsPushAsync(Guid customerId) =>
+        await db.Customers
+            .Where(c => c.Id == customerId)
+            .Select(c => c.OrderPushEnabled)
+            .FirstOrDefaultAsync();
 
     private PushMessage? BuildPush(Order order)
     {

@@ -13,6 +13,7 @@ class MeDto {
     this.name,
     this.phone,
     this.email,
+    this.orderPushEnabled,
   });
 
   factory MeDto.fromJson(Map<String, dynamic> json) => _$MeDtoFromJson(json);
@@ -24,6 +25,7 @@ class MeDto {
   final String? name;
   final String? phone;
   final String? email;
+  final bool? orderPushEnabled;
 
   User toEntity() => User(
     id: id,
@@ -31,6 +33,7 @@ class MeDto {
     name: name,
     phone: phone,
     email: email,
+    orderPushEnabled: orderPushEnabled,
   );
 
   /// Unknown roles become [UserRole.unknown] instead of crashing the app.
@@ -39,6 +42,16 @@ class MeDto {
           ? value
           : value[0].toLowerCase() + value.substring(1)] ??
       UserRole.unknown;
+}
+
+/// `PUT /me/settings`
+@JsonSerializable(createFactory: false)
+class MeSettingsDto {
+  const MeSettingsDto({required this.orderPushEnabled});
+
+  final bool orderPushEnabled;
+
+  Map<String, dynamic> toJson() => _$MeSettingsDtoToJson(this);
 }
 
 /// `PATCH /me`

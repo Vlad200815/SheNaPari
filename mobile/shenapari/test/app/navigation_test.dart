@@ -12,6 +12,7 @@ import 'package:shenapari/features/cart/domain/entities/cart.dart';
 import 'package:shenapari/features/menu/domain/entities/dish.dart';
 import 'package:shenapari/core/device/qr_display_mode.dart';
 import 'package:shenapari/core/session/auth_tokens.dart';
+import 'package:shenapari/core/storage/app_prefs.dart';
 import 'package:shenapari/core/storage/in_memory_token_storage.dart';
 import 'package:shenapari/core/storage/token_storage.dart';
 import 'package:shenapari/features/auth/domain/auth_repository.dart';
@@ -449,6 +450,24 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(find.text('Привіт, Владислав!'), findsOneWidget);
+  });
+
+  testWidgets('settings: switch off order push and animations', (tester) async {
+    await _pumpApp(
+      tester,
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+    await _openMyProfile(tester);
+    await _tap(tester, 'Налаштування');
+
+    await _tap(tester, 'Сповіщення про замовлення');
+    await _tap(tester, 'Вимкнути анімації');
+
+    expect(_profile.orderPush, isFalse);
+    expect(sl<AppPrefs>().reduceMotion, isTrue);
+    final media = MediaQuery.of(tester.element(find.text('Вимкнути анімації')));
+    expect(media.disableAnimations, isTrue, reason: 'applies app-wide at once');
   });
 
   group('delete account', () {
