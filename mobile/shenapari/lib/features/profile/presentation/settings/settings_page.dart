@@ -12,7 +12,7 @@ import '../../../../gen/colors.gen.dart';
 import '../profile/confirm_delete_dialog.dart';
 import '../profile/delete_account_cubit.dart';
 import '../widgets/profile_ui.dart';
-import 'language_sheet.dart';
+import 'language_menu.dart';
 import 'settings_cubit.dart';
 
 /// «Налаштування»: order push on/off, the phone's notification permission,
@@ -99,20 +99,9 @@ class SettingsPage extends StatelessWidget {
                           const SizedBox(height: 16),
                           MenuCard(
                             children: [
-                              MenuRow(
-                                icon: Icons.translate_rounded,
-                                tint: ColorName.green,
-                                title: LocaleKeys.settings_language.tr(),
-                                subtitle: languageName(state.language),
-                                onTap: () async {
-                                  final picked = await pickLanguage(
-                                    context,
-                                    current: state.language,
-                                  );
-                                  if (picked != null) {
-                                    await cubit.setLanguage(picked);
-                                  }
-                                },
+                              LanguageRow(
+                                current: state.language,
+                                onPicked: cubit.setLanguage,
                               ),
                               SwitchRow(
                                 icon: Icons.motion_photos_off_outlined,

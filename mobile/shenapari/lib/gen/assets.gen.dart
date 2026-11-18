@@ -26,6 +26,9 @@ class $AssetsImagesGen {
   /// Directory path: assets/images/bottom_nav
   $AssetsImagesBottomNavGen get bottomNav => const $AssetsImagesBottomNavGen();
 
+  /// Directory path: assets/images/flags
+  $AssetsImagesFlagsGen get flags => const $AssetsImagesFlagsGen();
+
   /// Directory path: assets/images/home
   $AssetsImagesHomeGen get home => const $AssetsImagesHomeGen();
 
@@ -73,6 +76,19 @@ class $AssetsLegalGen {
   List<String> get values => [privacy, refund, terms];
 }
 
+class $AssetsTranslationsGen {
+  const $AssetsTranslationsGen();
+
+  /// File path: assets/translations/en.json
+  String get en => 'assets/translations/en.json';
+
+  /// File path: assets/translations/uk.json
+  String get uk => 'assets/translations/uk.json';
+
+  /// List of all assets
+  List<String> get values => [en, uk];
+}
+
 class $AssetsImagesAuthGen {
   const $AssetsImagesAuthGen();
 
@@ -109,6 +125,19 @@ class $AssetsImagesBottomNavGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [icCart, icHome, icMore, icOrders];
+}
+
+class $AssetsImagesFlagsGen {
+  const $AssetsImagesFlagsGen();
+
+  /// File path: assets/images/flags/gb.svg
+  SvgGenImage get gb => const SvgGenImage('assets/images/flags/gb.svg');
+
+  /// File path: assets/images/flags/ua.svg
+  SvgGenImage get ua => const SvgGenImage('assets/images/flags/ua.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [gb, ua];
 }
 
 class $AssetsImagesHomeGen {
@@ -168,6 +197,7 @@ class $AssetsImagesSplashGen {
 abstract final class Assets {
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsLegalGen legal = $AssetsLegalGen();
+  static const $AssetsTranslationsGen translations = $AssetsTranslationsGen();
 }
 
 class AssetGenImage {
