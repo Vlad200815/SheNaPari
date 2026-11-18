@@ -173,11 +173,10 @@ class _QrButtonSlot extends StatelessWidget {
   }
 }
 
-/// The «Мій QR» button. When an order is ready it starts to glow: a soft
-/// yellow halo breathes around it and a light sweeps across it diagonally
-/// from the top-left, with a count badge — so the customer sees the code is
-/// waiting. Only this one element moves; with reduced motion the halo is
-/// shown without any animation.
+/// The «Мій QR» button. When an order is ready a light sweeps across it
+/// diagonally from the top-left every few seconds and a count badge
+/// appears, so the customer sees the code is waiting. Only this one element
+/// moves; with reduced motion only the badge is shown.
 class _QrButton extends StatefulWidget {
   const _QrButton({required this.ready});
 
@@ -239,29 +238,6 @@ class _QrButtonState extends State<_QrButton>
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          if (ready)
-            // The halo: fades in and out (opacity only).
-            Positioned.fill(
-              child: AnimatedBuilder(
-                animation: _cycle,
-                builder: (context, child) => Opacity(
-                  opacity: animate ? _breath(_cycle.value) : 0.8,
-                  child: child,
-                ),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: ColorName.primary400.withValues(alpha: 0.9),
-                        blurRadius: 26,
-                        spreadRadius: 6,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
           Material(
             color: ColorName.primary400,
             shape: const CircleBorder(),
@@ -321,9 +297,6 @@ class _QrButtonState extends State<_QrButton>
       ),
     );
   }
-
-  /// 0.45 → 1 → 0.45 over the cycle: a slow breath.
-  static double _breath(double t) => 0.45 + 0.55 * (1 - (2 * t - 1).abs());
 }
 
 class _Badge extends StatelessWidget {
