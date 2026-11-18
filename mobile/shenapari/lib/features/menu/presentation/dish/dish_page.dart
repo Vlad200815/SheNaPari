@@ -20,6 +20,7 @@ import '../widgets/dish_card.dart';
 import 'dish_cubit.dart';
 import 'dish_state.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// A dish: big photo on top, details on a white sheet, and a bottom bar
 /// with the portion stepper and «Додати · 170 ₴».
@@ -43,7 +44,7 @@ class DishPage extends StatelessWidget {
       },
       child: BlocBuilder<DishCubit, DishState>(
         builder: (context, state) => Scaffold(
-          backgroundColor: ColorName.white,
+          backgroundColor: context.colors.surface,
           body: switch (state.status) {
             DishStatus.loading => const Center(
               child: CircularProgressIndicator(color: ColorName.primary400),
@@ -74,7 +75,10 @@ class _DishView extends StatelessWidget {
     return Stack(
       children: [
         // Pale yellow backdrop with a decorative circle behind the photo.
-        Container(height: _heroHeight + topInset, color: ColorName.primary100),
+        Container(
+          height: _heroHeight + topInset,
+          color: context.colors.accentSoft,
+        ),
         Positioned(
           top: topInset - 40,
           right: -60,
@@ -83,7 +87,7 @@ class _DishView extends StatelessWidget {
             height: 260,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: ColorName.primary200.withValues(alpha: 0.6),
+              color: context.colors.accentDecor,
             ),
           ),
         ),
@@ -127,8 +131,8 @@ class _Sheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final nextBreak = this.nextBreak;
     return Container(
-      decoration: const BoxDecoration(
-        color: ColorName.white,
+      decoration: BoxDecoration(
+        color: context.colors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       padding: const EdgeInsets.fromLTRB(
@@ -194,7 +198,7 @@ class _Sheet extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               description,
-              style: AppText.regular(color: ColorName.typography500),
+              style: AppText.regular(color: context.colors.textSecondary),
             ),
           ],
         ],
@@ -219,18 +223,22 @@ class _MetaPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
-        color: highlighted ? ColorName.primary400 : ColorName.secondary100,
+        color: highlighted ? ColorName.primary400 : context.colors.fill,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: ColorName.black),
+          Icon(
+            icon,
+            size: 16,
+            color: highlighted ? ColorName.black : context.colors.textPrimary,
+          ),
           const SizedBox(width: 6),
           Text(
             text,
             style: AppText.small(
-              color: ColorName.black,
+              color: highlighted ? ColorName.black : context.colors.textPrimary,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -252,7 +260,7 @@ class _PickupHint extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: ColorName.primary100,
+        color: context.colors.accentSoft,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -264,7 +272,7 @@ class _PickupHint extends StatelessWidget {
               color: ColorName.primary400,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.schedule_rounded,
               color: ColorName.black,
               size: 22,
@@ -281,7 +289,7 @@ class _PickupHint extends StatelessWidget {
                 ),
                 Text(
                   '${countdown.title} · ${countdown.timeLeft}',
-                  style: AppText.small(color: ColorName.typography900),
+                  style: AppText.small(color: context.colors.textPrimary),
                 ),
               ],
             ),
@@ -317,10 +325,10 @@ class _AddToCartBar extends StatelessWidget {
     final total = formatPrice(state.totalKopecks);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: ColorName.white,
+        color: context.colors.surface,
         boxShadow: [
           BoxShadow(
-            color: ColorName.black.withValues(alpha: 0.06),
+            color: context.colors.shadow,
             blurRadius: 16,
             offset: const Offset(0, -4),
           ),
@@ -376,7 +384,7 @@ class _RoundButton extends StatelessWidget {
       button: true,
       label: label,
       child: Material(
-        color: ColorName.white,
+        color: context.colors.surface,
         shape: const CircleBorder(),
         elevation: 2,
         shadowColor: ColorName.black.withValues(alpha: 0.2),
@@ -385,7 +393,7 @@ class _RoundButton extends StatelessWidget {
           onTap: onTap,
           child: SizedBox.square(
             dimension: 44,
-            child: Icon(icon, color: ColorName.black),
+            child: Icon(icon, color: context.colors.textPrimary),
           ),
         ),
       ),
@@ -407,15 +415,15 @@ class _LoadError extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Icon(
+            Icon(
               Icons.no_food_outlined,
               size: 48,
-              color: ColorName.secondary400,
+              color: context.colors.iconMuted,
             ),
             const SizedBox(height: 16),
             Text(
               message,
-              style: AppText.regular(color: ColorName.typography500),
+              style: AppText.regular(color: context.colors.textSecondary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),

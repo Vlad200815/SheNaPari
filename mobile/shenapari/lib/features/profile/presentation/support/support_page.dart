@@ -7,6 +7,7 @@ import '../../../../core/ui/app_theme.dart';
 import '../../../../core/ui/snack_bars.dart';
 import '../../../../gen/colors.gen.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// «Підтримка»: one big button per way to reach us, like ToSim's
 /// «Відділ турботи». Each opens the app for it (Telegram, mail); when the
@@ -23,9 +24,9 @@ class SupportPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorName.secondary100,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: ColorName.secondary100,
+        backgroundColor: context.colors.background,
         title: Text(LocaleKeys.support_title.tr(), style: AppText.title()),
       ),
       body: Stack(
@@ -41,7 +42,7 @@ class SupportPage extends StatelessWidget {
             children: [
               Text(
                 LocaleKeys.support_intro.tr(),
-                style: AppText.medium(color: ColorName.typography500),
+                style: AppText.medium(color: context.colors.textSecondary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -186,7 +187,9 @@ class _Decor extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: ColorName.primary400.withValues(alpha: alpha),
+        color: ColorName.primary400.withValues(
+          alpha: alpha * context.colors.decorOpacity,
+        ),
       ),
     );
     return ExcludeSemantics(

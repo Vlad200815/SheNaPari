@@ -19,6 +19,7 @@ import '../../domain/entities/order.dart';
 import 'checkout_cubit.dart';
 import 'checkout_state.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// When to pick up, what is ordered, how to pay — then «Оплатити».
 class CheckoutPage extends StatelessWidget {
@@ -48,11 +49,11 @@ class CheckoutPage extends StatelessWidget {
           }
         },
         builder: (context, state) => Scaffold(
-          backgroundColor: ColorName.secondary100,
+          backgroundColor: context.colors.background,
           appBar: state.status == CheckoutStatus.placed
               ? null
               : AppBar(
-                  backgroundColor: ColorName.secondary100,
+                  backgroundColor: context.colors.background,
                   title: Text(
                     LocaleKeys.checkout_title.tr(),
                     style: AppText.title(),
@@ -135,7 +136,7 @@ class _Form extends StatelessWidget {
                       Text(
                         '${item.quantity} ×',
                         style: AppText.small(
-                          color: ColorName.typography900,
+                          color: context.colors.textPrimary,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -143,12 +144,14 @@ class _Form extends StatelessWidget {
                       Expanded(
                         child: Text(
                           item.dish.name,
-                          style: AppText.small(color: ColorName.typography900),
+                          style: AppText.small(
+                            color: context.colors.textPrimary,
+                          ),
                         ),
                       ),
                       Text(
                         formatPrice(item.totalKopecks),
-                        style: AppText.small(color: ColorName.typography900),
+                        style: AppText.small(color: context.colors.textPrimary),
                       ),
                     ],
                   ),
@@ -176,7 +179,7 @@ class _Form extends StatelessWidget {
         ],
         Text(
           LocaleKeys.checkout_payment_simulated.tr(),
-          style: AppText.small(),
+          style: AppText.small(color: context.colors.textSecondary),
         ),
       ],
     );
@@ -193,11 +196,11 @@ class _PayBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: ColorName.white,
+        color: context.colors.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
-            color: ColorName.black.withValues(alpha: 0.06),
+            color: context.colors.shadow,
             blurRadius: 16,
             offset: const Offset(0, -4),
           ),
@@ -271,7 +274,7 @@ class _Placed extends StatelessWidget {
                   : LocaleKeys.checkout_paid_break.tr(
                       namedArgs: {'time': formatClock(slot.startsAt)},
                     ),
-              style: AppText.regular(color: ColorName.typography500),
+              style: AppText.regular(color: context.colors.textSecondary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
@@ -320,11 +323,11 @@ class _Choice extends StatelessWidget {
       selected: selected,
       inMutuallyExclusiveGroup: true,
       child: Material(
-        color: ColorName.white,
+        color: context.colors.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
-            color: selected ? ColorName.primary400 : ColorName.white,
+            color: selected ? ColorName.primary400 : context.colors.surface,
             width: 2,
           ),
         ),
@@ -341,10 +344,16 @@ class _Choice extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: selected
                         ? ColorName.primary400
-                        : ColorName.secondary100,
+                        : context.colors.fill,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(icon, size: 22, color: ColorName.black),
+                  child: Icon(
+                    icon,
+                    size: 22,
+                    color: selected
+                        ? ColorName.black
+                        : context.colors.textPrimary,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -358,7 +367,12 @@ class _Choice extends StatelessWidget {
                         ),
                       ),
                       if (subtitle != null)
-                        Text(subtitle, style: AppText.small()),
+                        Text(
+                          subtitle,
+                          style: AppText.small(
+                            color: context.colors.textSecondary,
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -369,7 +383,7 @@ class _Choice extends StatelessWidget {
                       : Icons.radio_button_off_rounded,
                   color: selected
                       ? ColorName.primary500
-                      : ColorName.secondary300,
+                      : context.colors.disabled,
                 ),
               ],
             ),
@@ -407,7 +421,7 @@ class _Card extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: ColorName.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(16),
       ),
       child: child,
@@ -425,7 +439,7 @@ class _Notice extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: ColorName.redLight,
+        color: context.colors.dangerSoft,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -435,7 +449,7 @@ class _Notice extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: AppText.small(color: ColorName.typography900),
+              style: AppText.small(color: context.colors.textPrimary),
             ),
           ),
         ],
@@ -458,11 +472,11 @@ class _LoadError extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Icon(Icons.cloud_off, size: 48, color: ColorName.secondary400),
+          Icon(Icons.cloud_off, size: 48, color: context.colors.iconMuted),
           const SizedBox(height: 16),
           Text(
             message,
-            style: AppText.regular(color: ColorName.typography500),
+            style: AppText.regular(color: context.colors.textSecondary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),

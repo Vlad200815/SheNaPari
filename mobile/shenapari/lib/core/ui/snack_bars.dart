@@ -4,6 +4,7 @@ import '../../gen/colors.gen.dart';
 import '../result/failure.dart';
 import 'app_text.dart';
 import '../l10n/l10n.dart';
+import 'app_colors.dart';
 
 /// Shows the failure text from the server (already in Ukrainian).
 ///
@@ -16,7 +17,7 @@ void showFailureSnackBar(BuildContext context, Failure failure) => _show(
     message: failure.text,
     icon: Icons.error_outline,
     accent: ColorName.red,
-    background: ColorName.redLight,
+    background: context.colors.dangerSoft,
   ),
 );
 
@@ -27,7 +28,7 @@ void showInfoSnackBar(BuildContext context, String message) => _show(
     message: message,
     icon: Icons.info_outline,
     accent: ColorName.primary500,
-    background: ColorName.primary100,
+    background: context.colors.accentSoft,
   ),
 );
 
@@ -85,7 +86,7 @@ class _MessageCard extends StatelessWidget {
             Expanded(
               child: Text(
                 message,
-                style: AppText.small(color: ColorName.typography900),
+                style: AppText.small(color: context.colors.textPrimary),
               ),
             ),
           ],

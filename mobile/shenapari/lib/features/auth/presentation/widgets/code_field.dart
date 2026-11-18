@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/ui/app_text.dart';
 import '../../../../gen/colors.gen.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// A code input drawn as [length] boxes. Under the hood it is one invisible
 /// [TextField] on top of the boxes, so the keyboard, paste and SMS autofill
@@ -93,7 +94,7 @@ class _Box extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: active ? ColorName.primary400 : ColorName.secondary200,
+          color: active ? ColorName.primary400 : context.colors.border,
         ),
       ),
       child: Text(digit, style: AppText.medium()),

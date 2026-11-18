@@ -13,6 +13,7 @@ import '../domain/entities/legal_document.dart';
 import 'legal_cubit.dart';
 import '../../../core/l10n/l10n.dart';
 import 'legal_texts.dart';
+import '../../../core/ui/app_colors.dart';
 
 /// Terms of use, privacy policy or refund terms: a title, a hint and the Markdown text in
 /// a framed box with a always-visible scrollbar, so it is clear how long
@@ -54,7 +55,7 @@ class LegalPage extends StatelessWidget {
                     LegalDocumentType.refund =>
                       LocaleKeys.legal_refund_hint.tr(),
                   },
-                  style: AppText.small(),
+                  style: AppText.small(color: context.colors.textSecondary),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
@@ -62,7 +63,7 @@ class LegalPage extends StatelessWidget {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(AppDimens.radius),
-                      border: Border.all(color: ColorName.secondary200),
+                      border: Border.all(color: context.colors.border),
                     ),
                     child: BlocBuilder<LegalCubit, LegalDocument?>(
                       builder: (context, document) => document == null
@@ -129,7 +130,7 @@ class _DocumentTextState extends State<_DocumentText> {
 
   @override
   Widget build(BuildContext context) {
-    final body = AppText.small(color: ColorName.typography900);
+    final body = AppText.small(color: context.colors.textPrimary);
     return RawScrollbar(
       controller: _scroll,
       thumbVisibility: true,
@@ -139,8 +140,8 @@ class _DocumentTextState extends State<_DocumentText> {
       radius: const Radius.circular(6),
       trackRadius: const Radius.circular(6),
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-      thumbColor: ColorName.secondary400,
-      trackColor: ColorName.secondary100,
+      thumbColor: context.colors.iconMuted,
+      trackColor: context.colors.fill,
       trackBorderColor: Colors.transparent,
       child: Markdown(
         controller: _scroll,
