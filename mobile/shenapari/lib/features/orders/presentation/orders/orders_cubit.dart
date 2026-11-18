@@ -34,14 +34,34 @@ abstract class OrdersState with _$OrdersState {
       if (!o.isActive) o,
   ];
 
-  /// What «Мій QR» shows: a ready order first, else the oldest active one
-  /// (the one the kitchen will finish first).
-  Order? get forPickup {
-    for (final order in active) {
-      if (order.status == OrderStatus.ready) return order;
+  /// What «Мій QR» shows, in order: ready orders first (the one that has
+  /// waited longest at the top), then the rest, oldest first — the kitchen
+  /// finishes those first.
+  List<Order> get forPickup {
+    DateTime readySince(Order o) =>
+        o.readyAt ?? o.reachedAt(OrderStatus.ready) ?? o.createdAt;
+    // List.sort is not stable: the order number breaks ties, so the cards
+    // never swap places between reloads.
+    int by(DateTime Function(Order) time, Order a, Order b) {
+      final byTime = time(a).compareTo(time(b));
+      return byTime != 0 ? byTime : a.number.compareTo(b.number);
     }
-    return active.isEmpty ? null : active.last;
+
+    final ready = [
+      for (final o in active)
+        if (o.status == OrderStatus.ready) o,
+    ]..sort((a, b) => by(readySince, a, b));
+    final waiting = [
+      for (final o in active)
+        if (o.status != OrderStatus.ready) o,
+    ]..sort((a, b) => by((o) => o.createdAt, a, b));
+    return [...ready, ...waiting];
   }
+
+  int get readyCount => [
+    for (final o in active)
+      if (o.status == OrderStatus.ready) o,
+  ].length;
 }
 
 /// The customer's orders; reloads by itself when the kitchen changes a

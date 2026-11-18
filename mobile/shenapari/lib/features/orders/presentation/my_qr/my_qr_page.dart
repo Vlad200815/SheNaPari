@@ -121,9 +121,12 @@ class _Sheet extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              'Твій QR-код',
-                              style: AppText.heading().copyWith(fontSize: 26),
+                            child: BlocSelector<OrdersCubit, OrdersState, int>(
+                              selector: (state) => state.readyCount,
+                              builder: (context, ready) => Text(
+                                ready > 1 ? 'Твої QR-коди' : 'Твій QR-код',
+                                style: AppText.heading().copyWith(fontSize: 26),
+                              ),
                             ),
                           ),
                           const _CloseButton(),
@@ -150,7 +153,7 @@ class _Sheet extends StatelessWidget {
   }
 
   Widget _content(BuildContext context, OrdersState state) {
-    final order = state.forPickup;
+    final orders = state.forPickup;
     return switch (state.status) {
       OrdersStatus.loading => const SizedBox(
         key: ValueKey('loading'),
@@ -166,7 +169,7 @@ class _Sheet extends StatelessWidget {
         button: 'Спробувати ще раз',
         onPressed: context.read<OrdersCubit>().load,
       ),
-      OrdersStatus.loaded when order == null => _Message(
+      OrdersStatus.loaded when orders.isEmpty => _Message(
         key: const ValueKey('none'),
         icon: Icons.qr_code_2_rounded,
         text:
@@ -175,30 +178,183 @@ class _Sheet extends StatelessWidget {
         button: 'До меню',
         onPressed: () => context.go(Routes.home),
       ),
-      OrdersStatus.loaded
-          when order!.status == OrderStatus.ready &&
-              order.pickupToken != null =>
-        _ReadyQr(key: ValueKey('qr-${order.id}'), order: order),
-      OrdersStatus.loaded => _NotReady(
-        key: ValueKey('wait-${order!.id}'),
-        order: order,
+      OrdersStatus.loaded when orders.length == 1 => _OrderPage(
+        key: ValueKey('one-${orders.single.id}-${orders.single.status}'),
+        order: orders.single,
+      ),
+      // A stable key: live updates must not reset the chosen page.
+      OrdersStatus.loaded => _OrderPager(
+        key: const ValueKey('pager'),
+        orders: orders,
       ),
     };
   }
 }
 
-class _ReadyQr extends StatelessWidget {
-  const _ReadyQr({super.key, required this.order});
+/// One order: its QR when ready, otherwise how far along it is.
+class _OrderPage extends StatelessWidget {
+  const _OrderPage({super.key, required this.order});
 
   final Order order;
 
   @override
   Widget build(BuildContext context) {
-    // Big on a normal phone, smaller on a short screen so nothing overflows.
-    final qrSize = (MediaQuery.sizeOf(context).height * 0.32).clamp(
-      160.0,
-      260.0,
+    return order.status == OrderStatus.ready && order.pickupToken != null
+        ? _ReadyQr(order: order)
+        : _NotReady(order: order);
+  }
+}
+
+/// Several active orders: a row of chips («№2 · Готово», «№5 · Готується»)
+/// and the matching cards, swipeable. The chips are the visible control,
+/// so swiping is a shortcut, not the only way; each chip says the status
+/// in words, not only by colour.
+class _OrderPager extends StatefulWidget {
+  const _OrderPager({super.key, required this.orders});
+
+  final List<Order> orders;
+
+  @override
+  State<_OrderPager> createState() => _OrderPagerState();
+}
+
+class _OrderPagerState extends State<_OrderPager> {
+  final _pages = PageController();
+  var _index = 0;
+
+  @override
+  void didUpdateWidget(_OrderPager oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // A live update may remove an order (picked up): stay in range.
+    if (_index >= widget.orders.length) _index = widget.orders.length - 1;
+  }
+
+  @override
+  void dispose() {
+    _pages.dispose();
+    super.dispose();
+  }
+
+  void _open(int index) {
+    setState(() => _index = index);
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    if (reduceMotion) {
+      _pages.jumpToPage(index);
+    } else {
+      _pages.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOutCubic,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final orders = widget.orders;
+    final pageHeight = _qrSize(context) + 150;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(
+          height: 40,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: orders.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 8),
+            itemBuilder: (context, i) => _OrderChip(
+              order: orders[i],
+              selected: i == _index,
+              onTap: () => _open(i),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        // As tall as one page needs, but never more than the sheet has
+        // left on a short screen (the page content scrolls then).
+        Flexible(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: pageHeight),
+            child: PageView.builder(
+              controller: _pages,
+              itemCount: orders.length,
+              onPageChanged: (i) => setState(() => _index = i),
+              itemBuilder: (context, i) => _OrderPage(order: orders[i]),
+            ),
+          ),
+        ),
+      ],
     );
+  }
+}
+
+class _OrderChip extends StatelessWidget {
+  const _OrderChip({
+    required this.order,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final Order order;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final ready = order.status == OrderStatus.ready;
+    return Semantics(
+      selected: selected,
+      button: true,
+      child: Material(
+        color: selected ? ColorName.primary400 : ColorName.white,
+        shape: StadiumBorder(
+          side: BorderSide(
+            color: selected ? ColorName.primary400 : ColorName.secondary200,
+          ),
+        ),
+        child: InkWell(
+          customBorder: const StadiumBorder(),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  ready ? Icons.qr_code_2_rounded : Icons.hourglass_top_rounded,
+                  size: 18,
+                  color: ColorName.black,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  '№${order.number} · ${ready ? 'Готово' : order.statusLabel}',
+                  style: AppText.small(
+                    color: ColorName.black,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Big on a normal phone, smaller on a short screen so nothing overflows.
+double _qrSize(BuildContext context) =>
+    (MediaQuery.sizeOf(context).height * 0.32).clamp(160.0, 260.0);
+
+class _ReadyQr extends StatelessWidget {
+  const _ReadyQr({required this.order});
+
+  final Order order;
+
+  @override
+  Widget build(BuildContext context) {
+    final qrSize = _qrSize(context);
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -235,7 +391,7 @@ class _ReadyQr extends StatelessWidget {
 }
 
 class _NotReady extends StatelessWidget {
-  const _NotReady({super.key, required this.order});
+  const _NotReady({required this.order});
 
   final Order order;
 

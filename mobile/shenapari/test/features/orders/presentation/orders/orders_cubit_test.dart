@@ -30,40 +30,55 @@ void main() {
 
     expect(cubit.state.active, isEmpty);
     expect(cubit.state.past.single.status, OrderStatus.pickedUp);
-    expect(cubit.state.forPickup, isNull);
+    expect(cubit.state.forPickup, isEmpty);
   });
 
   test('reloads by itself when the kitchen changes a status', () async {
     final cubit = OrdersCubit(repository, events);
     await cubit.load();
-    expect(cubit.state.forPickup!.status, OrderStatus.paid);
+    expect(cubit.state.forPickup.single.status, OrderStatus.paid);
 
     repository.kitchen('order-7', OrderStatus.ready, pickupToken: 't');
     events.changed('order-7');
     await Future<void>.delayed(Duration.zero);
 
-    expect(cubit.state.forPickup!.status, OrderStatus.ready);
+    expect(cubit.state.forPickup.single.status, OrderStatus.ready);
     await cubit.close();
   });
 
-  test('a ready order goes to «Мій QR» before others', () {
-    Order order(String id, OrderStatus status) => Order(
+  test('«Мій QR»: ready orders first, longest-waiting on top', () {
+    Order order(
+      String id,
+      OrderStatus status, {
+      required int minute,
+      int? readyMinute,
+    }) => Order(
       id: id,
       number: 1,
       status: status,
       totalKopecks: 0,
-      createdAt: DateTime(2026),
+      createdAt: DateTime(2026, 11, 18, 11, minute),
+      readyAt: readyMinute == null
+          ? null
+          : DateTime(2026, 11, 18, 11, readyMinute),
       items: const [],
     );
     final state = OrdersState(
       status: OrdersStatus.loaded,
       orders: [
-        order('new', OrderStatus.paid),
-        order('ready', OrderStatus.ready),
+        order('cooking-new', OrderStatus.cooking, minute: 30),
+        order('ready-late', OrderStatus.ready, minute: 5, readyMinute: 25),
+        order('paid-old', OrderStatus.paid, minute: 10),
+        order('ready-early', OrderStatus.ready, minute: 20, readyMinute: 22),
+        order('done', OrderStatus.pickedUp, minute: 1),
       ],
     );
 
-    expect(state.forPickup!.id, 'ready');
+    expect(
+      [for (final o in state.forPickup) o.id],
+      ['ready-early', 'ready-late', 'paid-old', 'cooking-new'],
+    );
+    expect(state.readyCount, 2);
   });
 
   test('a failed refresh keeps the list', () async {
