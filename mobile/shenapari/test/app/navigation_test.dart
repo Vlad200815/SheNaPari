@@ -32,6 +32,7 @@ import 'package:easy_localization/easy_localization.dart' show EasyLocalization;
 import 'package:shenapari/core/l10n/app_locale.dart';
 import '../l10n_helper.dart';
 import 'package:shenapari/core/l10n/app_language.dart';
+import 'package:shenapari/core/ui/app_colors.dart';
 
 const _tokens = AuthTokens(accessToken: 'access', refreshToken: 'refresh');
 const _returning = {'launched_before': true, 'onboarding_seen': true};
@@ -490,7 +491,8 @@ void main() {
     );
     await _openMyProfile(tester);
     await _tap(tester, 'Налаштування');
-    expect(find.text('Як у системі'), findsOneWidget);
+    // Both «Мова» and «Тема» follow the phone until picked.
+    expect(find.text('Як у системі'), findsNWidgets(2));
 
     await _tap(tester, 'Мова');
     await _tap(tester, 'English');
@@ -506,6 +508,40 @@ void main() {
     await _back(tester, tooltip: 'Back');
     await tester.pumpAndSettle();
     expect(find.byTooltip('Home'), findsOneWidget);
+  });
+
+  testWidgets('settings → «Тема» → «Темна»: the app turns dark at once', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+    await _openMyProfile(tester);
+    await _tap(tester, 'Налаштування');
+    Color background() =>
+        tester.widget<Scaffold>(find.byType(Scaffold).last).backgroundColor!;
+    expect(background(), AppColors.light.background);
+
+    await _tap(tester, 'Тема');
+    await _tap(tester, 'Темна');
+
+    expect(background(), AppColors.dark.background);
+    expect(sl<AppPrefs>().themeMode, ThemeMode.dark);
+  });
+
+  testWidgets('a phone in dark mode: the app follows it', (tester) async {
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+    addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+    await _pumpApp(
+      tester,
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+
+    final home = tester.widget<Scaffold>(find.byType(Scaffold).last);
+    expect(home.backgroundColor, AppColors.dark.background);
   });
 
   testWidgets('settings: switch off order push and animations', (tester) async {

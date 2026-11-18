@@ -16,6 +16,7 @@ import '../orders/orders_cubit.dart';
 import '../widgets/order_texts.dart';
 import '../widgets/order_widgets.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// «Мій QR»: a white sheet over the app, which stays visible on top behind
 /// frosted yellow glass. Tapping the glass, swiping the sheet down or ✕
@@ -54,7 +55,9 @@ class MyQrPage extends StatelessWidget {
                     return BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 16 * t, sigmaY: 16 * t),
                       child: ColoredBox(
-                        color: ColorName.primary400.withValues(alpha: 0.35 * t),
+                        color: ColorName.primary400.withValues(
+                          alpha: 0.35 * t * context.colors.decorOpacity,
+                        ),
                       ),
                     );
                   },
@@ -109,7 +112,7 @@ class _Sheet extends StatelessWidget {
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: maxHeight),
         child: Material(
-          color: ColorName.white,
+          color: context.colors.surface,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
           clipBehavior: Clip.antiAlias,
           child: Stack(
@@ -324,10 +327,10 @@ class _OrderChip extends StatelessWidget {
       selected: selected,
       button: true,
       child: Material(
-        color: selected ? ColorName.primary400 : ColorName.white,
+        color: selected ? ColorName.primary400 : context.colors.surface,
         shape: StadiumBorder(
           side: BorderSide(
-            color: selected ? ColorName.primary400 : ColorName.secondary200,
+            color: selected ? ColorName.primary400 : context.colors.border,
           ),
         ),
         child: InkWell(
@@ -341,7 +344,9 @@ class _OrderChip extends StatelessWidget {
                 Icon(
                   ready ? Icons.qr_code_2_rounded : Icons.hourglass_top_rounded,
                   size: 18,
-                  color: ColorName.black,
+                  color: selected
+                      ? ColorName.black
+                      : context.colors.textPrimary,
                 ),
                 const SizedBox(width: 6),
                 Text(
@@ -354,7 +359,9 @@ class _OrderChip extends StatelessWidget {
                     },
                   ),
                   style: AppText.small(
-                    color: ColorName.black,
+                    color: selected
+                        ? ColorName.black
+                        : context.colors.textPrimary,
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                   ),
                 ),
@@ -412,7 +419,10 @@ class _ReadyQr extends StatelessWidget {
             ),
             style: AppText.title(),
           ),
-          Text(LocaleKeys.my_qr_show_hint.tr(), style: AppText.small()),
+          Text(
+            LocaleKeys.my_qr_show_hint.tr(),
+            style: AppText.small(color: context.colors.textSecondary),
+          ),
           const SizedBox(height: 12),
           _DetailsLink(order: order),
         ],
@@ -436,12 +446,15 @@ class _NotReady extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: ColorName.primary100,
+              color: context.colors.accentSoft,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
               children: [
-                const Icon(Icons.hourglass_top_rounded, color: ColorName.black),
+                Icon(
+                  Icons.hourglass_top_rounded,
+                  color: context.colors.textPrimary,
+                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -451,7 +464,7 @@ class _NotReady extends StatelessWidget {
                         'when': order.whenLabel,
                       },
                     ),
-                    style: AppText.small(color: ColorName.typography900),
+                    style: AppText.small(color: context.colors.textPrimary),
                   ),
                 ),
               ],
@@ -484,7 +497,7 @@ class _DetailsLink extends StatelessWidget {
       child: Text(
         LocaleKeys.my_qr_details.tr(),
         style: AppText.medium(
-          color: ColorName.typography900,
+          color: context.colors.textPrimary,
         ).copyWith(fontWeight: FontWeight.w600),
       ),
     );
@@ -516,8 +529,8 @@ class _Message extends StatelessWidget {
           child: Container(
             width: 96,
             height: 96,
-            decoration: const BoxDecoration(
-              color: ColorName.primary100,
+            decoration: BoxDecoration(
+              color: context.colors.accentSoft,
               shape: BoxShape.circle,
             ),
             child: Icon(icon, size: 48, color: ColorName.primary500),
@@ -543,7 +556,7 @@ class _Handle extends StatelessWidget {
         width: 40,
         height: 5,
         decoration: BoxDecoration(
-          color: ColorName.secondary200,
+          color: context.colors.border,
           borderRadius: BorderRadius.circular(3),
         ),
       ),
@@ -561,14 +574,14 @@ class _CloseButton extends StatelessWidget {
       label: LocaleKeys.common_close.tr(),
       excludeSemantics: true,
       child: Material(
-        color: ColorName.secondary100,
+        color: context.colors.fill,
         shape: const CircleBorder(),
         child: InkWell(
           customBorder: const CircleBorder(),
           onTap: () => context.pop(),
-          child: const SizedBox.square(
+          child: SizedBox.square(
             dimension: 44,
-            child: Icon(Icons.close_rounded, color: ColorName.black),
+            child: Icon(Icons.close_rounded, color: context.colors.textPrimary),
           ),
         ),
       ),
@@ -587,7 +600,9 @@ class _Decor extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: ColorName.primary400.withValues(alpha: alpha),
+        color: ColorName.primary400.withValues(
+          alpha: alpha * context.colors.decorOpacity,
+        ),
       ),
     );
     return ExcludeSemantics(

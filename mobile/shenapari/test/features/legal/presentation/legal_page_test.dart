@@ -7,6 +7,7 @@ import 'package:shenapari/features/legal/domain/legal_repository.dart';
 import 'package:shenapari/features/legal/presentation/legal_cubit.dart';
 import 'package:shenapari/features/legal/presentation/legal_page.dart';
 import 'package:shenapari/gen/colors.gen.dart';
+import 'package:shenapari/core/ui/app_theme.dart';
 
 class _FakeLegalRepository implements LegalRepository {
   _FakeLegalRepository(this.content);
@@ -33,7 +34,10 @@ void main() {
   testWidgets('shows the title and the Markdown text', (tester) async {
     _content = '## 1. Розділ\n\nТекст **документа**.';
     await tester.pumpWidget(
-      const MaterialApp(home: LegalPage(type: LegalDocumentType.privacy)),
+      MaterialApp(
+        theme: appTheme,
+        home: const LegalPage(type: LegalDocumentType.privacy),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -45,7 +49,10 @@ void main() {
   testWidgets('refund terms: own title and hint', (tester) async {
     _content = 'Текст.';
     await tester.pumpWidget(
-      const MaterialApp(home: LegalPage(type: LegalDocumentType.refund)),
+      MaterialApp(
+        theme: appTheme,
+        home: const LegalPage(type: LegalDocumentType.refund),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -80,7 +87,10 @@ void main() {
     );
 
     await tester.pumpWidget(
-      const MaterialApp(home: LegalPage(type: LegalDocumentType.terms)),
+      MaterialApp(
+        theme: appTheme,
+        home: const LegalPage(type: LegalDocumentType.terms),
+      ),
     );
     await tester.pumpAndSettle();
     await tester.tap(find.text('support@example.com'));
@@ -95,7 +105,10 @@ void main() {
     _content = 'Пишіть на [support@example.com](mailto:support@example.com).';
 
     await tester.pumpWidget(
-      const MaterialApp(home: LegalPage(type: LegalDocumentType.terms)),
+      MaterialApp(
+        theme: appTheme,
+        home: const LegalPage(type: LegalDocumentType.terms),
+      ),
     );
     await tester.pumpAndSettle();
 

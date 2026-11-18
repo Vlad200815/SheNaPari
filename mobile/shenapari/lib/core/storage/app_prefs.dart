@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:material_ui/material_ui.dart' show ThemeMode;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/app_language.dart';
@@ -14,6 +15,7 @@ class AppPrefs extends ChangeNotifier {
   static const _launchedBeforeKey = 'launched_before';
   static const _reduceMotionKey = 'reduce_motion';
   static const _languageKey = 'language';
+  static const _themeModeKey = 'theme_mode';
 
   bool get onboardingSeen => _prefs.getBool(_onboardingSeenKey) ?? false;
 
@@ -40,6 +42,16 @@ class AppPrefs extends ChangeNotifier {
 
   Future<void> setLanguage(AppLanguage value) async {
     await _prefs.setString(_languageKey, value.name);
+    notifyListeners();
+  }
+
+  /// «Тема» in the app's settings; [ThemeMode.system] until changed.
+  ThemeMode get themeMode =>
+      ThemeMode.values.asNameMap()[_prefs.getString(_themeModeKey)] ??
+      ThemeMode.system;
+
+  Future<void> setThemeMode(ThemeMode value) async {
+    await _prefs.setString(_themeModeKey, value.name);
     notifyListeners();
   }
 }

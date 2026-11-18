@@ -4,6 +4,7 @@ import '../../../../core/ui/app_text.dart';
 import '../../../../core/ui/app_theme.dart';
 import '../../../../gen/assets.gen.dart';
 import '../../../../gen/colors.gen.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// One intro slide: a picture on the brand background, a title and a text.
 class OnboardingSlide extends StatelessWidget {
@@ -34,7 +35,13 @@ class OnboardingSlide extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Assets.images.onboarding.background.svg(),
+                // The light blob of the design; on the dark theme a dark
+                // grey one, like the dark reference screens.
+                Assets.images.onboarding.background.svg(
+                  colorFilter: Theme.of(context).brightness == Brightness.dark
+                      ? ColorFilter.mode(context.colors.fill, BlendMode.srcIn)
+                      : null,
+                ),
                 image.image(fit: BoxFit.contain),
               ],
             ),
@@ -67,7 +74,7 @@ class OnboardingSlide extends StatelessWidget {
                 else
                   Text(
                     text,
-                    style: AppText.regular(color: ColorName.secondary500),
+                    style: AppText.regular(color: context.colors.textSecondary),
                     textAlign: TextAlign.center,
                   ),
               ],

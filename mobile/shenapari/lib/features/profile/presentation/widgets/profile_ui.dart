@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/ui/app_text.dart';
 import '../../../../gen/colors.gen.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// `+380681234567` → `+38 (068) 123-45-67`.
 String formatProfilePhone(String phone) {
@@ -19,18 +20,14 @@ class MenuCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: ColorName.white,
+      color: context.colors.surface,
       borderRadius: BorderRadius.circular(20),
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
           for (var i = 0; i < children.length; i++) ...[
             if (i > 0)
-              const Divider(
-                height: 1,
-                indent: 68,
-                color: ColorName.secondary200,
-              ),
+              Divider(height: 1, indent: 68, color: context.colors.border),
             children[i],
           ],
         ],
@@ -80,7 +77,7 @@ class MenuRow extends StatelessWidget {
                   color: tint.withValues(alpha: 0.22),
                   borderRadius: BorderRadius.circular(11),
                 ),
-                child: Icon(icon, size: 21, color: ColorName.black),
+                child: Icon(icon, size: 21, color: context.colors.textPrimary),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -95,14 +92,19 @@ class MenuRow extends StatelessWidget {
                       ),
                     ),
                     if (subtitle != null)
-                      Text(subtitle, style: AppText.small()),
+                      Text(
+                        subtitle,
+                        style: AppText.small(
+                          color: context.colors.textSecondary,
+                        ),
+                      ),
                   ],
                 ),
               ),
               trailing ??
-                  const Icon(
+                  Icon(
                     Icons.chevron_right_rounded,
-                    color: ColorName.secondary400,
+                    color: context.colors.iconMuted,
                   ),
             ],
           ),
@@ -152,7 +154,11 @@ class SwitchRow extends StatelessWidget {
                     color: tint.withValues(alpha: 0.22),
                     borderRadius: BorderRadius.circular(11),
                   ),
-                  child: Icon(icon, size: 21, color: ColorName.black),
+                  child: Icon(
+                    icon,
+                    size: 21,
+                    color: context.colors.textPrimary,
+                  ),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -167,7 +173,12 @@ class SwitchRow extends StatelessWidget {
                         ),
                       ),
                       if (subtitle != null)
-                        Text(subtitle, style: AppText.small()),
+                        Text(
+                          subtitle,
+                          style: AppText.small(
+                            color: context.colors.textSecondary,
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -178,7 +189,7 @@ class SwitchRow extends StatelessWidget {
                   activeThumbColor: ColorName.white,
                   activeTrackColor: ColorName.primary400,
                   inactiveThumbColor: ColorName.white,
-                  inactiveTrackColor: ColorName.secondary300,
+                  inactiveTrackColor: context.colors.disabled,
                   trackOutlineColor: const WidgetStatePropertyAll(
                     Colors.transparent,
                   ),

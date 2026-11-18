@@ -13,7 +13,9 @@ import '../profile/confirm_delete_dialog.dart';
 import '../profile/delete_account_cubit.dart';
 import '../widgets/profile_ui.dart';
 import 'language_menu.dart';
+import 'theme_menu.dart';
 import 'settings_cubit.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// «Налаштування»: order push on/off, the phone's notification permission,
 /// «Вимкнути анімації» and,
@@ -54,9 +56,9 @@ class SettingsPage extends StatelessWidget {
           ),
         ],
         child: Scaffold(
-          backgroundColor: ColorName.secondary100,
+          backgroundColor: context.colors.background,
           appBar: AppBar(
-            backgroundColor: ColorName.secondary100,
+            backgroundColor: context.colors.background,
             title: Text(LocaleKeys.settings_title.tr(), style: AppText.title()),
           ),
           body: SafeArea(
@@ -88,7 +90,7 @@ class SettingsPage extends StatelessWidget {
                               ),
                               MenuRow(
                                 icon: Icons.settings_suggest_outlined,
-                                tint: ColorName.secondary400,
+                                tint: context.colors.iconMuted,
                                 title: LocaleKeys.settings_permission.tr(),
                                 subtitle: LocaleKeys.settings_permission_text
                                     .tr(),
@@ -102,6 +104,10 @@ class SettingsPage extends StatelessWidget {
                               LanguageRow(
                                 current: state.language,
                                 onPicked: cubit.setLanguage,
+                              ),
+                              ThemeRow(
+                                current: state.themeMode,
+                                onPicked: cubit.setThemeMode,
                               ),
                               SwitchRow(
                                 icon: Icons.motion_photos_off_outlined,
@@ -145,7 +151,7 @@ class _DeleteAccountButton extends StatelessWidget {
           child: TextButton.icon(
             style: TextButton.styleFrom(
               foregroundColor: ColorName.red,
-              backgroundColor: ColorName.redLight,
+              backgroundColor: context.colors.dangerSoft,
               minimumSize: const Size(48, 52),
               padding: const EdgeInsets.symmetric(horizontal: 28),
               shape: const StadiumBorder(),

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:material_ui/material_ui.dart' show ThemeMode;
 
 import '../../../../core/l10n/app_language.dart';
 import '../../../../core/l10n/app_locale.dart';
@@ -17,6 +18,7 @@ abstract class SettingsState with _$SettingsState {
     bool? orderPush,
     @Default(false) bool reduceMotion,
     @Default(AppLanguage.system) AppLanguage language,
+    @Default(ThemeMode.system) ThemeMode themeMode,
 
     /// The language the app shows for [language] (`uk` or `en`); the page
     /// switches the texts to it.
@@ -35,6 +37,7 @@ class SettingsCubit extends Cubit<SettingsState> {
         SettingsState(
           reduceMotion: _prefs.reduceMotion,
           language: _prefs.language,
+          themeMode: _prefs.themeMode,
           languageCode: _locale.languageCode,
         ),
       );
@@ -68,5 +71,11 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> setLanguage(AppLanguage value) async {
     await _prefs.setLanguage(value);
     emit(state.copyWith(language: value, languageCode: _locale.languageCode));
+  }
+
+  /// The app follows AppPrefs, so the whole app turns at once.
+  Future<void> setThemeMode(ThemeMode value) async {
+    emit(state.copyWith(themeMode: value));
+    await _prefs.setThemeMode(value);
   }
 }
