@@ -8,6 +8,7 @@ public class LegalTests(ApiFactory api) : IClassFixture<ApiFactory>
     [Theory]
     [InlineData("terms", "## 1. Прийняття умов")]
     [InlineData("privacy", "## 1. Загальні положення")]
+    [InlineData("refund", "## 1. Загальні положення")]
     public async Task Documents_are_served_without_signing_in(string type, string firstHeading)
     {
         var response = await api.CreateClient().GetAsync($"/legal/{type}");

@@ -479,6 +479,12 @@ void main() {
     await tester.tap(find.byTooltip('Більше'));
     await tester.pumpAndSettle();
     expect(find.text('Мої замовлення'), findsNothing, reason: 'the tab has it');
+    expect(
+      find.text('Сповіщення'),
+      findsNothing,
+      reason: 'the bell on the home screen has them',
+    );
+    expect(find.text('Умови повернення коштів'), findsOneWidget);
 
     await _tap(tester, 'Підтримка');
 
