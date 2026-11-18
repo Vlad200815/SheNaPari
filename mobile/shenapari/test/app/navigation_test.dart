@@ -302,6 +302,19 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Активні'), findsOneWidget);
     expect(find.text('Готово — забирай'), findsOneWidget);
+
+    // «Мій QR»: a sheet over frosted glass with the ready order's code.
+    final semantics = tester.ensureSemantics();
+    await tester.tap(find.bySemanticsLabel('Мій QR'));
+    await tester.pumpAndSettle();
+    expect(find.text('Твій QR-код'), findsOneWidget);
+    expect(find.text('Покажи код на видачі — і забирай'), findsOneWidget);
+    expect(find.bySemanticsLabel('QR-код замовлення №7'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.close_rounded));
+    await tester.pumpAndSettle();
+    expect(find.text('Твій QR-код'), findsNothing);
+    semantics.dispose();
   });
 
   testWidgets('bell: dot for unread, list, open the order, dot gone', (
@@ -344,6 +357,40 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel('Сповіщення'), findsOneWidget);
+    semantics.dispose();
+  });
+
+  testWidgets('«Мій QR» with two ready orders: chips switch the QR', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+    final dish = (await FakeMenuRepository().getDish(10) as Ok<Dish>).value;
+    for (var i = 0; i < 2; i++) {
+      await _orders.placeOrder(
+        items: [CartItem(dish: dish, quantity: 1)],
+        breakSlotId: null,
+        provider: PaymentProvider.googlePay,
+      );
+    }
+    _orders
+      ..kitchen('order-7', OrderStatus.ready, pickupToken: 'token-7')
+      ..kitchen('order-8', OrderStatus.ready, pickupToken: 'token-8');
+    final semantics = tester.ensureSemantics();
+
+    await tester.tap(find.bySemanticsLabel('Мій QR'));
+    await tester.pumpAndSettle();
+    expect(find.text('Твої QR-коди'), findsOneWidget);
+    expect(find.text('№7 · Готово'), findsOneWidget);
+    expect(find.text('№8 · Готово'), findsOneWidget);
+    expect(find.bySemanticsLabel('QR-код замовлення №7'), findsOneWidget);
+
+    await tester.tap(find.text('№8 · Готово'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('QR-код замовлення №8'), findsOneWidget);
     semantics.dispose();
   });
 

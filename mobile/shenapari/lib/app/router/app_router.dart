@@ -106,11 +106,8 @@ GoRouter createRouter({
       // Outside the shell: these open over the tab bar.
       GoRoute(
         path: Routes.myQr,
-        pageBuilder: (_, state) => MaterialPage(
-          key: state.pageKey,
-          fullscreenDialog: true,
-          child: const MyQrPage(),
-        ),
+        // A sheet over frosted glass, the app visible behind it.
+        pageBuilder: (_, state) => myQrPage(state.pageKey),
       ),
       GoRoute(
         path: Routes.orderPattern,
