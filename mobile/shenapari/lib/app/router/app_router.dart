@@ -17,7 +17,10 @@ import '../../features/orders/presentation/order/order_page.dart';
 import '../../features/orders/presentation/orders/orders_page.dart';
 import '../../features/notifications/presentation/notifications_page.dart';
 import '../../features/onboarding/presentation/onboarding_page.dart';
-import '../../features/profile/presentation/profile/profile_page.dart';
+import '../../features/profile/presentation/faq/faq_page.dart';
+import '../../features/profile/presentation/more/more_page.dart';
+import '../../features/profile/presentation/my_profile/my_profile_page.dart';
+import '../../features/profile/presentation/settings/settings_page.dart';
 import '../../features/profile/presentation/registration_profile/registration_profile_page.dart';
 import '../splash_page.dart';
 import 'app_redirect.dart';
@@ -95,10 +98,7 @@ GoRouter createRouter({
           ),
           StatefulShellBranch(
             routes: [
-              GoRoute(
-                path: Routes.profile,
-                builder: (_, _) => ProfilePage(onSignOut: signOut),
-              ),
+              GoRoute(path: Routes.more, builder: (_, _) => const MorePage()),
             ],
           ),
         ],
@@ -136,6 +136,12 @@ GoRouter createRouter({
         ),
       ),
       GoRoute(path: Routes.checkout, builder: (_, _) => const CheckoutPage()),
+      GoRoute(
+        path: Routes.myProfile,
+        builder: (_, _) => MyProfilePage(onSignOut: signOut),
+      ),
+      GoRoute(path: Routes.settings, builder: (_, _) => const SettingsPage()),
+      GoRoute(path: Routes.faq, builder: (_, _) => const FaqPage()),
       GoRoute(
         path: Routes.notifications,
         builder: (_, _) => const NotificationsPage(),
