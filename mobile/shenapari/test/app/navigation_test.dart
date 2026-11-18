@@ -101,7 +101,17 @@ Future<void> _pumpApp(
   }
 }
 
+/// «Більше» tab → «Мій профіль».
+Future<void> _openMyProfile(WidgetTester tester) async {
+  await tester.tap(find.byTooltip('Більше'));
+  await tester.pumpAndSettle();
+  await _tap(tester, 'Мій профіль');
+}
+
 Future<void> _tap(WidgetTester tester, String label) async {
+  // The test screen is short: scroll the target into view first.
+  await tester.ensureVisible(find.text(label));
+  await tester.pumpAndSettle();
   await tester.tap(find.text(label));
   await tester.pumpAndSettle();
 }
@@ -219,9 +229,8 @@ void main() {
       stored: const StoredSession(tokens: _tokens, needsProfile: false),
     );
 
-    await tester.tap(find.byTooltip('Профіль'));
-    await tester.pumpAndSettle();
-    await _tap(tester, 'Вийти');
+    await _openMyProfile(tester);
+    await _tap(tester, 'Вийти із застосунку');
 
     expect(find.text(_phoneTitle), findsOneWidget);
     expect(_auth.logoutCalls, 1);
@@ -261,10 +270,12 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('170 ₴'), findsWidgets);
     expect(find.text('Разом · 2 порції'), findsOneWidget);
-
-    await tester.tap(find.byTooltip('Профіль'));
+    // Let the «Кошик оновлено» snack bar go away before tapping below it.
+    await tester.pump(const Duration(seconds: 5));
     await tester.pumpAndSettle();
-    await _tap(tester, 'Вийти');
+
+    await _openMyProfile(tester);
+    await _tap(tester, 'Вийти із застосунку');
     expect(sl<CartCubit>().state.isEmpty, isTrue);
     semantics.dispose();
   });
@@ -415,6 +426,31 @@ void main() {
     semantics.dispose();
   });
 
+  testWidgets('«Більше» → «Мій профіль»: a new name shows in the header', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+    _profile.savedName = 'Влад';
+
+    await tester.tap(find.byTooltip('Більше'));
+    await tester.pumpAndSettle();
+    expect(find.text('Привіт, Влад!'), findsOneWidget);
+
+    await _tap(tester, 'Мій профіль');
+    await tester.enterText(find.byType(TextFormField).first, 'Владислав');
+    await tester.pump();
+    await _tap(tester, 'Зберегти');
+    expect(find.text('Збережено'), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.text('Привіт, Владислав!'), findsOneWidget);
+  });
+
   group('delete account', () {
     Future<void> openDeleteDialog(WidgetTester tester) async {
       await _pumpApp(
@@ -422,8 +458,8 @@ void main() {
         prefs: _returning,
         stored: const StoredSession(tokens: _tokens, needsProfile: false),
       );
-      await tester.tap(find.byTooltip('Профіль'));
-      await tester.pumpAndSettle();
+      await _openMyProfile(tester);
+      await _tap(tester, 'Налаштування');
       await _tap(tester, 'Видалити акаунт');
       expect(find.text('Видалити акаунт?'), findsOneWidget);
     }
