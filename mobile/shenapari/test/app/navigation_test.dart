@@ -10,6 +10,7 @@ import 'package:shenapari/core/result/failure.dart';
 import 'package:shenapari/core/result/result.dart';
 import 'package:shenapari/features/cart/domain/entities/cart.dart';
 import 'package:shenapari/features/menu/domain/entities/dish.dart';
+import 'package:shenapari/core/device/qr_display_mode.dart';
 import 'package:shenapari/core/session/auth_tokens.dart';
 import 'package:shenapari/core/storage/in_memory_token_storage.dart';
 import 'package:shenapari/core/storage/token_storage.dart';
@@ -38,6 +39,7 @@ late FakeProfileRepository _profile;
 late FakeOrdersRepository _orders;
 late FakeOrderEvents _orderEvents;
 late FakeNotificationsRepository _notifications;
+late FakeQrDisplayMode _qrMode;
 
 /// Starts the whole app the way bootstrap() does, with fake storage and
 /// fake repositories instead of the network.
@@ -70,7 +72,15 @@ Future<void> _pumpApp(
     ..unregister<NotificationsRepository>()
     ..registerSingleton<NotificationsRepository>(
       _notifications = FakeNotificationsRepository(),
-    );
+    )
+    ..unregister<QrDisplayMode>()
+    ..registerSingleton<QrDisplayMode>(_qrMode = FakeQrDisplayMode());
+
+  // The QR button glows forever when an order is ready; with reduced motion
+  // it stands still, so pumpAndSettle can settle.
+  tester.platformDispatcher.accessibilityFeaturesTestValue =
+      const FakeAccessibilityFeatures(disableAnimations: true);
+  addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
 
   await tester.pumpWidget(
     App(
@@ -294,8 +304,14 @@ void main() {
     _orders.kitchen('order-7', OrderStatus.ready, pickupToken: 'token-7');
     _orderEvents.changed('order-7');
     await tester.pumpAndSettle();
-    expect(find.text('Покажи цей код на видачі'), findsOneWidget);
     expect(find.text('Скасувати замовлення'), findsNothing);
+
+    // «Показати QR» opens the same sheet as the tab bar button.
+    await _tap(tester, 'Показати QR');
+    expect(find.text('Твій QR-код'), findsOneWidget);
+    expect(find.text('Покажи код на видачі — і забирай'), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.close_rounded));
+    await tester.pumpAndSettle();
 
     // Back lands on the orders tab, where it is listed as active.
     await tester.pageBack();
@@ -305,15 +321,20 @@ void main() {
 
     // «Мій QR»: a sheet over frosted glass with the ready order's code.
     final semantics = tester.ensureSemantics();
-    await tester.tap(find.bySemanticsLabel('Мій QR'));
+    await tester.tap(find.bySemanticsLabel(RegExp('^Мій QR')));
     await tester.pumpAndSettle();
     expect(find.text('Твій QR-код'), findsOneWidget);
     expect(find.text('Покажи код на видачі — і забирай'), findsOneWidget);
     expect(find.bySemanticsLabel('QR-код замовлення №7'), findsOneWidget);
 
+    // At the counter: brightness up, screen on, no screenshots.
+    expect(_qrMode.on, isTrue);
+    expect(find.bySemanticsLabel('Мій QR, готово: 1'), findsOneWidget);
+
     await tester.tap(find.byIcon(Icons.close_rounded));
     await tester.pumpAndSettle();
     expect(find.text('Твій QR-код'), findsNothing);
+    expect(_qrMode.on, isFalse, reason: 'back to normal once closed');
     semantics.dispose();
   });
 
@@ -381,7 +402,7 @@ void main() {
       ..kitchen('order-8', OrderStatus.ready, pickupToken: 'token-8');
     final semantics = tester.ensureSemantics();
 
-    await tester.tap(find.bySemanticsLabel('Мій QR'));
+    await tester.tap(find.bySemanticsLabel(RegExp('^Мій QR')));
     await tester.pumpAndSettle();
     expect(find.text('Твої QR-коди'), findsOneWidget);
     expect(find.text('№7 · Готово'), findsOneWidget);
