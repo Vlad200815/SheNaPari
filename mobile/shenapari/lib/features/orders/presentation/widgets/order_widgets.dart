@@ -1,5 +1,4 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../../core/ui/app_text.dart';
 import '../../../../core/ui/format_price.dart';
@@ -238,54 +237,6 @@ class _Step extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-/// The QR to show at the counter, with the order number under it.
-class PickupQr extends StatelessWidget {
-  const PickupQr({super.key, required this.order, this.size = 220});
-
-  final Order order;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: ColorName.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: ColorName.primary400, width: 3),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Semantics(
-            label: 'QR-код замовлення №${order.number}',
-            image: true,
-            child: QrImageView(
-              data: order.pickupToken!,
-              size: size,
-              backgroundColor: ColorName.white,
-              eyeStyle: const QrEyeStyle(
-                eyeShape: QrEyeShape.square,
-                color: ColorName.black,
-              ),
-              dataModuleStyle: const QrDataModuleStyle(
-                dataModuleShape: QrDataModuleShape.square,
-                color: ColorName.black,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '№${order.number}',
-            style: AppText.title().copyWith(fontSize: 28),
-          ),
-          Text('Покажи цей код на видачі', style: AppText.small()),
         ],
       ),
     );
