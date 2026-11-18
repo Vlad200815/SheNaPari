@@ -146,7 +146,7 @@ class _Option extends StatelessWidget {
   }
 }
 
-/// A round flag (Ukrainian, British) or, for «Як у системі», a phone in a
+/// A round flag (Ukrainian, American) or, for «Як у системі», a phone in a
 /// circle of the same size. Decorative: the name is always next to it.
 class LanguageBadge extends StatelessWidget {
   const LanguageBadge(this.language, {super.key, required this.size});
@@ -158,7 +158,7 @@ class LanguageBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final flag = switch (language) {
       AppLanguage.uk => Assets.images.flags.ua,
-      AppLanguage.en => Assets.images.flags.gb,
+      AppLanguage.en => Assets.images.flags.us,
       AppLanguage.system => null,
     };
     return ExcludeSemantics(
@@ -178,7 +178,12 @@ class LanguageBadge extends StatelessWidget {
                 size: size * 0.6,
                 color: ColorName.typography900,
               )
-            : flag.svg(fit: BoxFit.cover),
+            : flag.svg(
+                fit: BoxFit.cover,
+                // The US flag's stars are in its top-left corner: keep them
+                // in the circle instead of the middle stripes.
+                alignment: Alignment.centerLeft,
+              ),
       ),
     );
   }
