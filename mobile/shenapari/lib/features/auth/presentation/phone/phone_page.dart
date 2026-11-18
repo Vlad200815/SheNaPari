@@ -15,6 +15,7 @@ import '../widgets/auth_layout.dart';
 import '../widgets/phone_field.dart';
 import 'phone_cubit.dart';
 import 'phone_state.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// Step 1 of sign-in: the phone number.
 class PhonePage extends StatelessWidget {
@@ -38,10 +39,12 @@ class PhonePage extends StatelessWidget {
         },
         child: Builder(
           builder: (context) => AuthLayout(
-            step: 'Крок 1 з 2',
+            step: LocaleKeys.auth_step.tr(
+              namedArgs: {'current': '1', 'total': '2'},
+            ),
             image: Assets.images.auth.phoneAuth.image(fit: BoxFit.contain),
-            title: 'Введіть номер телефону',
-            subtitle: 'Ми надішлемо вам 6-значний код для підтвердження номера',
+            title: LocaleKeys.auth_phone_title.tr(),
+            subtitle: LocaleKeys.auth_phone_subtitle.tr(),
             form: PhoneField(
               onChanged: context.read<PhoneCubit>().phoneChanged,
             ),
@@ -49,7 +52,7 @@ class PhonePage extends StatelessWidget {
               children: [
                 BlocBuilder<PhoneCubit, PhoneState>(
                   builder: (context, state) => AppButton.primary(
-                    text: 'Продовжити',
+                    text: LocaleKeys.common_continue.tr(),
                     loading: state.status == PhoneStatus.sending,
                     onPressed: state.isComplete
                         ? context.read<PhoneCubit>().submit
@@ -100,15 +103,15 @@ class _TermsTextState extends State<_TermsText> {
       TextSpan(
         style: AppText.regular(),
         children: [
-          const TextSpan(text: 'Продовжуючи, ви погоджуєтеся з нашими '),
+          TextSpan(text: LocaleKeys.auth_consent_prefix.tr()),
           TextSpan(
-            text: 'Умовами використання',
+            text: LocaleKeys.auth_consent_terms.tr(),
             style: link,
             recognizer: _terms,
           ),
-          const TextSpan(text: ' та '),
+          TextSpan(text: LocaleKeys.auth_consent_and.tr()),
           TextSpan(
-            text: 'Політикою конфіденційності',
+            text: LocaleKeys.auth_consent_privacy.tr(),
             style: link,
             recognizer: _privacy,
           ),

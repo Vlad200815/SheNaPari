@@ -1,4 +1,5 @@
 import '../../domain/entities/break_slot.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// Orders for a break are usually placed during the class before it,
 /// so the progress bar fills over this window.
@@ -28,19 +29,27 @@ class BreakCountdown {
     final time = formatClock(slot.startsAt);
     final days = _dayOf(slot.startsAt).difference(_dayOf(now)).inDays;
     return switch (days) {
-      <= 0 => 'Наступна перерва · $time',
-      1 => 'Завтра · $time',
+      <= 0 => LocaleKeys.break_card_next.tr(namedArgs: {'time': time}),
+      1 => LocaleKeys.break_card_tomorrow.tr(namedArgs: {'time': time}),
       _ => '${_two(slot.startsAt.day)}.${_two(slot.startsAt.month)} · $time',
     };
   }
 
   /// `ще 25 хв`, `ще 1 год 05 хв`, `менше хвилини`.
   String get timeLeft {
-    if (left < const Duration(minutes: 1)) return 'менше хвилини';
+    if (left < const Duration(minutes: 1)) {
+      return LocaleKeys.break_card_under_minute.tr();
+    }
     final hours = left.inHours;
     final minutes = left.inMinutes % 60;
-    if (hours == 0) return 'ще $minutes хв';
-    return 'ще $hours год ${_two(minutes)} хв';
+    if (hours == 0) {
+      return LocaleKeys.break_card_minutes_left.tr(
+        namedArgs: {'minutes': '$minutes'},
+      );
+    }
+    return LocaleKeys.break_card_hours_left.tr(
+      namedArgs: {'hours': '$hours', 'minutes': _two(minutes)},
+    );
   }
 
   /// UTC midnight of the local date: a day across a DST switch is still

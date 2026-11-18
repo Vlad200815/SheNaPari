@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../core/ui/app_text.dart';
 import '../../../../gen/assets.gen.dart';
 import '../../../../gen/colors.gen.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// Ukrainian phone input: fixed `+380` prefix with a flag, then
 /// `67 123 45 67`. [onChanged] gets the text as shown, with spaces.
@@ -67,7 +68,7 @@ class _PhoneFieldState extends State<PhoneField> {
           builder: (context, _) => _controller.text.isEmpty
               ? const SizedBox.shrink()
               : IconButton(
-                  tooltip: 'Очистити',
+                  tooltip: LocaleKeys.common_clear.tr(),
                   onPressed: _clear,
                   icon: Assets.images.auth.icClear.svg(),
                 ),

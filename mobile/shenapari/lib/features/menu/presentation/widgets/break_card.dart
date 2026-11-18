@@ -7,6 +7,7 @@ import '../../domain/entities/break_slot.dart';
 import '../../domain/entities/canteen.dart';
 import '../home/break_countdown.dart';
 import '../../../../gen/colors.gen.dart';
+import '../../../../core/l10n/l10n.dart';
 
 /// The orange card under the greeting: when the next break is, how long
 /// until it and which canteen. Also tells when the kitchen is paused or no
@@ -74,18 +75,18 @@ class _BreakCardState extends State<BreakCard> {
     final (icon, title, subtitle) = switch ((paused, countdown)) {
       (true, _) => (
         Icons.pause_circle_outline,
-        'Кухня на паузі',
-        'Замовлення тимчасово не приймаються',
+        LocaleKeys.break_card_paused_title.tr(),
+        LocaleKeys.break_card_paused_text.tr(),
       ),
       (false, null) => (
         Icons.event_busy_outlined,
-        'Перерв поки немає',
-        'Розклад з’явиться найближчим часом',
+        LocaleKeys.break_card_none_title.tr(),
+        LocaleKeys.break_card_none_text.tr(),
       ),
       (false, final countdown?) => (
         Icons.schedule_rounded,
         countdown.title,
-        'Замов зараз — забереш без черги',
+        LocaleKeys.break_card_order_now.tr(),
       ),
     };
 
@@ -220,7 +221,7 @@ class _ProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'Час до перерви',
+      label: LocaleKeys.break_card_time_left.tr(),
       value: '${(value * 100).round()}%',
       child: ClipRRect(
         borderRadius: BorderRadius.circular(4),

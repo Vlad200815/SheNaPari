@@ -3,6 +3,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../app/di.dart';
+import '../../../../core/l10n/l10n.dart';
+import '../../../../core/l10n/switch_language.dart';
 import '../../../../core/ui/app_text.dart';
 import '../../../../core/ui/app_theme.dart';
 import '../../../../core/ui/snack_bars.dart';
@@ -10,6 +12,7 @@ import '../../../../gen/colors.gen.dart';
 import '../profile/confirm_delete_dialog.dart';
 import '../profile/delete_account_cubit.dart';
 import '../widgets/profile_ui.dart';
+import 'language_sheet.dart';
 import 'settings_cubit.dart';
 
 /// «Налаштування»: order push on/off, the phone's notification permission,
@@ -36,6 +39,13 @@ class SettingsPage extends StatelessWidget {
               }
             },
           ),
+          // A new language: switch every text in the app at once.
+          BlocListener<SettingsCubit, SettingsState>(
+            listenWhen: (previous, current) =>
+                previous.languageCode != current.languageCode,
+            listener: (context, state) =>
+                switchLanguage(context, state.languageCode),
+          ),
           BlocListener<SettingsCubit, SettingsState>(
             listenWhen: (previous, current) =>
                 current.failure != null && previous.failure != current.failure,
@@ -47,7 +57,7 @@ class SettingsPage extends StatelessWidget {
           backgroundColor: ColorName.secondary100,
           appBar: AppBar(
             backgroundColor: ColorName.secondary100,
-            title: Text('Налаштування', style: AppText.title()),
+            title: Text(LocaleKeys.settings_title.tr(), style: AppText.title()),
           ),
           body: SafeArea(
             top: false,
@@ -68,21 +78,20 @@ class SettingsPage extends StatelessWidget {
                               SwitchRow(
                                 icon: Icons.notifications_active_outlined,
                                 tint: ColorName.primary400,
-                                title: 'Сповіщення про замовлення',
-                                subtitle:
-                                    'Push, коли кухня прийняла замовлення і '
-                                    'коли воно готове. У списку сповіщень '
-                                    'вони лишаться',
+                                title: LocaleKeys.settings_order_push.tr(),
+                                subtitle: LocaleKeys.settings_order_push_text
+                                    .tr(),
                                 value: orderPush ?? true,
                                 onChanged: orderPush == null
                                     ? null
                                     : cubit.setOrderPush,
                               ),
-                              const MenuRow(
+                              MenuRow(
                                 icon: Icons.settings_suggest_outlined,
                                 tint: ColorName.secondary400,
-                                title: 'Дозвіл і звук',
-                                subtitle: 'У налаштуваннях телефону',
+                                title: LocaleKeys.settings_permission.tr(),
+                                subtitle: LocaleKeys.settings_permission_text
+                                    .tr(),
                                 onTap: openAppSettings,
                               ),
                             ],
@@ -90,13 +99,27 @@ class SettingsPage extends StatelessWidget {
                           const SizedBox(height: 16),
                           MenuCard(
                             children: [
+                              MenuRow(
+                                icon: Icons.translate_rounded,
+                                tint: ColorName.green,
+                                title: LocaleKeys.settings_language.tr(),
+                                subtitle: languageName(state.language),
+                                onTap: () async {
+                                  final picked = await pickLanguage(
+                                    context,
+                                    current: state.language,
+                                  );
+                                  if (picked != null) {
+                                    await cubit.setLanguage(picked);
+                                  }
+                                },
+                              ),
                               SwitchRow(
                                 icon: Icons.motion_photos_off_outlined,
                                 tint: ColorName.blue,
-                                title: 'Вимкнути анімації',
-                                subtitle:
-                                    'Без плавних переходів, виїзду шторок і '
-                                    'відблиску на кнопці QR',
+                                title: LocaleKeys.settings_reduce_motion.tr(),
+                                subtitle: LocaleKeys.settings_reduce_motion_text
+                                    .tr(),
                                 value: state.reduceMotion,
                                 onChanged: cubit.setReduceMotion,
                               ),
@@ -148,7 +171,7 @@ class _DeleteAccountButton extends StatelessWidget {
                   )
                 : const Icon(Icons.delete_outline_rounded),
             label: Text(
-              'Видалити акаунт',
+              LocaleKeys.settings_delete_account.tr(),
               style: AppText.medium(
                 color: ColorName.red,
               ).copyWith(fontWeight: FontWeight.w600),
