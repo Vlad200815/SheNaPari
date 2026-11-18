@@ -48,9 +48,13 @@ class MenuRow extends StatelessWidget {
     required this.title,
     required this.onTap,
     this.subtitle,
+    this.trailing,
   });
 
   final IconData icon;
+
+  /// Replaces the chevron, e.g. a flag and an arrow down for a drop-down.
+  final Widget? trailing;
 
   /// The tile colour; the icon on it stays black for contrast.
   final Color tint;
@@ -94,10 +98,11 @@ class MenuRow extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: ColorName.secondary400,
-              ),
+              trailing ??
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    color: ColorName.secondary400,
+                  ),
             ],
           ),
         ),
