@@ -10,6 +10,7 @@ class AppPrefs extends ChangeNotifier {
 
   static const _onboardingSeenKey = 'onboarding_seen';
   static const _launchedBeforeKey = 'launched_before';
+  static const _reduceMotionKey = 'reduce_motion';
 
   bool get onboardingSeen => _prefs.getBool(_onboardingSeenKey) ?? false;
 
@@ -22,4 +23,12 @@ class AppPrefs extends ChangeNotifier {
   bool get launchedBefore => _prefs.getBool(_launchedBeforeKey) ?? false;
 
   Future<void> setLaunchedBefore() => _prefs.setBool(_launchedBeforeKey, true);
+
+  /// «Вимкнути анімації» in the app's settings, on top of the system one.
+  bool get reduceMotion => _prefs.getBool(_reduceMotionKey) ?? false;
+
+  Future<void> setReduceMotion(bool value) async {
+    await _prefs.setBool(_reduceMotionKey, value);
+    notifyListeners();
+  }
 }

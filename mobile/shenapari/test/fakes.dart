@@ -66,6 +66,14 @@ class FakeAuthRepository implements AuthRepository {
 
 class FakeProfileRepository implements ProfileRepository {
   String? savedName;
+  bool orderPush = true;
+
+  @override
+  Future<Result<User>> setOrderPush({required bool enabled}) async {
+    orderPush = enabled;
+    return getMe();
+  }
+
   int deleteCalls = 0;
 
   /// When set, deleting fails with it (like an active order on the server).
@@ -79,8 +87,14 @@ class FakeProfileRepository implements ProfileRepository {
   }
 
   @override
-  Future<Result<User>> getMe() async =>
-      Ok(User(id: '1', role: UserRole.customer, name: savedName));
+  Future<Result<User>> getMe() async => Ok(
+    User(
+      id: '1',
+      role: UserRole.customer,
+      name: savedName,
+      orderPushEnabled: orderPush,
+    ),
+  );
 
   @override
   Future<Result<User>> updateName(String name) async {
