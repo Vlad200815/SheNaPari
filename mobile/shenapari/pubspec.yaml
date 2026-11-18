@@ -22,18 +22,12 @@ dependencies:
   # scroll_to_hide: ^2.2.1
 
   # Fonts
-  google_fonts: ^8.1.0
+  google_fonts: ^9.0.0
 
   flutter_svg: ^2.3.0
 
-  skeletonizer: ^3.0.0
-  shimmer: ^4.0.0
-
   # Email validation
-  email_validator: ^3.0.0
   mask_text_input_formatter: ^2.9.0
-
-  expansion_tile_list: ^2.0.0
 
   # Bottom sheet dialog
   #  sheet: ^1.0.0
@@ -53,8 +47,6 @@ dependencies:
 
 
   #Share
-  share_plus: ^13.1.0
-
   #Email send
   url_launcher: ^6.3.1
 
@@ -62,19 +54,11 @@ dependencies:
   get_it: ^9.2.1
 
   # Deeplink
-  app_links: ^7.0.0
-
   # JWT
-  dart_jsonwebtoken: ^3.4.1
-
   # Identical ID
-  uuid: ^4.5.3
-
   # JSON serializable & model
   json_annotation: ^4.12.0
   freezed_annotation: ^3.1.0
-  enum_to_string: ^2.0.1
-
   # Image Cached
   cached_network_image: ^4.0.0
 
@@ -89,11 +73,6 @@ dependencies:
   equatable: ^3.0.0
 
   # Resource localizations
-  easy_localization: ^3.0.7
-  easy_localization_loader: ^2.0.2
-  intl: ^0.20.3
-
-
   ###
   ### Networking
   ###
@@ -102,9 +81,6 @@ dependencies:
   #  connectivity_plus: ^6.1.5
   dio: ^5.7.0
   retrofit: ^4.4.1
-  pretty_dio_logger: ^1.4.0
-  http_parser: ^4.1.2
-  http: ^1.2.2
   #  async: ^2.13.0
 
 
@@ -112,14 +88,7 @@ dependencies:
   ### State Management
   ###
 
-  bloc: ^9.2.1
   flutter_bloc: ^9.1.1
-  bloc_concurrency: ^0.3.0
-  stream_transform: ^2.1.0
-
-
-
-
   ###
   ### Firebase packages
   ###
@@ -127,12 +96,12 @@ dependencies:
 #  firebase_auth: ^6.5.2
 
   # Notifications
-  firebase_messaging: ^16.3.0
-  flutter_local_notifications: ^22.3.1
+  firebase_messaging: ^17.1.0
+  flutter_local_notifications: ^23.0.3
 
-  firebase_core: ^4.10.0
-  firebase_crashlytics: ^5.2.3
-  firebase_analytics: ^12.4.2
+  firebase_core: ^5.2.0
+  firebase_crashlytics: ^6.1.0
+  firebase_analytics: ^13.1.0
 #  cloud_firestore: ^6.5.0
 #  google_sign_in: ^7.2.0
 
@@ -148,10 +117,6 @@ dependencies:
   #hive_generator: ^2.0.1
 
   # Sqlite helper packages
-  sqflite: ^2.4.4
-  path: ^1.9.1
-  path_provider: ^2.1.6
-
   # Shared Preferences
   shared_preferences: ^2.3.4
 
@@ -163,8 +128,6 @@ dependencies:
 
   vector_graphics: any
   flutter_native_splash: any
-  collection: any
-  pub_semver: any
   material_ui: ^1.11.1
   signalr_netcore: ^1.4.4
   qr_flutter: ^4.1.0
@@ -248,8 +211,6 @@ flutter:
     - assets/images/home/
     - assets/images/splash/
 
-    # Translations
-    - assets/translations/
 
 
 
