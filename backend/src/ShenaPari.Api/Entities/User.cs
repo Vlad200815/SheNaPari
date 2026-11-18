@@ -20,6 +20,10 @@ public class Customer : User
 {
     public required string Phone { get; set; }
 
+    /// Push notifications about own orders (accepted, ready, …). Off still
+    /// keeps them in the app's notification list.
+    public bool OrderPushEnabled { get; set; } = true;
+
     public List<Order> Orders { get; set; } = [];
 }
 
