@@ -122,6 +122,8 @@ class MorePage extends StatelessWidget {
   }
 }
 
+/// The greeting card: brand yellow like the selected filters and the QR
+/// button, black text on it, soft white circles as decoration.
 class _Header extends StatelessWidget {
   const _Header({required this.user});
 
@@ -129,67 +131,97 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = this.user;
     final name = user?.name?.trim();
     final phone = user?.phone;
-    return Row(
-      children: [
-        InitialsAvatar(name: name),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name == null || name.isEmpty ? 'Привіт!' : 'Привіт, $name!',
-                style: AppText.title().copyWith(fontSize: 22),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (phone != null)
-                Text(formatProfilePhone(phone), style: AppText.small()),
-              const SizedBox(height: 8),
-              Material(
-                color: ColorName.white,
-                shape: const StadiumBorder(),
-                child: InkWell(
-                  customBorder: const StadiumBorder(),
-                  onTap: () async {
-                    final cubit = context.read<MeCubit>();
-                    await context.push(Routes.myProfile);
-                    // The name may have changed there.
-                    await cubit.load();
-                  },
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(minHeight: 40),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Мій профіль',
-                            style: AppText.small(
-                              color: ColorName.black,
-                              fontWeight: FontWeight.w600,
+    Widget bubble(double size) => Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: ColorName.white.withValues(alpha: 0.25),
+      ),
+    );
+    return Container(
+      decoration: BoxDecoration(
+        color: ColorName.primary400,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          Positioned(
+            top: -50,
+            right: -40,
+            child: ExcludeSemantics(child: bubble(150)),
+          ),
+          Positioned(
+            bottom: -40,
+            right: 40,
+            child: ExcludeSemantics(child: bubble(90)),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name == null || name.isEmpty ? 'Привіт!' : 'Привіт, $name!',
+                  style: AppText.heading(
+                    color: ColorName.black,
+                  ).copyWith(fontSize: 26),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (phone != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    formatProfilePhone(phone),
+                    style: AppText.medium(color: ColorName.black),
+                  ),
+                ],
+                const SizedBox(height: 16),
+                Material(
+                  color: ColorName.white,
+                  shape: const StadiumBorder(),
+                  child: InkWell(
+                    customBorder: const StadiumBorder(),
+                    onTap: () async {
+                      final cubit = context.read<MeCubit>();
+                      await context.push(Routes.myProfile);
+                      // The name may have changed there.
+                      await cubit.load();
+                    },
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(minHeight: 44),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Мій профіль',
+                              style: AppText.small(
+                                color: ColorName.black,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 4),
-                          const Icon(
-                            Icons.chevron_right_rounded,
-                            size: 18,
-                            color: ColorName.black,
-                          ),
-                        ],
+                            const SizedBox(width: 4),
+                            const Icon(
+                              Icons.chevron_right_rounded,
+                              size: 18,
+                              color: ColorName.black,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

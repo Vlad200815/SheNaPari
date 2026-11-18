@@ -106,44 +106,6 @@ class MenuRow extends StatelessWidget {
   }
 }
 
-/// Round avatar with the first letter of the name on brand yellow.
-class InitialsAvatar extends StatelessWidget {
-  const InitialsAvatar({super.key, required this.name, this.size = 72});
-
-  final String? name;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    final letter = (name?.trim().isNotEmpty ?? false)
-        ? name!.trim().characters.first.toUpperCase()
-        : null;
-    return ExcludeSemantics(
-      child: Container(
-        width: size,
-        height: size,
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          color: ColorName.primary400,
-          shape: BoxShape.circle,
-        ),
-        child: letter == null
-            ? Icon(
-                Icons.person_rounded,
-                size: size * 0.5,
-                color: ColorName.black,
-              )
-            : Text(
-                letter,
-                style: AppText.heading(
-                  color: ColorName.black,
-                ).copyWith(fontSize: size * 0.42),
-              ),
-      ),
-    );
-  }
-}
-
 /// A row with a switch; the whole row toggles it. [onChanged] null shows
 /// it disabled (e.g. until the current value is loaded).
 class SwitchRow extends StatelessWidget {
