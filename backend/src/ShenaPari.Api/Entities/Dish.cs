@@ -7,6 +7,10 @@ public class Dish
     public Category Category { get; set; } = null!;
     public required string Name { get; set; }
     public string? Description { get; set; }
+
+    /// English texts for clients that ask for English; null → the Ukrainian ones.
+    public string? NameEn { get; set; }
+    public string? DescriptionEn { get; set; }
     public decimal Price { get; set; }
     public int WeightG { get; set; }
     public int Kcal { get; set; }

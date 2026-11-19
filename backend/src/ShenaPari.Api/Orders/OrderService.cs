@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using ShenaPari.Api.Common;
@@ -47,6 +46,7 @@ public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier noti
                 DishId = g.Key,
                 Quantity = g.Sum(i => i.Quantity),
                 NameSnapshot = dishes[g.Key].Name,
+                NameEnSnapshot = dishes[g.Key].NameEn,
                 UnitPrice = dishes[g.Key].Price,
             })
             .ToList();
@@ -63,7 +63,7 @@ public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier noti
             PickupToken = new Guid(RandomNumberGenerator.GetBytes(16)),
             Total = total,
             CreatedAt = now,
-            Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en" ? "en" : "uk",
+            Language = Lang.IsEnglish ? "en" : "uk",
             Items = items,
             Payments =
             [
@@ -243,7 +243,7 @@ public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier noti
     private static BreakSlotDto? ToSlotDto(BreakSlot? b) => b is null ? null : new(b.Id, b.StartsAt, b.EndsAt);
 
     private static List<OrderItemDto> ToItemDtos(Order o) =>
-        o.Items.Select(i => new OrderItemDto(i.DishId, i.NameSnapshot, i.Quantity, i.UnitPrice)).ToList();
+        o.Items.Select(i => new OrderItemDto(i.DishId, Lang.Pick(i.NameSnapshot, i.NameEnSnapshot), i.Quantity, i.UnitPrice)).ToList();
 
     private static List<OrderStatusChangeDto> ToHistory(Order o) =>
         o.StatusChanges.OrderBy(c => c.At).ThenBy(c => c.Id)
