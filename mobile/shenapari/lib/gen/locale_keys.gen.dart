@@ -2,7 +2,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class LocaleKeys {
+abstract class  LocaleKeys {
   static const app_name = 'app.name';
   static const app = 'app';
   static const common_retry = 'common.retry';
@@ -10,7 +10,6 @@ abstract class LocaleKeys {
   static const common_back = 'common.back';
   static const common_close = 'common.close';
   static const common_cancel = 'common.cancel';
-  static const common_no = 'common.no';
   static const common_continue = 'common.continue';
   static const common_save = 'common.save';
   static const common_saved = 'common.saved';
@@ -174,6 +173,8 @@ abstract class LocaleKeys {
   static const orders_months_11 = 'orders.months.11';
   static const orders_months_12 = 'orders.months.12';
   static const orders_months = 'orders.months';
+  static const orders_cancel_confirm = 'orders.cancel_confirm';
+  static const orders_cancel_keep = 'orders.cancel_keep';
   static const orders = 'orders';
   static const my_qr_title_one = 'my_qr.title_one';
   static const my_qr_title_many = 'my_qr.title_many';
@@ -208,7 +209,8 @@ abstract class LocaleKeys {
   static const profile_sign_out = 'profile.sign_out';
   static const profile_delete_title = 'profile.delete_title';
   static const profile_delete_text = 'profile.delete_text';
-  static const profile_delete = 'profile.delete';
+  static const profile_delete_confirm = 'profile.delete_confirm';
+  static const profile_delete_keep = 'profile.delete_keep';
   static const profile = 'profile';
   static const settings_title = 'settings.title';
   static const settings_order_push = 'settings.order_push';
@@ -257,4 +259,5 @@ abstract class LocaleKeys {
   static const faq_delete_q = 'faq.delete_q';
   static const faq_delete_a = 'faq.delete_a';
   static const faq = 'faq';
+
 }
