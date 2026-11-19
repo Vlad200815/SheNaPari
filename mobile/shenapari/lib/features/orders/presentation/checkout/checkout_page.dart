@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'widgets/paid_check.dart';
 import '../../../../core/ui/app_logo.dart';
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
@@ -246,23 +247,9 @@ class _Placed extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Center(child: AppLogo()),
-            const SizedBox(height: 20),
-            Center(
-              child: Container(
-                width: 104,
-                height: 104,
-                decoration: const BoxDecoration(
-                  color: ColorName.primary400,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.check_rounded,
-                  size: 56,
-                  color: ColorName.black,
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
+            // The check's box leaves room for the confetti, so no gap here.
+            const Center(child: PaidCheck()),
+            const SizedBox(height: 8),
             Text(
               LocaleKeys.checkout_paid_title.tr(
                 namedArgs: {'number': '${order.number}'},

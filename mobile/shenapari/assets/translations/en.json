@@ -58,8 +58,8 @@
     "name_hint": "Name"
   },
   "home": {
-    "greeting": "Hi!",
-    "greeting_name": "Hi, {name}",
+    "greeting": "Hi! 👋",
+    "greeting_name": "Hi, {name} 👋",
     "question": "What are we eating?",
     "notifications": "Notifications",
     "notifications_unread": "Notifications, new ones",
@@ -150,7 +150,7 @@
       "ready": "Ready",
       "ready_text": "Show the QR at the counter",
       "picked_up": "Picked up",
-      "picked_up_text": "Enjoy your meal!"
+      "picked_up_text": "Enjoy your meal! 😋"
     },
     "show_qr": "Show QR",
     "total": "Total",
