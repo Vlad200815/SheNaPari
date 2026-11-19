@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../../menu/data/dto/menu_dtos.dart';
 import '../../domain/entities/order.dart';
+import '../../domain/entities/order_history.dart';
 
 part 'order_dtos.g.dart';
 
@@ -87,6 +88,10 @@ class OrderDto {
   static OrderStatus parseStatus(String value) =>
       OrderStatus.values.asNameMap()[_camel(value)] ?? OrderStatus.unknown;
 
+  /// [OrderStatus.pickedUp] → `PickedUp`.
+  static String statusName(OrderStatus status) =>
+      status.name[0].toUpperCase() + status.name.substring(1);
+
   /// [PaymentProvider.googlePay] → `GooglePay`.
   static String providerName(PaymentProvider provider) =>
       provider.name[0].toUpperCase() + provider.name.substring(1);
@@ -143,3 +148,51 @@ int toKopecks(num hryvnias) => (hryvnias * 100).round();
 
 String _camel(String value) =>
     value.isEmpty ? value : value[0].toLowerCase() + value.substring(1);
+
+/// `GET /orders/my/history`
+@JsonSerializable(createToJson: false)
+class OrderHistoryDto {
+  const OrderHistoryDto({
+    required this.items,
+    required this.hasMore,
+    required this.months,
+  });
+
+  factory OrderHistoryDto.fromJson(Map<String, dynamic> json) =>
+      _$OrderHistoryDtoFromJson(json);
+
+  final List<OrderDto> items;
+  final bool hasMore;
+  final List<OrderMonthDto> months;
+
+  OrderHistoryPage toEntity() => OrderHistoryPage(
+    orders: [for (final item in items) item.toEntity()],
+    hasMore: hasMore,
+    months: [for (final month in months) month.toEntity()],
+  );
+}
+
+@JsonSerializable(createToJson: false)
+class OrderMonthDto {
+  const OrderMonthDto({
+    required this.year,
+    required this.month,
+    required this.count,
+    required this.spent,
+  });
+
+  factory OrderMonthDto.fromJson(Map<String, dynamic> json) =>
+      _$OrderMonthDtoFromJson(json);
+
+  final int year;
+  final int month;
+  final int count;
+  final num spent;
+
+  OrderMonth toEntity() => OrderMonth(
+    year: year,
+    month: month,
+    count: count,
+    spentKopecks: toKopecks(spent),
+  );
+}

@@ -79,6 +79,7 @@ public static class OrderErrors
     public static readonly Error InvalidEta = new("order.invalid_eta", "Час готовності: 5, 10, 15 або 20 хвилин", 400);
     public static readonly Error EtaRequired = new("order.eta_required", "Щоб прийняти замовлення, вкажіть час готовності", 400);
     public static readonly Error NotReady = new("order.not_ready", "Замовлення ще не готове", 409);
+    public static readonly Error InvalidHistoryFilter = new("order.invalid_history_filter", "В історії лише видані, скасовані й не забрані замовлення", 400);
 }
 
 public static class LegalErrors
