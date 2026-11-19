@@ -25,10 +25,26 @@ class MainShell extends StatelessWidget {
 
   /// Same order as the shell branches in `app_router.dart`.
   static List<_Tab> get _tabs => [
-    _Tab(Assets.images.bottomNav.icHome, LocaleKeys.tabs_home.tr()),
-    _Tab(Assets.images.bottomNav.icCart, LocaleKeys.tabs_cart.tr()),
-    _Tab(Assets.images.bottomNav.icOrders, LocaleKeys.tabs_orders.tr()),
-    _Tab(Assets.images.bottomNav.icMore, LocaleKeys.tabs_more.tr()),
+    _Tab(
+      Assets.images.bottomNav.icHome,
+      Assets.images.bottomNav.icHomeFilled,
+      LocaleKeys.tabs_home.tr(),
+    ),
+    _Tab(
+      Assets.images.bottomNav.icCart,
+      Assets.images.bottomNav.icCartFilled,
+      LocaleKeys.tabs_cart.tr(),
+    ),
+    _Tab(
+      Assets.images.bottomNav.icOrders,
+      Assets.images.bottomNav.icOrdersFilled,
+      LocaleKeys.tabs_orders.tr(),
+    ),
+    _Tab(
+      Assets.images.bottomNav.icMore,
+      Assets.images.bottomNav.icMoreFilled,
+      LocaleKeys.tabs_more.tr(),
+    ),
   ];
 
   void _openTab(int index) => navigationShell.goBranch(
@@ -89,10 +105,13 @@ class MainShell extends StatelessWidget {
   }
 }
 
+/// [icon] is the outline; [activeIcon] the same shape filled in (inner
+/// details cut out), for the open tab.
 class _Tab {
-  const _Tab(this.icon, this.label);
+  const _Tab(this.icon, this.activeIcon, this.label);
 
   final SvgGenImage icon;
+  final SvgGenImage activeIcon;
   final String label;
 }
 
@@ -133,10 +152,16 @@ class _TabButton extends StatelessWidget {
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  tab.icon.svg(
-                    width: 24,
-                    height: 24,
-                    colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                  AnimatedSwitcher(
+                    duration: MediaQuery.disableAnimationsOf(context)
+                        ? Duration.zero
+                        : const Duration(milliseconds: 180),
+                    child: (selected ? tab.activeIcon : tab.icon).svg(
+                      key: ValueKey(selected),
+                      width: 24,
+                      height: 24,
+                      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                    ),
                   ),
                   if (badge > 0)
                     Positioned(
