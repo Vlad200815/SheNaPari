@@ -2,7 +2,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class  LocaleKeys {
+abstract class LocaleKeys {
   static const app_name = 'app.name';
   static const app = 'app';
   static const common_retry = 'common.retry';
@@ -259,5 +259,4 @@ abstract class  LocaleKeys {
   static const faq_delete_q = 'faq.delete_q';
   static const faq_delete_a = 'faq.delete_a';
   static const faq = 'faq';
-
 }
