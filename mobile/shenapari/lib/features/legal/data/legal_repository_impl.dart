@@ -13,12 +13,21 @@ import 'legal_document_dto.dart';
 typedef AssetLoader = Future<String> Function(String path);
 
 class LegalRepositoryImpl implements LegalRepository {
-  LegalRepositoryImpl(this._api, this._prefs, {required AssetLoader loadAsset})
-    : _loadAsset = loadAsset;
+  LegalRepositoryImpl(
+    this._api,
+    this._prefs, {
+    required AssetLoader loadAsset,
+    required String Function() languageCode,
+  }) : _loadAsset = loadAsset,
+       _languageCode = languageCode;
 
   final LegalApi _api;
   final SharedPreferences _prefs;
   final AssetLoader _loadAsset;
+
+  /// The app's language: the server answers in it (Accept-Language), so
+  /// the cache and the bundled copy must be in it too.
+  final String Function() _languageCode;
 
   @override
   Future<LegalDocument> get(LegalDocumentType type) async {
@@ -45,8 +54,16 @@ class LegalRepositoryImpl implements LegalRepository {
   Future<LegalDocument> _bundled(LegalDocumentType type) async => LegalDocument(
     type: type,
     version: null,
-    content: await _loadAsset('assets/legal/${type.name}.md'),
+    content: await _loadAsset(bundledLegalPath(type, _languageCode())),
   );
 
-  static String _cacheKey(LegalDocumentType type) => 'legal_${type.name}';
+  String _cacheKey(LegalDocumentType type) =>
+      'legal_${_languageCode()}_${type.name}';
 }
+
+/// `assets/legal/terms.md` (Ukrainian) or `assets/legal/terms.en.md`, named
+/// like the backend's `Legal/*.md`.
+String bundledLegalPath(LegalDocumentType type, String languageCode) =>
+    languageCode == 'en'
+    ? 'assets/legal/${type.name}.en.md'
+    : 'assets/legal/${type.name}.md';

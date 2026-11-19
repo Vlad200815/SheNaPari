@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,9 +17,10 @@ public class CategoriesController(AppDbContext db) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<Result<List<CategoryDto>>>> GetAll()
     {
+        var english = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en";
         var categories = await db.Categories
             .OrderBy(c => c.SortOrder)
-            .Select(c => new CategoryDto(c.Id, c.Name))
+            .Select(c => new CategoryDto(c.Id, english && c.NameEn != null ? c.NameEn : c.Name))
             .ToListAsync();
         return Result<List<CategoryDto>>.Ok(categories).ToActionResult();
     }
