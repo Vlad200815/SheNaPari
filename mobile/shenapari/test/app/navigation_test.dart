@@ -462,7 +462,7 @@ void main() {
 
     await tester.tap(find.byTooltip('Більше'));
     await tester.pumpAndSettle();
-    expect(find.text('Привіт, Влад! 👋'), findsOneWidget);
+    expect(find.text('Привіт, Влад!'), findsOneWidget);
 
     await _tap(tester, 'Мій профіль');
     await tester.enterText(find.byType(TextFormField).first, 'Владислав');
@@ -472,7 +472,7 @@ void main() {
 
     await _back(tester);
     await tester.pumpAndSettle();
-    expect(find.text('Привіт, Владислав! 👋'), findsOneWidget);
+    expect(find.text('Привіт, Владислав!'), findsOneWidget);
   });
 
   testWidgets('a phone in English: the app opens in English', (tester) async {
