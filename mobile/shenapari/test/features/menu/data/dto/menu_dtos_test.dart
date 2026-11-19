@@ -48,6 +48,30 @@ void main() {
     expect(kopecks(0.1 + 0.2), 30);
   });
 
+  test('nutrition, spiciness and the vegan mark', () {
+    final dish = DishDto.fromJson({
+      ..._dishJson(),
+      'proteinG': 16,
+      'fatG': 20,
+      'carbsG': 58,
+      'spicyLevel': 2,
+      'isVegan': true,
+    }).toEntity(baseUrl: _baseUrl);
+
+    expect((dish.proteinG, dish.fatG, dish.carbsG), (16, 20, 58));
+    expect(dish.hasMacros, isTrue);
+    expect(dish.spicyLevel, 2);
+    expect(dish.isVegan, isTrue);
+  });
+
+  test('an older server: no macros, not spicy, not vegan', () {
+    final dish = DishDto.fromJson(_dishJson()).toEntity(baseUrl: _baseUrl);
+
+    expect(dish.hasMacros, isFalse);
+    expect(dish.spicyLevel, 0);
+    expect(dish.isVegan, isFalse);
+  });
+
   test('a dish without a photo keeps imageUrl null', () {
     final dish = DishDto.fromJson(_dishJson()).toEntity(baseUrl: _baseUrl);
 

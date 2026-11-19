@@ -89,7 +89,17 @@
     "cart_updated": "Cart updated",
     "added": "Added to the cart",
     "update": "Update · {total}",
-    "add": "Add · {total}"
+    "add": "Add · {total}",
+    "kcal_per_portion": "kcal per portion",
+    "protein": "protein",
+    "fat": "fat",
+    "carbs": "carbs",
+    "grams": "{grams} g",
+    "energy_split": "Energy: protein {protein} %, fat {fat} %, carbs {carbs} %",
+    "spicy_1": "A little spicy",
+    "spicy_2": "Spicy",
+    "spicy_3": "Very spicy",
+    "vegan": "Vegan"
   },
   "cart": {
     "title": "Cart",

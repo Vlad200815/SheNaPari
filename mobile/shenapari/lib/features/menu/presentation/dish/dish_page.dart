@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../widgets/dish_marks.dart';
+import 'widgets/nutrition_card.dart';
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
 import '../../../../core/ui/app_button.dart';
@@ -98,7 +100,19 @@ class _DishView extends StatelessWidget {
               height: _heroHeight + topInset,
               child: Padding(
                 padding: EdgeInsets.fromLTRB(40, topInset + 56, 40, 40),
-                child: DishImage(url: dish.imageUrl, radius: 24),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    DishImage(url: dish.imageUrl, radius: 24),
+                    // Spicy / vegan on the photo: seen before the name.
+                    Positioned(
+                      top: 12,
+                      left: 12,
+                      right: 12,
+                      child: DishMarks(dish: dish),
+                    ),
+                  ],
+                ),
               ),
             ),
             Transform.translate(
@@ -177,14 +191,20 @@ class _Sheet extends StatelessWidget {
                   namedArgs: {'grams': '${dish.weightG}'},
                 ),
               ),
-              _MetaPill(
-                icon: Icons.bolt_rounded,
-                text: LocaleKeys.home_kcal.tr(
-                  namedArgs: {'kcal': '${dish.kcal}'},
+              // With the macros the calories go into the card below.
+              if (!dish.hasMacros)
+                _MetaPill(
+                  icon: Icons.bolt_rounded,
+                  text: LocaleKeys.home_kcal.tr(
+                    namedArgs: {'kcal': '${dish.kcal}'},
+                  ),
                 ),
-              ),
             ],
           ),
+          if (dish.hasMacros) ...[
+            const SizedBox(height: 16),
+            NutritionCard(dish: dish),
+          ],
           if (nextBreak != null) ...[
             const SizedBox(height: 20),
             _PickupHint(slot: nextBreak),

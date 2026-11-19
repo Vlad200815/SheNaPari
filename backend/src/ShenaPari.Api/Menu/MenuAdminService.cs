@@ -142,6 +142,9 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
         if (dto.Name.Trim().Length is < 2 or > 200) return MenuErrors.InvalidName;
         if (dto.Price is <= 0 or > 100_000) return MenuErrors.InvalidPrice;
         if (dto.WeightG < 0 || dto.Kcal < 0) return MenuErrors.InvalidDish;
+        if (dto.ProteinG is < 0 or > 500 || dto.FatG is < 0 or > 500 || dto.CarbsG is < 0 or > 500)
+            return MenuErrors.InvalidDish;
+        if (dto.SpicyLevel is < 0 or > 3) return MenuErrors.InvalidDish;
         if (dto.Description?.Length > 1000) return MenuErrors.InvalidDish;
         if (EnglishName(dto.NameEn) is { Length: < 2 or > 200 }) return MenuErrors.InvalidName;
         if (dto.DescriptionEn?.Length > 1000) return MenuErrors.InvalidDish;
@@ -159,6 +162,11 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
         dish.Price = decimal.Round(dto.Price, 2);
         dish.WeightG = dto.WeightG;
         dish.Kcal = dto.Kcal;
+        dish.ProteinG = dto.ProteinG;
+        dish.FatG = dto.FatG;
+        dish.CarbsG = dto.CarbsG;
+        dish.SpicyLevel = dto.SpicyLevel;
+        dish.IsVegan = dto.IsVegan;
         dish.IsPopular = dto.IsPopular;
         dish.IsAvailable = dto.IsAvailable;
     }
@@ -172,5 +180,6 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
     }
 
     private static AdminDishDto ToDto(Dish d) => new(
-        d.Id, d.CategoryId, d.Name, d.Description, d.Price, d.WeightG, d.Kcal, d.ImageUrl, d.IsPopular, d.IsAvailable, d.NameEn, d.DescriptionEn);
+        d.Id, d.CategoryId, d.Name, d.Description, d.Price, d.WeightG, d.Kcal, d.ImageUrl, d.IsPopular, d.IsAvailable, d.NameEn, d.DescriptionEn,
+        d.ProteinG, d.FatG, d.CarbsG, d.SpicyLevel, d.IsVegan);
 }

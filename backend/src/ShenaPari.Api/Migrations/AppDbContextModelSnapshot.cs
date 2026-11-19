@@ -131,6 +131,9 @@ namespace ShenaPari.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("CarbsG")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
 
@@ -140,6 +143,9 @@ namespace ShenaPari.Api.Migrations
                     b.Property<string>("DescriptionEn")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("FatG")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("TEXT");
 
@@ -147,6 +153,9 @@ namespace ShenaPari.Api.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsPopular")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsVegan")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Kcal")
@@ -163,6 +172,12 @@ namespace ShenaPari.Api.Migrations
                     b.Property<double>("Price")
                         .HasPrecision(10, 2)
                         .HasColumnType("REAL");
+
+                    b.Property<int?>("ProteinG")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SpicyLevel")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("WeightG")
                         .HasColumnType("INTEGER");
