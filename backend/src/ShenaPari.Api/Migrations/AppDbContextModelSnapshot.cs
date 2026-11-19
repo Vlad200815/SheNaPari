@@ -94,6 +94,9 @@ namespace ShenaPari.Api.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("NameEn")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("Canteens");
@@ -134,6 +137,9 @@ namespace ShenaPari.Api.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("DescriptionEn")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("TEXT");
 
@@ -149,6 +155,9 @@ namespace ShenaPari.Api.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NameEn")
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Price")
@@ -264,6 +273,10 @@ namespace ShenaPari.Api.Migrations
 
                     b.Property<int>("DishId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("NameEnSnapshot")
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NameSnapshot")
                         .IsRequired()

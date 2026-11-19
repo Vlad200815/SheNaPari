@@ -13,7 +13,9 @@ public record SaveDishDto(
     int WeightG,
     int Kcal,
     bool IsPopular = false,
-    bool IsAvailable = true);
+    bool IsAvailable = true,
+    string? NameEn = null,
+    string? DescriptionEn = null);
 
 /// Admin view of a dish: everything, including whether clients can see it.
 public record AdminDishDto(
@@ -26,4 +28,6 @@ public record AdminDishDto(
     int Kcal,
     string? ImageUrl,
     bool IsPopular,
-    bool IsAvailable);
+    bool IsAvailable,
+    string? NameEn,
+    string? DescriptionEn);

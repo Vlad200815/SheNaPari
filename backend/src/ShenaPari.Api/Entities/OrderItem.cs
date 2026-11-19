@@ -11,5 +11,6 @@ public class OrderItem
 
     /// Name and price copied at order time, so later menu edits don't rewrite history.
     public required string NameSnapshot { get; set; }
+    public string? NameEnSnapshot { get; set; }
     public decimal UnitPrice { get; set; }
 }

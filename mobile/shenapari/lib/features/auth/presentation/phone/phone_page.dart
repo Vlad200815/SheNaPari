@@ -42,7 +42,11 @@ class PhonePage extends StatelessWidget {
             step: LocaleKeys.auth_step.tr(
               namedArgs: {'current': '1', 'total': '2'},
             ),
-            image: Assets.images.auth.phoneAuth.image(fit: BoxFit.contain),
+            image: themedImage(
+              context,
+              light: Assets.images.auth.phoneAuth,
+              dark: Assets.images.auth.phoneAuthDark,
+            ),
             title: LocaleKeys.auth_phone_title.tr(),
             subtitle: LocaleKeys.auth_phone_subtitle.tr(),
             form: PhoneField(

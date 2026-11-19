@@ -1,7 +1,7 @@
-using System.Globalization;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using ShenaPari.Api.Common;
 using ShenaPari.Api.Dtos;
 
 namespace ShenaPari.Api.Legal;
@@ -30,7 +30,7 @@ public static class LegalDocuments
     /// In the request's language (Accept-Language), Ukrainian by default.
     public static LegalDocumentDto? Find(string type) =>
         Documents.GetValueOrDefault((type,
-            CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en" ? "en" : "uk"));
+            Lang.IsEnglish ? "en" : "uk"));
 
     private static LegalDocumentDto Load(string fileName)
     {
