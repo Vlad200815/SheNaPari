@@ -14,6 +14,17 @@ public class Dish
     public decimal Price { get; set; }
     public int WeightG { get; set; }
     public int Kcal { get; set; }
+
+    /// Grams per portion; null while the kitchen hasn't filled them in.
+    public int? ProteinG { get; set; }
+    public int? FatG { get; set; }
+    public int? CarbsG { get; set; }
+
+    /// 0 not spicy, 1 a little, 2 spicy, 3 very spicy.
+    public int SpicyLevel { get; set; }
+
+    /// No animal products at all (no meat, fish, milk, eggs, honey).
+    public bool IsVegan { get; set; }
     public string? ImageUrl { get; set; }
     public bool IsAvailable { get; set; } = true;
     public bool IsPopular { get; set; }

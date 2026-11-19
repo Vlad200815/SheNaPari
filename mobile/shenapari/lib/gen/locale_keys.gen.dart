@@ -85,6 +85,16 @@ abstract class LocaleKeys {
   static const dish_added = 'dish.added';
   static const dish_update = 'dish.update';
   static const dish_add = 'dish.add';
+  static const dish_kcal_per_portion = 'dish.kcal_per_portion';
+  static const dish_protein = 'dish.protein';
+  static const dish_fat = 'dish.fat';
+  static const dish_carbs = 'dish.carbs';
+  static const dish_grams = 'dish.grams';
+  static const dish_energy_split = 'dish.energy_split';
+  static const dish_spicy_1 = 'dish.spicy_1';
+  static const dish_spicy_2 = 'dish.spicy_2';
+  static const dish_spicy_3 = 'dish.spicy_3';
+  static const dish_vegan = 'dish.vegan';
   static const dish = 'dish';
   static const cart_title = 'cart.title';
   static const cart_total = 'cart.total';

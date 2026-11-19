@@ -36,5 +36,6 @@ public class DishesController(AppDbContext db) : ControllerBase
     }
 
     private static DishDto ToDto(Dish d) =>
-        new(d.Id, d.CategoryId, Lang.Pick(d.Name, d.NameEn), Lang.PickOptional(d.Description, d.DescriptionEn), d.Price, d.WeightG, d.Kcal, d.ImageUrl, d.IsPopular);
+        new(d.Id, d.CategoryId, Lang.Pick(d.Name, d.NameEn), Lang.PickOptional(d.Description, d.DescriptionEn), d.Price, d.WeightG, d.Kcal, d.ImageUrl, d.IsPopular,
+            d.ProteinG, d.FatG, d.CarbsG, d.SpicyLevel, d.IsVegan);
 }

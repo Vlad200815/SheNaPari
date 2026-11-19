@@ -14,7 +14,12 @@ public record DishDto(
     int WeightG,
     int Kcal,
     string? ImageUrl,
-    bool IsPopular);
+    bool IsPopular,
+    int? ProteinG = null,
+    int? FatG = null,
+    int? CarbsG = null,
+    int SpicyLevel = 0,
+    bool IsVegan = false);
 
 /// Staff view of a dish: includes the ones hidden from clients.
 public record StaffDishDto(int Id, int CategoryId, string Name, bool IsAvailable);
