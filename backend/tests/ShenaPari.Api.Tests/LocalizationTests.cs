@@ -119,4 +119,31 @@ public class LocalizationTests(ApiFactory api) : IClassFixture<ApiFactory>
         var details = await customer.GetDataAsync<OrderDto>($"/orders/{order.Id}");
         Assert.Null(details.History[^1].Reason);
     }
+
+    [Fact]
+    public async Task Category_names_come_in_the_requested_language()
+    {
+        var (customer, _) = await api.LoginCustomerAsync();
+        InEnglish(customer);
+
+        var categories = await customer.GetDataAsync<List<CategoryDto>>("/categories");
+
+        // Take(6): another test in this class adds its own category.
+        Assert.Equal(["Burgers", "Hot dogs", "Baguettes", "Hot meals", "Pastries", "Drinks"], categories.Take(6).Select(c => c.Name));
+    }
+
+    [Fact]
+    public async Task A_category_without_an_English_name_shows_the_Ukrainian_one()
+    {
+        var admin = await api.LoginSuperAdminAsync();
+        var created = await (await admin.PostJsonAsync("/admin/categories", new SaveCategoryDto("Салати", 99, NameEn: " ")))
+            .ReadResultAsync<AdminCategoryDto>();
+        Assert.Null(created.Data!.NameEn);
+        var (customer, _) = await api.LoginCustomerAsync();
+        InEnglish(customer);
+
+        var categories = await customer.GetDataAsync<List<CategoryDto>>("/categories");
+
+        Assert.Equal("Салати", categories[^1].Name);
+    }
 }
