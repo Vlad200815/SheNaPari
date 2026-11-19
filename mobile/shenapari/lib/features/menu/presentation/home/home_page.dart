@@ -18,6 +18,7 @@ import '../widgets/home_header.dart';
 import 'home_cubit.dart';
 import 'home_state.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/l10n/language_listener.dart';
 
 /// The menu: canteen name, filters and the grid of dishes.
 class HomePage extends StatelessWidget {
@@ -38,19 +39,23 @@ class HomePage extends StatelessWidget {
             previous.failure != current.failure,
         listener: (context, state) =>
             showFailureSnackBar(context, state.failure!),
-        child: Scaffold(
-          backgroundColor: ColorName.secondary100,
-          body: SafeArea(
-            bottom: false,
-            child: BlocBuilder<HomeCubit, HomeState>(
-              builder: (context, state) => switch (state.status) {
-                HomeStatus.loading => const _HomeSkeleton(),
-                HomeStatus.failure => _LoadError(
-                  message: state.failure!.text,
-                  onRetry: context.read<HomeCubit>().load,
-                ),
-                HomeStatus.loaded => _MenuView(state: state),
-              },
+        // Category names come from the server in the request's language.
+        child: LanguageListener(
+          onChanged: (context) => context.read<HomeCubit>().refresh(),
+          child: Scaffold(
+            backgroundColor: ColorName.secondary100,
+            body: SafeArea(
+              bottom: false,
+              child: BlocBuilder<HomeCubit, HomeState>(
+                builder: (context, state) => switch (state.status) {
+                  HomeStatus.loading => const _HomeSkeleton(),
+                  HomeStatus.failure => _LoadError(
+                    message: state.failure!.text,
+                    onRetry: context.read<HomeCubit>().load,
+                  ),
+                  HomeStatus.loaded => _MenuView(state: state),
+                },
+              ),
             ),
           ),
         ),

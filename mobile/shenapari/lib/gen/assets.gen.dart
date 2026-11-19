@@ -63,17 +63,26 @@ class $AssetsImagesGen {
 class $AssetsLegalGen {
   const $AssetsLegalGen();
 
+  /// File path: assets/legal/privacy.en.md
+  String get privacyEn => 'assets/legal/privacy.en.md';
+
   /// File path: assets/legal/privacy.md
   String get privacy => 'assets/legal/privacy.md';
 
+  /// File path: assets/legal/refund.en.md
+  String get refundEn => 'assets/legal/refund.en.md';
+
   /// File path: assets/legal/refund.md
   String get refund => 'assets/legal/refund.md';
+
+  /// File path: assets/legal/terms.en.md
+  String get termsEn => 'assets/legal/terms.en.md';
 
   /// File path: assets/legal/terms.md
   String get terms => 'assets/legal/terms.md';
 
   /// List of all assets
-  List<String> get values => [privacy, refund, terms];
+  List<String> get values => [privacyEn, privacy, refundEn, refund, termsEn, terms];
 }
 
 class $AssetsTranslationsGen {
