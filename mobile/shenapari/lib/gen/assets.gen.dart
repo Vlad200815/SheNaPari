@@ -107,9 +107,6 @@ class $AssetsImagesAuthGen {
   /// File path: assets/images/auth/ic_UA.svg
   SvgGenImage get icUA => const SvgGenImage('assets/images/auth/ic_UA.svg');
 
-  /// File path: assets/images/auth/ic_clear.svg
-  SvgGenImage get icClear => const SvgGenImage('assets/images/auth/ic_clear.svg');
-
   /// File path: assets/images/auth/otp_code.png
   AssetGenImage get otpCode => const AssetGenImage('assets/images/auth/otp_code.png');
 
@@ -123,7 +120,7 @@ class $AssetsImagesAuthGen {
   AssetGenImage get phoneAuthDark => const AssetGenImage('assets/images/auth/phone_auth_dark.png');
 
   /// List of all assets
-  List<dynamic> get values => [icUA, icClear, otpCode, otpCodeDark, phoneAuth, phoneAuthDark];
+  List<dynamic> get values => [icUA, otpCode, otpCodeDark, phoneAuth, phoneAuthDark];
 }
 
 class $AssetsImagesBottomNavGen {
