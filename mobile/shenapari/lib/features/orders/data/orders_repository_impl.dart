@@ -2,6 +2,7 @@ import '../../../core/network/api_call.dart';
 import '../../../core/result/result.dart';
 import '../../cart/domain/entities/cart.dart';
 import '../domain/entities/order.dart';
+import '../domain/entities/order_history.dart';
 import '../domain/orders_repository.dart';
 import 'dto/order_dtos.dart';
 import 'orders_api.dart';
@@ -31,8 +32,22 @@ class OrdersRepositoryImpl implements OrdersRepository {
   );
 
   @override
-  Future<Result<List<Order>>> getMyOrders() =>
-      apiCall(_api.getMy, (dtos) => [for (final dto in dtos) dto.toEntity()]);
+  Future<Result<List<Order>>> getActiveOrders() => apiCall(
+    () => _api.getMy(active: true),
+    (dtos) => [for (final dto in dtos) dto.toEntity()],
+  );
+
+  @override
+  Future<Result<OrderHistoryPage>> getHistory({
+    OrderStatus? status,
+    DateTime? before,
+  }) => apiCall(
+    () => _api.getHistory(
+      status: status == null ? null : OrderDto.statusName(status),
+      before: before?.toUtc().toIso8601String(),
+    ),
+    (dto) => dto.toEntity(),
+  );
 
   @override
   Future<Result<Order>> getOrder(String id) =>

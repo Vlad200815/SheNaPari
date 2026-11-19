@@ -63,6 +63,12 @@ Paid → Accepted → Cooking → Ready → PickedUp
 до початку приготування. Не забране за 30 хв після «Готово» закривається автоматично.
 Правила переходів: `Orders/OrderStatusRules.cs`.
 
+Клієнт бачить свої замовлення двома запитами: `GET /orders/my?active=true` — ті, що ще в роботі,
+і `GET /orders/my/history?status=Cancelled&before=<createdAt>` — завершені, по 20, від нових до
+старих (наступна сторінка — `before` = `createdAt` останнього). `months` у відповіді історії
+підсумовують кількість і витрачене за кожен місяць усієї історії (скасовані — повернені гроші, не
+рахуються).
+
 ## Ролі
 
 `SuperAdmin` ⊃ `Admin` ⊃ `Cook`; окремо `Customer`.
