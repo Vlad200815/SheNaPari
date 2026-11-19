@@ -122,7 +122,12 @@ class _Sheet extends StatelessWidget {
               SafeArea(
                 top: false,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 10, 24, 24),
+                  padding: const EdgeInsets.fromLTRB(
+                    _sheetPadding,
+                    10,
+                    _sheetPadding,
+                    24,
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -242,6 +247,24 @@ class _OrderPager extends StatefulWidget {
 class _OrderPagerState extends State<_OrderPager> {
   late final _pages = PageController(initialPage: _index);
   late var _index = widget.initialIndex;
+  final _chipKeys = <String, GlobalKey>{};
+
+  GlobalKey _chipKey(Order order) =>
+      _chipKeys.putIfAbsent(order.id, GlobalKey.new);
+
+  /// After a swipe the matching chip may be off screen: bring it in.
+  void _showChip(int index) {
+    final chip = _chipKey(widget.orders[index]).currentContext;
+    if (chip == null) return;
+    Scrollable.ensureVisible(
+      chip,
+      alignment: 0.5,
+      duration: MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : const Duration(milliseconds: 250),
+      curve: Curves.easeOutCubic,
+    );
+  }
 
   @override
   void didUpdateWidget(_OrderPager oldWidget) {
@@ -258,6 +281,7 @@ class _OrderPagerState extends State<_OrderPager> {
 
   void _open(int index) {
     setState(() => _index = index);
+    _showChip(index);
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
     if (reduceMotion) {
       _pages.jumpToPage(index);
@@ -273,21 +297,28 @@ class _OrderPagerState extends State<_OrderPager> {
   @override
   Widget build(BuildContext context) {
     final orders = widget.orders;
-    final pageHeight = _qrSize(context) + 150;
+    // QR + the logo above it (54) + number, hint and the details link.
+    final pageHeight = _qrSize(context) + 210;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // The chips scroll edge to edge of the sheet, not cut off at its
+        // padding; the first and last still line up with the title.
         SizedBox(
           height: 40,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: orders.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 8),
-            itemBuilder: (context, i) => _OrderChip(
-              order: orders[i],
-              selected: i == _index,
-              onTap: () => _open(i),
+          child: _FullBleed(
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: _sheetPadding),
+              scrollDirection: Axis.horizontal,
+              itemCount: orders.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
+              itemBuilder: (context, i) => _OrderChip(
+                key: _chipKey(orders[i]),
+                order: orders[i],
+                selected: i == _index,
+                onTap: () => _open(i),
+              ),
             ),
           ),
         ),
@@ -297,11 +328,23 @@ class _OrderPagerState extends State<_OrderPager> {
         Flexible(
           child: ConstrainedBox(
             constraints: BoxConstraints(maxHeight: pageHeight),
-            child: PageView.builder(
-              controller: _pages,
-              itemCount: orders.length,
-              onPageChanged: (i) => setState(() => _index = i),
-              itemBuilder: (context, i) => _OrderPage(order: orders[i]),
+            // Pages as wide as the sheet with its padding inside each, so
+            // two orders mid-swipe have a clear gap between them.
+            child: _FullBleed(
+              child: PageView.builder(
+                controller: _pages,
+                itemCount: orders.length,
+                onPageChanged: (i) {
+                  setState(() => _index = i);
+                  _showChip(i);
+                },
+                itemBuilder: (context, i) => Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: _sheetPadding,
+                  ),
+                  child: _OrderPage(order: orders[i]),
+                ),
+              ),
             ),
           ),
         ),
@@ -310,8 +353,25 @@ class _OrderPagerState extends State<_OrderPager> {
   }
 }
 
+/// Stretches [child] over the sheet's side padding, to its edges.
+class _FullBleed extends StatelessWidget {
+  const _FullBleed({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) => OverflowBox(
+      minWidth: constraints.maxWidth + 2 * _sheetPadding,
+      maxWidth: constraints.maxWidth + 2 * _sheetPadding,
+      child: child,
+    ),
+  );
+}
+
 class _OrderChip extends StatelessWidget {
   const _OrderChip({
+    super.key,
     required this.order,
     required this.selected,
     required this.onTap,
@@ -374,6 +434,9 @@ class _OrderChip extends StatelessWidget {
     );
   }
 }
+
+/// The sheet's side padding; chips and pages reach past it to the edges.
+const _sheetPadding = 24.0;
 
 /// Big on a normal phone, smaller on a short screen so nothing overflows.
 double _qrSize(BuildContext context) =>
@@ -462,14 +525,23 @@ class _NotReady extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
-                    LocaleKeys.my_qr_waiting.tr(
-                      namedArgs: {
-                        'number': '${order.number}',
-                        'when': order.whenLabel,
-                      },
-                    ),
-                    style: AppText.small(color: context.colors.textPrimary),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        LocaleKeys.my_qr_waiting.tr(),
+                        style: AppText.small(
+                          color: context.colors.textPrimary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        order.whenLabel,
+                        style: AppText.small(
+                          color: context.colors.textSecondary,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

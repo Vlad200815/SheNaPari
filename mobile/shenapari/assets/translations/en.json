@@ -202,7 +202,7 @@
     "ready": "Ready",
     "qr_label": "QR code of order #{number}",
     "show_hint": "Show the code at the counter and pick it up",
-    "waiting": "The QR will appear here as soon as the kitchen cooks order #{number} · {when}",
+    "waiting": "The QR shows up once the order is ready",
     "details": "Order details"
   },
   "notifications": {
