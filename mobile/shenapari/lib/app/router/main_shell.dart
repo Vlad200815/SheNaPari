@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -23,6 +25,9 @@ class MainShell extends StatelessWidget {
 
   final StatefulNavigationShell navigationShell;
 
+  /// Tall enough for a thumb on a real phone (54 felt cramped).
+  static const _barHeight = 64.0;
+
   /// Same order as the shell branches in `app_router.dart`.
   static List<_Tab> get _tabs => [
     _Tab(Assets.images.bottomNav.icHome, LocaleKeys.tabs_home.tr()),
@@ -31,11 +36,15 @@ class MainShell extends StatelessWidget {
     _Tab(Assets.images.bottomNav.icMore, LocaleKeys.tabs_more.tr()),
   ];
 
-  void _openTab(int index) => navigationShell.goBranch(
-    index,
-    // Tapping the current tab again returns to its first screen.
-    initialLocation: index == navigationShell.currentIndex,
-  );
+  void _openTab(int index) {
+    // A light tick when the tab actually changes, not on a repeat tap.
+    if (index != navigationShell.currentIndex) tabHaptic();
+    navigationShell.goBranch(
+      index,
+      // Tapping the current tab again returns to its first screen.
+      initialLocation: index == navigationShell.currentIndex,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +77,7 @@ class MainShell extends StatelessWidget {
           child: SafeArea(
             top: false,
             child: SizedBox(
-              height: 54,
+              height: _barHeight,
               child: Row(
                 children: [
                   tab(0),
@@ -253,7 +262,10 @@ class _QrButtonState extends State<_QrButton>
             clipBehavior: Clip.antiAlias,
             child: InkWell(
               customBorder: const CircleBorder(),
-              onTap: () => context.push(Routes.myQr),
+              onTap: () {
+                HapticFeedback.mediumImpact();
+                context.push(Routes.myQr);
+              },
               child: SizedBox.square(
                 dimension: _size,
                 child: Stack(
@@ -333,3 +345,10 @@ class _Badge extends StatelessWidget {
     );
   }
 }
+
+/// The tab bar tick: iOS's own selection click; on Android that one is
+/// barely felt on many phones, so a light key tap instead. Both follow the
+/// phone's «vibration on touch» setting.
+void tabHaptic() => defaultTargetPlatform == TargetPlatform.iOS
+    ? HapticFeedback.selectionClick()
+    : HapticFeedback.lightImpact();
