@@ -189,7 +189,7 @@
     "faq": "Questions and answers",
     "support": "Support",
     "support_subtitle": "Telegram or email",
-    "version": "SheNaPari · version {version}"
+    "version": "version {version}"
   },
   "profile": {
     "phone": "Phone",

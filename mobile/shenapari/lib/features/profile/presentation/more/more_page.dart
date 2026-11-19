@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../../core/ui/app_logo.dart';
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
 import '../../../../core/ui/app_text.dart';
@@ -202,7 +203,8 @@ class _Header extends StatelessWidget {
   }
 }
 
-/// «ШеНаПарі · версія 1.0.0»; nothing if the version cannot be read.
+/// The logo with «версія 1.0.0» under it; just the logo if the version
+/// cannot be read.
 class _AppVersion extends StatelessWidget {
   const _AppVersion();
 
@@ -219,14 +221,19 @@ class _AppVersion extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder<String?>(
       future: _version(),
-      builder: (context, snapshot) => Text(
-        snapshot.data == null
-            ? LocaleKeys.app_name.tr()
-            : LocaleKeys.more_version.tr(
-                namedArgs: {'version': snapshot.data!},
-              ),
-        style: AppText.small(color: context.colors.textSecondary),
-        textAlign: TextAlign.center,
+      builder: (context, snapshot) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const AppLogo(width: 54),
+          if (snapshot.data case final version?) ...[
+            const SizedBox(height: 6),
+            Text(
+              LocaleKeys.more_version.tr(namedArgs: {'version': version}),
+              style: AppText.small(color: context.colors.textSecondary),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ],
       ),
     );
   }
