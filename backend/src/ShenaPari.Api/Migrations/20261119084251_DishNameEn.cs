@@ -30,7 +30,7 @@ namespace ShenaPari.Api.Migrations
                 nullable: true);
 
             // A database seeded before these columns existed gets the demo texts too.
-            foreach (var (uk, en, descriptionEn) in new (string, string, string?)[]
+            foreach (var (uk, en, descriptionEn) in new (string, string, string)[]
             {
                 ("Чизбургер", "Cheeseburger", "Beef patty, cheddar, pickles, sauce"),
                 ("Бургер з куркою", "Chicken burger", "Breaded chicken fillet, lettuce, tomato, sauce"),
