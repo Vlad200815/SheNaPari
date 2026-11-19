@@ -29,7 +29,7 @@ public static class DbSeeder
 
         if (!await db.Canteens.AnyAsync())
         {
-            db.Canteens.Add(new Canteen { Name = "Їдальня, корпус 1" });
+            db.Canteens.Add(new Canteen { Name = "Їдальня, корпус 1", NameEn = "Canteen, building 1" });
             await db.SaveChangesAsync();
         }
 
@@ -99,55 +99,55 @@ public static class DbSeeder
         {
             Name = "Бургери", NameEn = "Burgers", SortOrder = 1, Dishes =
             [
-                new() { Name = "Чизбургер", Description = "Яловича котлета, сир чедер, солоний огірок, соус", Price = 95, WeightG = 220, Kcal = 480, IsPopular = true },
-                new() { Name = "Бургер з куркою", Description = "Куряче філе в паніруванні, салат, томат, соус", Price = 105, WeightG = 240, Kcal = 510 },
-                new() { Name = "Подвійний бургер", Description = "Дві яловичі котлети, подвійний сир, бекон", Price = 135, WeightG = 320, Kcal = 760 },
+                new() { Name = "Чизбургер", Description = "Яловича котлета, сир чедер, солоний огірок, соус", NameEn = "Cheeseburger", DescriptionEn = "Beef patty, cheddar, pickles, sauce", Price = 95, WeightG = 220, Kcal = 480, IsPopular = true },
+                new() { Name = "Бургер з куркою", Description = "Куряче філе в паніруванні, салат, томат, соус", NameEn = "Chicken burger", DescriptionEn = "Breaded chicken fillet, lettuce, tomato, sauce", Price = 105, WeightG = 240, Kcal = 510 },
+                new() { Name = "Подвійний бургер", Description = "Дві яловичі котлети, подвійний сир, бекон", NameEn = "Double burger", DescriptionEn = "Two beef patties, double cheese, bacon", Price = 135, WeightG = 320, Kcal = 760 },
             ],
         },
         new()
         {
             Name = "Хот-доги", NameEn = "Hot dogs", SortOrder = 2, Dishes =
             [
-                new() { Name = "Хот-дог класичний", Description = "Сосиска, кетчуп, гірчиця, маринована цибуля", Price = 55, WeightG = 180, Kcal = 390, IsPopular = true },
-                new() { Name = "Хот-дог із сиром", Description = "Сосиска, сирний соус, хрустка цибуля", Price = 65, WeightG = 200, Kcal = 450 },
-                new() { Name = "Французький хот-дог", Description = "Сосиска в багеті, часниковий соус", Price = 60, WeightG = 190, Kcal = 420 },
+                new() { Name = "Хот-дог класичний", Description = "Сосиска, кетчуп, гірчиця, маринована цибуля", NameEn = "Classic hot dog", DescriptionEn = "Sausage, ketchup, mustard, pickled onion", Price = 55, WeightG = 180, Kcal = 390, IsPopular = true },
+                new() { Name = "Хот-дог із сиром", Description = "Сосиска, сирний соус, хрустка цибуля", NameEn = "Cheese hot dog", DescriptionEn = "Sausage, cheese sauce, crispy onion", Price = 65, WeightG = 200, Kcal = 450 },
+                new() { Name = "Французький хот-дог", Description = "Сосиска в багеті, часниковий соус", NameEn = "French hot dog", DescriptionEn = "Sausage in a baguette, garlic sauce", Price = 60, WeightG = 190, Kcal = 420 },
             ],
         },
         new()
         {
             Name = "Багети", NameEn = "Baguettes", SortOrder = 3, Dishes =
             [
-                new() { Name = "Багет із шинкою і сиром", Description = "Шинка, сир, салат, томат", Price = 75, WeightG = 230, Kcal = 430 },
-                new() { Name = "Багет із куркою", Description = "Куряче філе, овочі, соус цезар", Price = 85, WeightG = 250, Kcal = 460, IsPopular = true },
-                new() { Name = "Багет із тунцем", Description = "Тунець, яйце, огірок, майонез", Price = 90, WeightG = 240, Kcal = 440 },
+                new() { Name = "Багет із шинкою і сиром", Description = "Шинка, сир, салат, томат", NameEn = "Ham and cheese baguette", DescriptionEn = "Ham, cheese, lettuce, tomato", Price = 75, WeightG = 230, Kcal = 430 },
+                new() { Name = "Багет із куркою", Description = "Куряче філе, овочі, соус цезар", NameEn = "Chicken baguette", DescriptionEn = "Chicken fillet, vegetables, Caesar dressing", Price = 85, WeightG = 250, Kcal = 460, IsPopular = true },
+                new() { Name = "Багет із тунцем", Description = "Тунець, яйце, огірок, майонез", NameEn = "Tuna baguette", DescriptionEn = "Tuna, egg, cucumber, mayonnaise", Price = 90, WeightG = 240, Kcal = 440 },
             ],
         },
         new()
         {
             Name = "Гарячі страви", NameEn = "Hot meals", SortOrder = 4, Dishes =
             [
-                new() { Name = "Борщ український", Description = "Зі сметаною та пампушкою", Price = 55, WeightG = 300, Kcal = 210, IsPopular = true },
-                new() { Name = "Суп курячий з локшиною", Description = "Домашня локшина, зелень", Price = 45, WeightG = 300, Kcal = 160 },
-                new() { Name = "Вареники з картоплею", Description = "Зі смаженою цибулею та сметаною", Price = 65, WeightG = 280, Kcal = 410 },
-                new() { Name = "Котлета по-київськи", Description = "З картопляним пюре", Price = 95, WeightG = 320, Kcal = 520 },
+                new() { Name = "Борщ український", Description = "Зі сметаною та пампушкою", NameEn = "Ukrainian borscht", DescriptionEn = "With sour cream and a garlic bun", Price = 55, WeightG = 300, Kcal = 210, IsPopular = true },
+                new() { Name = "Суп курячий з локшиною", Description = "Домашня локшина, зелень", NameEn = "Chicken noodle soup", DescriptionEn = "Homemade noodles, herbs", Price = 45, WeightG = 300, Kcal = 160 },
+                new() { Name = "Вареники з картоплею", Description = "Зі смаженою цибулею та сметаною", NameEn = "Potato varenyky", DescriptionEn = "With fried onion and sour cream", Price = 65, WeightG = 280, Kcal = 410 },
+                new() { Name = "Котлета по-київськи", Description = "З картопляним пюре", NameEn = "Chicken Kyiv", DescriptionEn = "With mashed potatoes", Price = 95, WeightG = 320, Kcal = 520 },
             ],
         },
         new()
         {
             Name = "Випічка", NameEn = "Pastries", SortOrder = 5, Dishes =
             [
-                new() { Name = "Сирник", Description = "Зі сметаною", Price = 30, WeightG = 120, Kcal = 260 },
-                new() { Name = "Пиріжок з вишнею", Price = 20, WeightG = 90, Kcal = 230 },
-                new() { Name = "Круасан", Description = "Вершкове масло", Price = 35, WeightG = 70, Kcal = 280 },
+                new() { Name = "Сирник", Description = "Зі сметаною", NameEn = "Syrnyk", DescriptionEn = "With sour cream", Price = 30, WeightG = 120, Kcal = 260 },
+                new() { Name = "Пиріжок з вишнею", NameEn = "Cherry pie", Price = 20, WeightG = 90, Kcal = 230 },
+                new() { Name = "Круасан", Description = "Вершкове масло", NameEn = "Croissant", DescriptionEn = "Butter", Price = 35, WeightG = 70, Kcal = 280 },
             ],
         },
         new()
         {
             Name = "Напої", NameEn = "Drinks", SortOrder = 6, Dishes =
             [
-                new() { Name = "Чай чорний", Price = 15, WeightG = 250, Kcal = 5 },
-                new() { Name = "Кава американо", Price = 30, WeightG = 200, Kcal = 10, IsPopular = true },
-                new() { Name = "Компот", Description = "Сухофрукти", Price = 20, WeightG = 250, Kcal = 90 },
+                new() { Name = "Чай чорний", NameEn = "Black tea", Price = 15, WeightG = 250, Kcal = 5 },
+                new() { Name = "Кава американо", NameEn = "Americano", Price = 30, WeightG = 200, Kcal = 10, IsPopular = true },
+                new() { Name = "Компот", Description = "Сухофрукти", NameEn = "Kompot", DescriptionEn = "Dried fruit", Price = 20, WeightG = 250, Kcal = 90 },
             ],
         },
     ];

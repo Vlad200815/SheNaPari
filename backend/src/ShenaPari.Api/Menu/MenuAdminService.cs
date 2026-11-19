@@ -143,6 +143,8 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
         if (dto.Price is <= 0 or > 100_000) return MenuErrors.InvalidPrice;
         if (dto.WeightG < 0 || dto.Kcal < 0) return MenuErrors.InvalidDish;
         if (dto.Description?.Length > 1000) return MenuErrors.InvalidDish;
+        if (EnglishName(dto.NameEn) is { Length: < 2 or > 200 }) return MenuErrors.InvalidName;
+        if (dto.DescriptionEn?.Length > 1000) return MenuErrors.InvalidDish;
         if (!await db.Categories.AnyAsync(c => c.Id == dto.CategoryId)) return MenuErrors.CategoryNotFound;
         return null;
     }
@@ -152,6 +154,8 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
         dish.CategoryId = dto.CategoryId;
         dish.Name = dto.Name.Trim();
         dish.Description = string.IsNullOrWhiteSpace(dto.Description) ? null : dto.Description.Trim();
+        dish.NameEn = EnglishName(dto.NameEn);
+        dish.DescriptionEn = EnglishName(dto.DescriptionEn);
         dish.Price = decimal.Round(dto.Price, 2);
         dish.WeightG = dto.WeightG;
         dish.Kcal = dto.Kcal;
@@ -168,5 +172,5 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
     }
 
     private static AdminDishDto ToDto(Dish d) => new(
-        d.Id, d.CategoryId, d.Name, d.Description, d.Price, d.WeightG, d.Kcal, d.ImageUrl, d.IsPopular, d.IsAvailable);
+        d.Id, d.CategoryId, d.Name, d.Description, d.Price, d.WeightG, d.Kcal, d.ImageUrl, d.IsPopular, d.IsAvailable, d.NameEn, d.DescriptionEn);
 }
