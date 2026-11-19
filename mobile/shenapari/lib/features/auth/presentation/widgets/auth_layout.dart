@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../core/ui/app_logo.dart';
 import '../../../../core/ui/app_text.dart';
 import '../../../../core/ui/app_theme.dart';
 import '../../../../core/ui/app_colors.dart';
@@ -27,7 +28,12 @@ class AuthLayout extends StatelessWidget {
     required this.subtitle,
     required this.form,
     required this.bottom,
+    this.showLogo = false,
   });
+
+  /// The wordmark above the picture: on the first step, so whoever skipped
+  /// the onboarding still sees whose app asks for their number.
+  final bool showLogo;
 
   final String step;
   final Widget image;
@@ -59,8 +65,12 @@ class AuthLayout extends StatelessWidget {
                   child: Column(
                     children: [
                       const SizedBox(height: 20),
+                      if (showLogo) ...[
+                        const AppLogo(),
+                        const SizedBox(height: 16),
+                      ],
                       SizedBox(
-                        height: constraints.maxHeight * 0.3,
+                        height: constraints.maxHeight * (showLogo ? 0.24 : 0.3),
                         child: image,
                       ),
                       const SizedBox(height: 32),

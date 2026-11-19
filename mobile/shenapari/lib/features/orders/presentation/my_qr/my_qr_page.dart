@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../../../core/ui/app_logo.dart';
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
 import '../../../../core/device/qr_display_mode.dart';
@@ -390,6 +391,10 @@ class _ReadyQr extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Like a ticket: whoever hands the food out sees at a glance that
+          // the code is ours, not a screenshot from another app.
+          const AppLogo(),
+          const SizedBox(height: 14),
           Semantics(
             container: true,
             label: LocaleKeys.my_qr_qr_label.tr(
