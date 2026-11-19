@@ -551,6 +551,48 @@ void main() {
     expect(home.backgroundColor, AppColors.dark.background);
   });
 
+  testWidgets('orders tab: the history by month, with a filter', (
+    tester,
+  ) async {
+    Order finished(int number, int day, OrderStatus status) => Order(
+      id: 'order-$number',
+      number: number,
+      status: status,
+      totalKopecks: 10000,
+      createdAt: DateTime(DateTime.now().year, 11, day, 12, 10),
+      items: const [
+        OrderItem(dishId: 1, name: 'Борщ', quantity: 2, unitPriceKopecks: 5000),
+      ],
+    );
+    await _pumpApp(
+      tester,
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+    _orders.orders.addAll([
+      finished(3, 18, OrderStatus.pickedUp),
+      finished(2, 17, OrderStatus.cancelled),
+      finished(1, 16, OrderStatus.notPickedUp),
+    ]);
+
+    await tester.tap(find.byTooltip('Замовлення'));
+    await tester.pumpAndSettle();
+
+    // No active orders: the history opens right away.
+    expect(find.text('Листопад'), findsOneWidget);
+    expect(find.text('3 замовлення · 200 ₴'), findsOneWidget);
+    expect(find.text('2 × Борщ'), findsNWidgets(3));
+    expect(find.textContaining('Скасовано'), findsOneWidget);
+    expect(find.textContaining('Не забрано'), findsOneWidget);
+
+    await _tap(tester, 'Скасовані');
+    expect(find.text('2 × Борщ'), findsOneWidget);
+    expect(find.text('1 замовлення · 0 ₴'), findsOneWidget);
+
+    await _tap(tester, 'Активні');
+    expect(find.text('Активних замовлень немає'), findsOneWidget);
+  });
+
   testWidgets('settings: switch off order push and animations', (tester) async {
     await _pumpApp(
       tester,

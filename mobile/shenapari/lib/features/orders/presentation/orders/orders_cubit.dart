@@ -25,13 +25,11 @@ abstract class OrdersState with _$OrdersState {
     Failure? failure,
   }) = _OrdersState;
 
+  /// [orders] come active from the server; one that the kitchen has just
+  /// finished stays out of the list until the next reload.
   List<Order> get active => [
     for (final o in orders)
       if (o.isActive) o,
-  ];
-  List<Order> get past => [
-    for (final o in orders)
-      if (!o.isActive) o,
   ];
 
   /// What «Мій QR» shows, in order: ready orders first (the one that has
@@ -64,7 +62,8 @@ abstract class OrdersState with _$OrdersState {
   ].length;
 }
 
-/// The customer's orders; reloads by itself when the kitchen changes a
+/// The customer's active orders (the orders tab, «Мій QR», the glow on the
+/// QR button); the history has its own [OrderHistoryCubit]. Reloads by itself when the kitchen changes a
 /// status (SignalR).
 class OrdersCubit extends Cubit<OrdersState> {
   OrdersCubit(this._orders, this._events) : super(const OrdersState());
@@ -88,7 +87,7 @@ class OrdersCubit extends Cubit<OrdersState> {
   }
 
   Future<void> _fetch() async {
-    switch (await _orders.getMyOrders()) {
+    switch (await _orders.getActiveOrders()) {
       case Ok(value: final orders):
         emit(state.copyWith(status: OrdersStatus.loaded, orders: orders));
       case Err(:final failure):

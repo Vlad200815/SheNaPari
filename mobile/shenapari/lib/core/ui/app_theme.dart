@@ -8,6 +8,11 @@ import 'app_text.dart';
 abstract final class AppDimens {
   static const horizontalPadding = 20.0;
   static const radius = 12.0;
+
+  /// How far the round «Мій QR» button sticks out above the tab bar. A bar
+  /// at the bottom of a tab (the cart's «Оформити») keeps its buttons this
+  /// much higher, so the round one never covers them.
+  static const tabBarOverhang = 24.0;
 }
 
 final ThemeData appTheme = _theme(Brightness.light, AppColors.light);
