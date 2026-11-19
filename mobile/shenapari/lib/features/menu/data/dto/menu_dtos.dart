@@ -71,6 +71,11 @@ class DishDto {
     this.description,
     this.imageUrl,
     this.isPopular = false,
+    this.proteinG,
+    this.fatG,
+    this.carbsG,
+    this.spicyLevel = 0,
+    this.isVegan = false,
   });
 
   factory DishDto.fromJson(Map<String, dynamic> json) =>
@@ -89,6 +94,11 @@ class DishDto {
   /// Relative to the server (`/images/dishes/5-ab12.jpg`) or null.
   final String? imageUrl;
   final bool isPopular;
+  final int? proteinG;
+  final int? fatG;
+  final int? carbsG;
+  final int spicyLevel;
+  final bool isVegan;
 
   /// [baseUrl] is the server address the relative [imageUrl] belongs to.
   Dish toEntity({required String baseUrl}) => Dish(
@@ -103,5 +113,10 @@ class DishDto {
         ? null
         : Uri.parse(baseUrl).resolve(imageUrl!).toString(),
     isPopular: isPopular,
+    proteinG: proteinG,
+    fatG: fatG,
+    carbsG: carbsG,
+    spicyLevel: spicyLevel.clamp(0, 3),
+    isVegan: isVegan,
   );
 }

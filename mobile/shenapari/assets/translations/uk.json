@@ -89,7 +89,17 @@
     "cart_updated": "Кошик оновлено",
     "added": "Додано в кошик",
     "update": "Оновити · {total}",
-    "add": "Додати · {total}"
+    "add": "Додати · {total}",
+    "kcal_per_portion": "ккал на порцію",
+    "protein": "білки",
+    "fat": "жири",
+    "carbs": "вуглеводи",
+    "grams": "{grams} г",
+    "energy_split": "Енергія: білки {protein} %, жири {fat} %, вуглеводи {carbs} %",
+    "spicy_1": "Злегка гостре",
+    "spicy_2": "Гостре",
+    "spicy_3": "Дуже гостре",
+    "vegan": "Веганське"
   },
   "cart": {
     "title": "Кошик",
