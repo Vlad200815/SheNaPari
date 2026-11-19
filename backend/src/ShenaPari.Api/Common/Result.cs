@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace ShenaPari.Api.Common;
 
 /// One failure: a stable machine code for the app ("order.not_ready"),
-/// a text for the user, and the HTTP status the controller should answer with.
+/// a text for the user (Ukrainian; English in ErrorTexts), and the HTTP
+/// status the controller should answer with.
 public record Error(string Code, string Message, int Status);
 
 /// Every API response has this shape, success or failure:
@@ -30,7 +31,8 @@ public class Result<T>
     }
 
     public static Result<T> Ok(T? data, int status = 200) => new(true, data, null, [], status);
-    public static Result<T> Fail(Error e) => new(false, default, e.Message, [e.Code], e.Status);
+    // The text in the request's language (Accept-Language, see Program.cs).
+    public static Result<T> Fail(Error e) => new(false, default, ErrorTexts.For(e), [e.Code], e.Status);
 
     // Lets services write `return dto;` and `return OrderErrors.NotReady;`.
     public static implicit operator Result<T>(T data) => Ok(data);

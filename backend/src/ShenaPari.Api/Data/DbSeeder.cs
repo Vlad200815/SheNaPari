@@ -97,7 +97,7 @@ public static class DbSeeder
     [
         new()
         {
-            Name = "Бургери", SortOrder = 1, Dishes =
+            Name = "Бургери", NameEn = "Burgers", SortOrder = 1, Dishes =
             [
                 new() { Name = "Чизбургер", Description = "Яловича котлета, сир чедер, солоний огірок, соус", Price = 95, WeightG = 220, Kcal = 480, IsPopular = true },
                 new() { Name = "Бургер з куркою", Description = "Куряче філе в паніруванні, салат, томат, соус", Price = 105, WeightG = 240, Kcal = 510 },
@@ -106,7 +106,7 @@ public static class DbSeeder
         },
         new()
         {
-            Name = "Хот-доги", SortOrder = 2, Dishes =
+            Name = "Хот-доги", NameEn = "Hot dogs", SortOrder = 2, Dishes =
             [
                 new() { Name = "Хот-дог класичний", Description = "Сосиска, кетчуп, гірчиця, маринована цибуля", Price = 55, WeightG = 180, Kcal = 390, IsPopular = true },
                 new() { Name = "Хот-дог із сиром", Description = "Сосиска, сирний соус, хрустка цибуля", Price = 65, WeightG = 200, Kcal = 450 },
@@ -115,7 +115,7 @@ public static class DbSeeder
         },
         new()
         {
-            Name = "Багети", SortOrder = 3, Dishes =
+            Name = "Багети", NameEn = "Baguettes", SortOrder = 3, Dishes =
             [
                 new() { Name = "Багет із шинкою і сиром", Description = "Шинка, сир, салат, томат", Price = 75, WeightG = 230, Kcal = 430 },
                 new() { Name = "Багет із куркою", Description = "Куряче філе, овочі, соус цезар", Price = 85, WeightG = 250, Kcal = 460, IsPopular = true },
@@ -124,7 +124,7 @@ public static class DbSeeder
         },
         new()
         {
-            Name = "Гарячі страви", SortOrder = 4, Dishes =
+            Name = "Гарячі страви", NameEn = "Hot meals", SortOrder = 4, Dishes =
             [
                 new() { Name = "Борщ український", Description = "Зі сметаною та пампушкою", Price = 55, WeightG = 300, Kcal = 210, IsPopular = true },
                 new() { Name = "Суп курячий з локшиною", Description = "Домашня локшина, зелень", Price = 45, WeightG = 300, Kcal = 160 },
@@ -134,7 +134,7 @@ public static class DbSeeder
         },
         new()
         {
-            Name = "Випічка", SortOrder = 5, Dishes =
+            Name = "Випічка", NameEn = "Pastries", SortOrder = 5, Dishes =
             [
                 new() { Name = "Сирник", Description = "Зі сметаною", Price = 30, WeightG = 120, Kcal = 260 },
                 new() { Name = "Пиріжок з вишнею", Price = 20, WeightG = 90, Kcal = 230 },
@@ -143,7 +143,7 @@ public static class DbSeeder
         },
         new()
         {
-            Name = "Напої", SortOrder = 6, Dishes =
+            Name = "Напої", NameEn = "Drinks", SortOrder = 6, Dishes =
             [
                 new() { Name = "Чай чорний", Price = 15, WeightG = 250, Kcal = 5 },
                 new() { Name = "Кава американо", Price = 30, WeightG = 200, Kcal = 10, IsPopular = true },

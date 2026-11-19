@@ -91,7 +91,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         b.Entity<BreakSlot>(e => e.HasIndex(s => s.StartsAt));
 
-        b.Entity<Category>(e => e.Property(c => c.Name).HasMaxLength(100));
+        b.Entity<Category>(e =>
+        {
+            e.Property(c => c.Name).HasMaxLength(100);
+            e.Property(c => c.NameEn).HasMaxLength(100);
+        });
 
         b.Entity<Dish>(e =>
         {
