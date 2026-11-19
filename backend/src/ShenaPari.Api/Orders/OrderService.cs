@@ -83,13 +83,46 @@ public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier noti
         return ToClientDto(loaded);
     }
 
-    public async Task<List<OrderDto>> GetMyAsync(Guid customerId)
+    public const int HistoryPageSize = 20;
+
+    private static readonly OrderStatus[] FinishedStatuses =
+        [OrderStatus.PickedUp, OrderStatus.Cancelled, OrderStatus.NotPickedUp];
+
+    public async Task<List<OrderDto>> GetMyAsync(Guid customerId, bool activeOnly = false)
     {
-        var list = await Query()
-            .Where(o => o.CustomerId == customerId)
-            .OrderByDescending(o => o.CreatedAt)
-            .ToListAsync();
+        var query = Query().Where(o => o.CustomerId == customerId);
+        if (activeOnly) query = query.Where(o => !FinishedStatuses.Contains(o.Status));
+        var list = await query.OrderByDescending(o => o.CreatedAt).ToListAsync();
         return list.Select(ToClientDto).ToList();
+    }
+
+    /// The history tab: finished orders page by page, optionally of one status.
+    public async Task<Result<OrderHistoryDto>> GetHistoryAsync(
+        Guid customerId, OrderStatus? status, DateTimeOffset? before, int limit)
+    {
+        if (status is { } s && !FinishedStatuses.Contains(s)) return OrderErrors.InvalidHistoryFilter;
+        limit = Math.Clamp(limit, 1, 50);
+
+        IQueryable<Order> Filtered(IQueryable<Order> q)
+        {
+            q = q.Where(o => o.CustomerId == customerId && FinishedStatuses.Contains(o.Status));
+            return status is null ? q : q.Where(o => o.Status == status);
+        }
+
+        var page = Filtered(Query());
+        if (before is not null) page = page.Where(o => o.CreatedAt < before);
+        var list = await page.OrderByDescending(o => o.CreatedAt).Take(limit + 1).ToListAsync();
+
+        // Only three small columns, so the whole history is cheap to sum up.
+        var all = await Filtered(db.Orders).Select(o => new { o.CreatedAt, o.Total, o.Status }).ToListAsync();
+        var months = all
+            .GroupBy(o => { var local = clock.ToLocalTime(o.CreatedAt); return (local.Year, local.Month); })
+            .OrderByDescending(g => g.Key)
+            .Select(g => new OrderMonthDto(g.Key.Year, g.Key.Month, g.Count(),
+                g.Where(o => o.Status != OrderStatus.Cancelled).Sum(o => o.Total)))
+            .ToList();
+
+        return new OrderHistoryDto(list.Take(limit).Select(ToClientDto).ToList(), list.Count > limit, months);
     }
 
     /// Only the owner may see an order; anyone else gets "not found" (not 403, to not leak ids).
