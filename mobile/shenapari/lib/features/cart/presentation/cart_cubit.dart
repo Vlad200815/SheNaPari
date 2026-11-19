@@ -30,6 +30,10 @@ class CartCubit extends Cubit<Cart> {
   void setQuantity(Dish dish, int quantity) =>
       _update(state.setQuantity(dish, quantity));
 
+  /// After the menu is loaded (also after a language switch).
+  void updateDishes(Iterable<Dish> dishes) =>
+      _update(state.withFreshDishes(dishes));
+
   void remove(int dishId) => _update(state.remove(dishId));
 
   void clear() => _update(const Cart());

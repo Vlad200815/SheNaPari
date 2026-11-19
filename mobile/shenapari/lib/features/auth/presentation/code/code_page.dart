@@ -62,7 +62,11 @@ class _CodeViewState extends State<_CodeView> {
         step: LocaleKeys.auth_step.tr(
           namedArgs: {'current': '2', 'total': '2'},
         ),
-        image: Assets.images.auth.otpCode.image(fit: BoxFit.contain),
+        image: themedImage(
+          context,
+          light: Assets.images.auth.otpCode,
+          dark: Assets.images.auth.otpCodeDark,
+        ),
         title: LocaleKeys.auth_code_title.tr(),
         subtitle: LocaleKeys.auth_code_subtitle.tr(
           namedArgs: {'phone': formatPhone(widget.phone)},

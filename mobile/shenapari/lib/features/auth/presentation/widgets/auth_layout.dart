@@ -3,6 +3,17 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../core/ui/app_text.dart';
 import '../../../../core/ui/app_theme.dart';
 import '../../../../core/ui/app_colors.dart';
+import '../../../../gen/assets.gen.dart';
+
+/// The step's picture: the dark variant has a dark grey cloud behind the
+/// figure instead of the light one, like the onboarding slides.
+Widget themedImage(
+  BuildContext context, {
+  required AssetGenImage light,
+  required AssetGenImage dark,
+}) => (Theme.of(context).brightness == Brightness.dark ? dark : light).image(
+  fit: BoxFit.contain,
+);
 
 /// The common frame of the sign-in screens: step in the app bar, a picture,
 /// a title and a subtitle, the [form], and [bottom] pinned to the bottom

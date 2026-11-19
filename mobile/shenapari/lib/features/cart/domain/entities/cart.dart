@@ -63,6 +63,20 @@ class Cart extends Equatable {
     ]);
   }
 
+  /// The same portions with the dishes as the menu shows them now: names in
+  /// the app's current language, current prices. A dish the menu no longer
+  /// has keeps its copy (the server says so at checkout).
+  Cart withFreshDishes(Iterable<Dish> dishes) {
+    final byId = {for (final dish in dishes) dish.id: dish};
+    return Cart([
+      for (final item in items)
+        CartItem(
+          dish: byId[item.dish.id] ?? item.dish,
+          quantity: item.quantity,
+        ),
+    ]);
+  }
+
   Cart remove(int dishId) => Cart([
     for (final item in items)
       if (item.dish.id != dishId) item,

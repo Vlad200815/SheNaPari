@@ -5,6 +5,7 @@ public class Canteen
 {
     public int Id { get; set; }
     public required string Name { get; set; }
+    public string? NameEn { get; set; }
 
     /// Kitchen switch: false = "we are overloaded, no new orders for now".
     public bool IsAcceptingOrders { get; set; } = true;

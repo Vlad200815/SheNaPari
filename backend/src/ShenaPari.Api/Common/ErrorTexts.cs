@@ -1,4 +1,3 @@
-using System.Globalization;
 
 namespace ShenaPari.Api.Common;
 
@@ -8,7 +7,7 @@ namespace ShenaPari.Api.Common;
 public static class ErrorTexts
 {
     public static string For(Error error) =>
-        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en"
+        Lang.IsEnglish
         && English.TryGetValue(error.Code, out var text)
             ? text
             : error.Message;
