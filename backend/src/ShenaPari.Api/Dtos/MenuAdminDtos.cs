@@ -15,7 +15,12 @@ public record SaveDishDto(
     bool IsPopular = false,
     bool IsAvailable = true,
     string? NameEn = null,
-    string? DescriptionEn = null);
+    string? DescriptionEn = null,
+    int? ProteinG = null,
+    int? FatG = null,
+    int? CarbsG = null,
+    int SpicyLevel = 0,
+    bool IsVegan = false);
 
 /// Admin view of a dish: everything, including whether clients can see it.
 public record AdminDishDto(
@@ -30,4 +35,9 @@ public record AdminDishDto(
     bool IsPopular,
     bool IsAvailable,
     string? NameEn,
-    string? DescriptionEn);
+    string? DescriptionEn,
+    int? ProteinG,
+    int? FatG,
+    int? CarbsG,
+    int SpicyLevel,
+    bool IsVegan);

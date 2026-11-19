@@ -6,6 +6,7 @@ import '../../../../core/ui/app_theme.dart';
 import '../../../../core/ui/format_price.dart';
 import '../../../../gen/colors.gen.dart';
 import '../../domain/entities/dish.dart';
+import 'dish_marks.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_colors.dart';
 
@@ -41,6 +42,12 @@ class DishCard extends StatelessWidget {
                     DishImage(url: dish.imageUrl),
                     if (dish.isPopular)
                       const Positioned(top: 6, left: 6, child: _PopularBadge()),
+                    // Peppers / leaf as icons in the other corner.
+                    Positioned(
+                      top: 6,
+                      right: 6,
+                      child: DishMarks(dish: dish, compact: true),
+                    ),
                   ],
                 ),
               ),
