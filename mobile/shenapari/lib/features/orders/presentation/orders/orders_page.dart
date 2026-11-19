@@ -102,15 +102,51 @@ class _OrdersViewState extends State<_OrdersView> {
           ),
         ),
       ),
-      body: switch (tab) {
-        _Tab.active => _ActiveView(state: orders),
-        _Tab.history => const _HistoryView(),
-      },
+      // Both tabs stay built, so the history keeps its scroll position;
+      // switching is a short cross-fade.
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          for (final (value, child) in [
+            (_Tab.active, _ActiveView(state: orders)),
+            (_Tab.history, const _HistoryView()),
+          ])
+            _TabPane(visible: value == tab, child: child),
+        ],
+      ),
     );
   }
 }
 
-/// «Активні (2) | Історія», a segmented switch.
+/// One tab's content: fades in and out, and while hidden it neither takes
+/// taps nor shows up for screen readers.
+class _TabPane extends StatelessWidget {
+  const _TabPane({required this.visible, required this.child});
+
+  final bool visible;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      ignoring: !visible,
+      child: ExcludeSemantics(
+        excluding: !visible,
+        child: AnimatedOpacity(
+          opacity: visible ? 1 : 0,
+          duration: MediaQuery.disableAnimationsOf(context)
+              ? Duration.zero
+              : const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+          child: TickerMode(enabled: visible, child: child),
+        ),
+      ),
+    );
+  }
+}
+
+/// «Активні (2) | Історія», a segmented switch: a white thumb slides under
+/// the chosen half.
 class _Switch extends StatelessWidget {
   const _Switch({
     required this.tab,
@@ -125,6 +161,10 @@ class _Switch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final duration = MediaQuery.disableAnimationsOf(context)
+        ? Duration.zero
+        : const Duration(milliseconds: 220);
+
     Widget segment(_Tab value, String label, {int count = 0}) {
       final selected = value == tab;
       return Expanded(
@@ -134,34 +174,20 @@ class _Switch extends StatelessWidget {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => onChanged(value),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
+            child: SizedBox(
               height: 40,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: selected ? colors.surface : Colors.transparent,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: selected
-                    ? [
-                        BoxShadow(
-                          color: colors.shadow,
-                          blurRadius: 6,
-                          offset: const Offset(0, 1),
-                        ),
-                      ]
-                    : null,
-              ),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    label,
+                  AnimatedDefaultTextStyle(
+                    duration: duration,
                     style: AppText.small(
                       color: selected
                           ? colors.textPrimary
                           : colors.textSecondary,
                       fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                     ),
+                    child: Text(label),
                   ),
                   if (count > 0) ...[
                     const SizedBox(width: 6),
@@ -198,14 +224,46 @@ class _Switch extends StatelessWidget {
         borderRadius: BorderRadius.circular(13),
         border: Border.all(color: colors.border),
       ),
-      child: Row(
+      child: Stack(
         children: [
-          segment(
-            _Tab.active,
-            LocaleKeys.orders_active.tr(),
-            count: activeCount,
+          // The thumb only moves; its colour never changes, so nothing
+          // greys out on the way.
+          Positioned.fill(
+            child: AnimatedAlign(
+              duration: duration,
+              curve: Curves.easeOutCubic,
+              alignment: tab == _Tab.active
+                  ? Alignment.centerLeft
+                  : Alignment.centerRight,
+              child: FractionallySizedBox(
+                widthFactor: 0.5,
+                heightFactor: 1,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: colors.surface,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colors.shadow,
+                        blurRadius: 6,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
-          segment(_Tab.history, LocaleKeys.orders_history.tr()),
+          Row(
+            children: [
+              segment(
+                _Tab.active,
+                LocaleKeys.orders_active.tr(),
+                count: activeCount,
+              ),
+              segment(_Tab.history, LocaleKeys.orders_history.tr()),
+            ],
+          ),
         ],
       ),
     );
