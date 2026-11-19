@@ -4,6 +4,9 @@ public class Category
 {
     public int Id { get; set; }
     public required string Name { get; set; }
+
+    /// English name for clients that ask for English; null → Name.
+    public string? NameEn { get; set; }
     public int SortOrder { get; set; }
 
     public List<Dish> Dishes { get; set; } = [];
