@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../core/ui/confirm_sheet.dart';
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
 import '../../../../core/ui/app_button.dart';
@@ -219,45 +220,19 @@ class _OrderView extends StatelessWidget {
   }
 }
 
-Future<bool> _confirmCancel(BuildContext context, Order order) async {
-  final confirmed = await showDialog<bool>(
-    context: context,
-    builder: (context) => AlertDialog(
-      backgroundColor: context.colors.surface,
-      surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      title: Text(
-        LocaleKeys.orders_cancel_title.tr(
-          namedArgs: {'number': '${order.number}'},
-        ),
-        style: AppText.title(),
+Future<bool> _confirmCancel(BuildContext context, Order order) =>
+    showConfirmSheet(
+      context,
+      icon: Icons.close_rounded,
+      title: LocaleKeys.orders_cancel_title.tr(
+        namedArgs: {'number': '${order.number}'},
       ),
-      content: Text(
-        LocaleKeys.orders_cancel_text.tr(),
-        style: AppText.small(color: context.colors.textSecondary),
+      text: LocaleKeys.orders_cancel_text.tr(
+        namedArgs: {'sum': formatPrice(order.totalKopecks)},
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: Text(
-            LocaleKeys.common_no.tr(),
-            style: AppText.medium(color: context.colors.textSecondary),
-          ),
-        ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          child: Text(
-            LocaleKeys.common_cancel.tr(),
-            style: AppText.medium(
-              color: ColorName.red,
-            ).copyWith(fontWeight: FontWeight.w700),
-          ),
-        ),
-      ],
-    ),
-  );
-  return confirmed ?? false;
-}
+      confirm: LocaleKeys.orders_cancel_confirm.tr(),
+      keep: LocaleKeys.orders_cancel_keep.tr(),
+    );
 
 class _Card extends StatelessWidget {
   const _Card({required this.child});
