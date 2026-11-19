@@ -71,6 +71,7 @@ public static class ErrorTexts
         ["order.invalid_eta"] = "Ready time: 5, 10, 15 or 20 minutes",
         ["order.eta_required"] = "Set the ready time to accept the order",
         ["order.not_ready"] = "The order isn't ready yet",
+        ["order.invalid_history_filter"] = "The history has only picked up, cancelled and not picked up orders",
 
         ["legal.not_found"] = "Document not found",
     };

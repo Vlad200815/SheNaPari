@@ -14,7 +14,14 @@ abstract class OrdersApi {
   Future<ApiEnvelope<OrderDto>> create(@Body() CreateOrderDto body);
 
   @GET('/orders/my')
-  Future<ApiEnvelope<List<OrderDto>>> getMy();
+  Future<ApiEnvelope<List<OrderDto>>> getMy({@Query('active') bool? active});
+
+  /// `status`: `PickedUp`, `Cancelled` or `NotPickedUp`; `before`: ISO time.
+  @GET('/orders/my/history')
+  Future<ApiEnvelope<OrderHistoryDto>> getHistory({
+    @Query('status') String? status,
+    @Query('before') String? before,
+  });
 
   @GET('/orders/{id}')
   Future<ApiEnvelope<OrderDto>> getById(@Path('id') String id);
