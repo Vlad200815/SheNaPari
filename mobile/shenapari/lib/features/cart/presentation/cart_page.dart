@@ -174,7 +174,8 @@ class _CheckoutBar extends StatelessWidget {
           AppDimens.horizontalPadding,
           16,
           AppDimens.horizontalPadding,
-          16,
+          // Clear of the round QR button that sticks out of the tab bar.
+          16 + AppDimens.tabBarOverhang,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
