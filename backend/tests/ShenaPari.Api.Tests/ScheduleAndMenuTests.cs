@@ -168,3 +168,35 @@ public class MenuAdminTests(ApiFactory api) : IClassFixture<ApiFactory>
         }
     }
 }
+
+public class DishNutritionTests(ApiFactory api) : IClassFixture<ApiFactory>
+{
+    [Fact]
+    public async Task Dishes_come_with_nutrition_spiciness_and_vegan_mark()
+    {
+        var (customer, _) = await api.LoginCustomerAsync();
+
+        var dishes = await customer.GetDataAsync<List<DishDto>>("/dishes");
+
+        var cheeseburger = dishes.Single(d => d.Name == "Чизбургер");
+        Assert.Equal((26, 24, 40), (cheeseburger.ProteinG, cheeseburger.FatG, cheeseburger.CarbsG));
+        Assert.Equal(0, cheeseburger.SpicyLevel);
+        Assert.False(cheeseburger.IsVegan);
+        var falafel = dishes.Single(d => d.Name == "Фалафель у піті");
+        Assert.Equal(2, falafel.SpicyLevel);
+        Assert.True(falafel.IsVegan);
+        // The demo numbers add up: 4 kcal per gram of protein and carbs, 9 per gram of fat.
+        Assert.All(dishes, d => Assert.InRange(4 * d.ProteinG!.Value + 9 * d.FatG!.Value + 4 * d.CarbsG!.Value, d.Kcal - 10, d.Kcal + 10));
+    }
+
+    [Fact]
+    public async Task Spiciness_goes_from_0_to_3()
+    {
+        var admin = await api.LoginSuperAdminAsync();
+
+        var response = await admin.PostJsonAsync("/admin/dishes",
+            new SaveDishDto(1, "Пекельний бургер", null, 120m, 250, 600, SpicyLevel: 4));
+
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+    }
+}

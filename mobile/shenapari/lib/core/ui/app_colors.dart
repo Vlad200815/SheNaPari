@@ -30,6 +30,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.successSoft,
     required this.warning,
     required this.warningSoft,
+    required this.protein,
     required this.shadow,
     required this.decorOpacity,
   });
@@ -80,6 +81,10 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color warning;
   final Color warningSoft;
 
+  /// Protein in the nutrition bar. Fat is the brand yellow and carbs its
+  /// orange, the same in both themes; this blue is lighter on dark.
+  final Color protein;
+
   /// Card shadows.
   final Color shadow;
 
@@ -107,6 +112,7 @@ class AppColors extends ThemeExtension<AppColors> {
     successSoft: Color(0xFFE6F4E2),
     warning: Color(0xFFA35F00),
     warningSoft: Color(0xFFFFF0D6),
+    protein: Color(0xFF3B82F6),
     shadow: Color(0x0F000000),
     decorOpacity: 1,
   );
@@ -133,6 +139,7 @@ class AppColors extends ThemeExtension<AppColors> {
     successSoft: Color(0xFF1F3319),
     warning: Color(0xFFF5B451),
     warningSoft: Color(0xFF3A2C14),
+    protein: Color(0xFF6EA2FA),
     shadow: Color(0x66000000),
     decorOpacity: 0.5,
   );
