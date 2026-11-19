@@ -2,7 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/ui/app_text.dart';
 import '../../../../core/ui/app_theme.dart';
-import '../../../../gen/colors.gen.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// The common frame of the sign-in screens: step in the app bar, a picture,
 /// a title and a subtitle, the [form], and [bottom] pinned to the bottom
@@ -29,7 +29,10 @@ class AuthLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(step, style: AppText.medium(color: ColorName.black)),
+        title: Text(
+          step,
+          style: AppText.medium(color: context.colors.textPrimary),
+        ),
       ),
       body: SafeArea(
         child: LayoutBuilder(

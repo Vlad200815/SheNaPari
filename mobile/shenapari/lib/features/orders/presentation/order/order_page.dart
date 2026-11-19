@@ -15,6 +15,7 @@ import '../widgets/order_texts.dart';
 import '../widgets/order_widgets.dart';
 import 'order_cubit.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// One order: status steps (live), the QR once ready, what was ordered and
 /// cancellation while the kitchen has not started cooking.
@@ -33,9 +34,9 @@ class OrderPage extends StatelessWidget {
         listener: (context, state) =>
             showFailureSnackBar(context, state.failure!),
         builder: (context, state) => Scaffold(
-          backgroundColor: ColorName.secondary100,
+          backgroundColor: context.colors.background,
           appBar: AppBar(
-            backgroundColor: ColorName.secondary100,
+            backgroundColor: context.colors.background,
             leading: BackButton(
               onPressed: () =>
                   context.canPop() ? context.pop() : context.go(Routes.orders),
@@ -100,7 +101,9 @@ class _OrderView extends StatelessWidget {
                       ),
                       Text(
                         ended ? _endedHint(order) : order.whenLabel,
-                        style: AppText.small(),
+                        style: AppText.small(
+                          color: context.colors.textSecondary,
+                        ),
                       ),
                     ],
                   ),
@@ -135,7 +138,7 @@ class _OrderView extends StatelessWidget {
                         Text(
                           '${item.quantity} ×',
                           style: AppText.small(
-                            color: ColorName.typography900,
+                            color: context.colors.textPrimary,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -144,18 +147,20 @@ class _OrderView extends StatelessWidget {
                           child: Text(
                             item.name,
                             style: AppText.small(
-                              color: ColorName.typography900,
+                              color: context.colors.textPrimary,
                             ),
                           ),
                         ),
                         Text(
                           formatPrice(item.unitPriceKopecks * item.quantity),
-                          style: AppText.small(color: ColorName.typography900),
+                          style: AppText.small(
+                            color: context.colors.textPrimary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                const Divider(height: 20, color: ColorName.secondary200),
+                Divider(height: 20, color: context.colors.border),
                 Row(
                   children: [
                     Text(LocaleKeys.orders_total.tr(), style: AppText.medium()),
@@ -173,7 +178,7 @@ class _OrderView extends StatelessWidget {
                     LocaleKeys.orders_placed.tr(
                       namedArgs: {'date': formatOrderDate(order.createdAt)},
                     ),
-                    style: AppText.small(),
+                    style: AppText.small(color: context.colors.textSecondary),
                   ),
                 ),
               ],
@@ -191,7 +196,7 @@ class _OrderView extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               LocaleKeys.orders_cancel_hint.tr(),
-              style: AppText.small(),
+              style: AppText.small(color: context.colors.textSecondary),
               textAlign: TextAlign.center,
             ),
           ],
@@ -218,7 +223,7 @@ Future<bool> _confirmCancel(BuildContext context, Order order) async {
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      backgroundColor: ColorName.white,
+      backgroundColor: context.colors.surface,
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       title: Text(
@@ -227,13 +232,16 @@ Future<bool> _confirmCancel(BuildContext context, Order order) async {
         ),
         style: AppText.title(),
       ),
-      content: Text(LocaleKeys.orders_cancel_text.tr(), style: AppText.small()),
+      content: Text(
+        LocaleKeys.orders_cancel_text.tr(),
+        style: AppText.small(color: context.colors.textSecondary),
+      ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
           child: Text(
             LocaleKeys.common_no.tr(),
-            style: AppText.medium(color: ColorName.typography500),
+            style: AppText.medium(color: context.colors.textSecondary),
           ),
         ),
         TextButton(
@@ -261,7 +269,7 @@ class _Card extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: ColorName.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(16),
       ),
       child: child,
@@ -283,11 +291,11 @@ class _LoadError extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Icon(Icons.cloud_off, size: 48, color: ColorName.secondary400),
+          Icon(Icons.cloud_off, size: 48, color: context.colors.iconMuted),
           const SizedBox(height: 16),
           Text(
             message,
-            style: AppText.regular(color: ColorName.typography500),
+            style: AppText.regular(color: context.colors.textSecondary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),

@@ -195,6 +195,10 @@ abstract class LocaleKeys {
   static const settings_language = 'settings.language';
   static const settings_language_system = 'settings.language_system';
   static const settings_delete_account = 'settings.delete_account';
+  static const settings_theme = 'settings.theme';
+  static const settings_theme_system = 'settings.theme_system';
+  static const settings_theme_light = 'settings.theme_light';
+  static const settings_theme_dark = 'settings.theme_dark';
   static const settings = 'settings';
   static const support_title = 'support.title';
   static const support_intro = 'support.intro';

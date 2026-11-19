@@ -4,6 +4,7 @@ import '../../../../core/ui/app_button.dart';
 import '../../../../core/ui/app_text.dart';
 import '../../../../gen/colors.gen.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// Asks "really delete?" and explains what happens. True only when the user
 /// pressed "Видалити"; tapping outside or "Скасувати" means no.
@@ -21,7 +22,7 @@ class _ConfirmDeleteDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: ColorName.white,
+      backgroundColor: context.colors.surface,
       surfaceTintColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -35,8 +36,8 @@ class _ConfirmDeleteDialog extends StatelessWidget {
               child: Container(
                 width: 64,
                 height: 64,
-                decoration: const BoxDecoration(
-                  color: ColorName.redLight,
+                decoration: BoxDecoration(
+                  color: context.colors.dangerSoft,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -55,7 +56,7 @@ class _ConfirmDeleteDialog extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               LocaleKeys.profile_delete_text.tr(),
-              style: AppText.small(),
+              style: AppText.small(color: context.colors.textSecondary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
