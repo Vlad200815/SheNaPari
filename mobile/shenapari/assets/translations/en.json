@@ -213,8 +213,8 @@
     "yesterday": "Yesterday, {time}"
   },
   "more": {
-    "greeting": "Hi! 👋",
-    "greeting_name": "Hi, {name}! 👋",
+    "greeting": "Hi!",
+    "greeting_name": "Hi, {name}!",
     "my_profile": "My profile",
     "faq": "Questions and answers",
     "support": "Support",

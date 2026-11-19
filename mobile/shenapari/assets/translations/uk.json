@@ -217,8 +217,8 @@
     "yesterday": "Вчора, {time}"
   },
   "more": {
-    "greeting": "Привіт! 👋",
-    "greeting_name": "Привіт, {name}! 👋",
+    "greeting": "Привіт!",
+    "greeting_name": "Привіт, {name}!",
     "my_profile": "Мій профіль",
     "faq": "Питання та відповіді",
     "support": "Підтримка",
