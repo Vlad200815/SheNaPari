@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ShenaPari.Api.Common;
 using ShenaPari.Api.Data;
 using ShenaPari.Api.Dtos;
 using ShenaPari.Api.Orders;
@@ -10,7 +11,7 @@ public class CanteenService(AppDbContext db, OrderNotifier notifier)
     public async Task<CanteenDto> GetAsync()
     {
         var c = await db.Canteens.FirstAsync();
-        return new CanteenDto(c.Name, c.IsAcceptingOrders);
+        return new CanteenDto(Lang.Pick(c.Name, c.NameEn), c.IsAcceptingOrders);
     }
 
     /// The kitchen's "we are overloaded" switch. Orders already placed are not affected.
@@ -20,7 +21,7 @@ public class CanteenService(AppDbContext db, OrderNotifier notifier)
         c.IsAcceptingOrders = isAccepting;
         await db.SaveChangesAsync();
 
-        var dto = new CanteenDto(c.Name, c.IsAcceptingOrders);
+        var dto = new CanteenDto(Lang.Pick(c.Name, c.NameEn), c.IsAcceptingOrders);
         await notifier.CanteenChangedAsync(dto);
         return dto;
     }

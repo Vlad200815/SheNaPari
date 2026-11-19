@@ -119,6 +119,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             e.Property(i => i.UnitPrice).HasPrecision(10, 2);
             e.Property(i => i.NameSnapshot).HasMaxLength(200);
+            e.Property(i => i.NameEnSnapshot).HasMaxLength(200);
         });
 
         b.Entity<OrderStatusChange>(e =>

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shenapari/features/cart/domain/entities/cart.dart';
+import 'package:shenapari/features/menu/domain/entities/dish.dart';
 
 import '../../menu/menu_samples.dart';
 
@@ -45,5 +46,24 @@ void main() {
 
   test('setting 0 for a dish that is not there changes nothing', () {
     expect(const Cart().setQuantity(cheeseburger, 0), const Cart());
+  });
+
+  test('fresh dishes from the menu replace the stored copies', () {
+    const english = Dish(
+      id: 10,
+      categoryId: 1,
+      name: 'Cheeseburger',
+      priceKopecks: 9000,
+      weightG: 250,
+      kcal: 540,
+    );
+    final cart = const Cart().add(cheeseburger, quantity: 2).add(lemonade);
+
+    final fresh = cart.withFreshDishes([english]);
+
+    expect(fresh.items, [
+      const CartItem(dish: english, quantity: 2),
+      CartItem(dish: lemonade, quantity: 1),
+    ], reason: 'a dish missing from the menu keeps its copy');
   });
 }
