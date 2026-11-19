@@ -58,8 +58,8 @@
     "name_hint": "Ім’я"
   },
   "home": {
-    "greeting": "Привіт!",
-    "greeting_name": "Привіт, {name}",
+    "greeting": "Привіт! 👋",
+    "greeting_name": "Привіт, {name} 👋",
     "question": "Що будемо їсти?",
     "notifications": "Сповіщення",
     "notifications_unread": "Сповіщення, є нові",
@@ -152,7 +152,7 @@
       "ready": "Готово",
       "ready_text": "Покажи QR на видачі",
       "picked_up": "Видано",
-      "picked_up_text": "Смачного!"
+      "picked_up_text": "Смачного! 😋"
     },
     "show_qr": "Показати QR",
     "total": "Разом",
@@ -217,8 +217,8 @@
     "yesterday": "Вчора, {time}"
   },
   "more": {
-    "greeting": "Привіт!",
-    "greeting_name": "Привіт, {name}!",
+    "greeting": "Привіт! 👋",
+    "greeting_name": "Привіт, {name}! 👋",
     "my_profile": "Мій профіль",
     "faq": "Питання та відповіді",
     "support": "Підтримка",

@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -461,7 +462,7 @@ void main() {
 
     await tester.tap(find.byTooltip('Більше'));
     await tester.pumpAndSettle();
-    expect(find.text('Привіт, Влад!'), findsOneWidget);
+    expect(find.text('Привіт, Влад! 👋'), findsOneWidget);
 
     await _tap(tester, 'Мій профіль');
     await tester.enterText(find.byType(TextFormField).first, 'Владислав');
@@ -471,7 +472,7 @@ void main() {
 
     await _back(tester);
     await tester.pumpAndSettle();
-    expect(find.text('Привіт, Владислав!'), findsOneWidget);
+    expect(find.text('Привіт, Владислав! 👋'), findsOneWidget);
   });
 
   testWidgets('a phone in English: the app opens in English', (tester) async {
@@ -553,6 +554,34 @@ void main() {
 
     final home = tester.widget<Scaffold>(find.byType(Scaffold).last);
     expect(home.backgroundColor, AppColors.dark.background);
+  });
+
+  testWidgets('tab bar: a light tick when the tab changes, none on a repeat', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      prefs: _returning,
+      stored: const StoredSession(tokens: _tokens, needsProfile: false),
+    );
+    final haptics = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (call) async {
+        if (call.method == 'HapticFeedback.vibrate') {
+          haptics.add(call.arguments as String);
+        }
+        return null;
+      },
+    );
+
+    await tester.tap(find.byTooltip('Кошик'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Кошик'));
+    await tester.pumpAndSettle();
+
+    // The test platform is Android: a light key tap.
+    expect(haptics, ['HapticFeedbackType.lightImpact']);
   });
 
   testWidgets('orders tab: the history by month, with a filter', (
