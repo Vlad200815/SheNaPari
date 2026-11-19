@@ -61,23 +61,29 @@ public class OrderNotifier(IHubContext<OrdersHub> hub, PushService push, CampusC
     private PushMessage? BuildPush(Order order)
     {
         var last = order.StatusChanges.OrderBy(c => c.At).ThenBy(c => c.Id).LastOrDefault();
+        var en = order.Language == "en";
+        var n = order.Number;
         (string Title, string Body)? text = order.Status switch
         {
             OrderStatus.Accepted => (
-                $"Замовлення №{order.Number} прийнято",
+                en ? $"Order #{n} accepted" : $"Замовлення №{n} прийнято",
                 order.EstimatedReadyAt is { } eta
-                    ? $"Буде готове приблизно о {clock.ToLocalTime(eta):HH:mm}"
-                    : "Кухня вже працює над ним"),
+                    ? en
+                        ? $"It will be ready at about {clock.ToLocalTime(eta):HH:mm}"
+                        : $"Буде готове приблизно о {clock.ToLocalTime(eta):HH:mm}"
+                    : en ? "The kitchen is already on it" : "Кухня вже працює над ним"),
             OrderStatus.Ready => (
-                $"Замовлення №{order.Number} готове!",
-                "Покажіть QR-код на видачі"),
+                en ? $"Order #{n} is ready!" : $"Замовлення №{n} готове!",
+                en ? "Show the QR code at the counter" : "Покажіть QR-код на видачі"),
             // The client doesn't need a push about their own cancellation.
+            // A reason typed by the kitchen is shown as typed.
             OrderStatus.Cancelled when last?.ChangedByUserId != order.CustomerId => (
-                $"Замовлення №{order.Number} скасовано",
-                $"{last?.Reason ?? "Скасовано кухнею"}. Кошти повернуто"),
+                en ? $"Order #{n} cancelled" : $"Замовлення №{n} скасовано",
+                (last?.Reason ?? (en ? "Cancelled by the kitchen" : "Скасовано кухнею"))
+                    + (en ? ". Money refunded" : ". Кошти повернуто")),
             OrderStatus.NotPickedUp => (
-                $"Замовлення №{order.Number} не забрали",
-                "Час видачі минув, замовлення закрито"),
+                en ? $"Order #{n} was not picked up" : $"Замовлення №{n} не забрали",
+                en ? "The pick-up time is over, the order is closed" : "Час видачі минув, замовлення закрито"),
             _ => null, // Paid, Cooking, PickedUp: the open app shows them, no push needed
         };
         if (text is null) return null;

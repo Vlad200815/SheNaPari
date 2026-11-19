@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -6,7 +7,7 @@ using ShenaPari.Api.Dtos;
 namespace ShenaPari.Api.Legal;
 
 /// <summary>
-/// Terms of use, privacy policy and refund terms. The texts are Markdown files embedded in
+/// Terms of use, privacy policy and refund terms, in Ukrainian and English. The texts are Markdown files embedded in
 /// the assembly (Legal/*.md); the version is a hash of the text, so it changes
 /// by itself whenever the text does and the app knows to refresh its cache.
 /// </summary>
@@ -16,14 +17,20 @@ public static class LegalDocuments
     public const string Privacy = "privacy";
     public const string Refund = "refund";
 
-    private static readonly Dictionary<string, LegalDocumentDto> Documents = new()
-    {
-        [Terms] = Load("terms.md"),
-        [Privacy] = Load("privacy.md"),
-        [Refund] = Load("refund.md"),
-    };
+    private static readonly string[] Types = [Terms, Privacy, Refund];
 
-    public static LegalDocumentDto? Find(string type) => Documents.GetValueOrDefault(type);
+    /// Ukrainian is `terms.md`, English `terms.en.md`.
+    private static readonly Dictionary<(string Type, string Language), LegalDocumentDto> Documents =
+        Types.SelectMany(t => new[]
+        {
+            KeyValuePair.Create((t, "uk"), Load($"{t}.md")),
+            KeyValuePair.Create((t, "en"), Load($"{t}.en.md")),
+        }).ToDictionary();
+
+    /// In the request's language (Accept-Language), Ukrainian by default.
+    public static LegalDocumentDto? Find(string type) =>
+        Documents.GetValueOrDefault((type,
+            CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en" ? "en" : "uk"));
 
     private static LegalDocumentDto Load(string fileName)
     {

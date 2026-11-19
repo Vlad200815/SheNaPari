@@ -105,13 +105,19 @@ class FakeProfileRepository implements ProfileRepository {
 
 /// One category with one dish, no photos (widget tests have no network).
 class FakeMenuRepository implements MenuRepository {
+  /// The language the server would answer in (Accept-Language).
+  FakeMenuRepository({this.language});
+
+  final String Function()? language;
+
   @override
   Future<Result<Canteen>> getCanteen() async =>
       const Ok(Canteen(name: 'Їдальня №1', isAcceptingOrders: true));
 
   @override
-  Future<Result<List<Category>>> getCategories() async =>
-      const Ok([Category(id: 1, name: 'Бургери')]);
+  Future<Result<List<Category>>> getCategories() async => Ok([
+    Category(id: 1, name: language?.call() == 'en' ? 'Burgers' : 'Бургери'),
+  ]);
 
   @override
   Future<Result<List<Dish>>> getDishes() async => const Ok([

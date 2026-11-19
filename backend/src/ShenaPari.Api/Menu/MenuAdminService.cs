@@ -21,34 +21,41 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
 
     // ---------- categories ----------
 
+    private static string? EnglishName(string? s) => string.IsNullOrWhiteSpace(s) ? null : s.Trim();
+
     public async Task<List<AdminCategoryDto>> GetCategoriesAsync() =>
         await db.Categories
             .OrderBy(c => c.SortOrder)
-            .Select(c => new AdminCategoryDto(c.Id, c.Name, c.SortOrder, c.Dishes.Count))
+            .Select(c => new AdminCategoryDto(c.Id, c.Name, c.NameEn, c.SortOrder, c.Dishes.Count))
             .ToListAsync();
 
     public async Task<Result<AdminCategoryDto>> CreateCategoryAsync(SaveCategoryDto dto)
     {
         var name = dto.Name.Trim();
         if (name.Length is < 2 or > 100) return MenuErrors.InvalidName;
+        var nameEn = EnglishName(dto.NameEn);
+        if (nameEn is { Length: < 2 or > 100 }) return MenuErrors.InvalidName;
 
-        var category = new Category { Name = name, SortOrder = dto.SortOrder };
+        var category = new Category { Name = name, NameEn = nameEn, SortOrder = dto.SortOrder };
         db.Categories.Add(category);
         await db.SaveChangesAsync();
-        return new AdminCategoryDto(category.Id, category.Name, category.SortOrder, 0);
+        return new AdminCategoryDto(category.Id, category.Name, category.NameEn, category.SortOrder, 0);
     }
 
     public async Task<Result<AdminCategoryDto>> UpdateCategoryAsync(int id, SaveCategoryDto dto)
     {
         var name = dto.Name.Trim();
         if (name.Length is < 2 or > 100) return MenuErrors.InvalidName;
+        var nameEn = EnglishName(dto.NameEn);
+        if (nameEn is { Length: < 2 or > 100 }) return MenuErrors.InvalidName;
         var category = await db.Categories.Include(c => c.Dishes).FirstOrDefaultAsync(c => c.Id == id);
         if (category is null) return MenuErrors.CategoryNotFound;
 
         category.Name = name;
+        category.NameEn = nameEn;
         category.SortOrder = dto.SortOrder;
         await db.SaveChangesAsync();
-        return new AdminCategoryDto(category.Id, category.Name, category.SortOrder, category.Dishes.Count);
+        return new AdminCategoryDto(category.Id, category.Name, category.NameEn, category.SortOrder, category.Dishes.Count);
     }
 
     public async Task<Result<object?>> DeleteCategoryAsync(int id)
