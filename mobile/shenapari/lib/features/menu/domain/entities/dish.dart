@@ -11,6 +11,11 @@ class Dish extends Equatable {
     this.description,
     this.imageUrl,
     this.isPopular = false,
+    this.proteinG,
+    this.fatG,
+    this.carbsG,
+    this.spicyLevel = 0,
+    this.isVegan = false,
   });
 
   final int id;
@@ -28,6 +33,17 @@ class Dish extends Equatable {
   final String? imageUrl;
   final bool isPopular;
 
+  /// Grams per portion; null until the kitchen fills them in.
+  final int? proteinG;
+  final int? fatG;
+  final int? carbsG;
+
+  /// 0 not spicy … 3 very spicy.
+  final int spicyLevel;
+  final bool isVegan;
+
+  bool get hasMacros => proteinG != null && fatG != null && carbsG != null;
+
   @override
   List<Object?> get props => [
     id,
@@ -39,5 +55,10 @@ class Dish extends Equatable {
     kcal,
     imageUrl,
     isPopular,
+    proteinG,
+    fatG,
+    carbsG,
+    spicyLevel,
+    isVegan,
   ];
 }
