@@ -223,7 +223,7 @@
     "faq": "Питання та відповіді",
     "support": "Підтримка",
     "support_subtitle": "Telegram або пошта",
-    "version": "ШеНаПарі · версія {version}"
+    "version": "версія {version}"
   },
   "profile": {
     "phone": "Телефон",

@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shenapari/core/ui/app_logo.dart';
 import 'package:shenapari/app/app.dart';
 import 'package:shenapari/app/bootstrap.dart';
 import 'package:shenapari/app/di.dart';
@@ -157,9 +158,12 @@ void main() {
 
     await _tap(tester, 'Пропустити');
     expect(find.text(_phoneTitle), findsOneWidget);
+    // Skipped the onboarding: the logo still says whose app this is.
+    expect(find.byType(AppLogo), findsOneWidget);
 
     await _enterPhone(tester);
     expect(find.text(_codeTitle), findsOneWidget);
+    expect(find.byType(AppLogo), findsNothing, reason: 'step 1 only');
     expect(find.textContaining('+380 67 123 45 67'), findsOneWidget);
 
     await _enterCode(tester, FakeAuthRepository.validCode);
