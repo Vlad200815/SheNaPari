@@ -161,7 +161,37 @@
     "refunded": "Money refunded",
     "reason": "Reason: {reason}",
     "cancel_title": "Cancel order #{number}?",
-    "cancel_text": "The kitchen won’t cook it, and the money will be refunded."
+    "cancel_text": "The kitchen won’t cook it, and the money will be refunded.",
+    "number_short": "#{number}",
+    "filter": {
+      "all": "All",
+      "picked_up": "Picked up",
+      "cancelled": "Cancelled",
+      "not_picked_up": "Not picked up"
+    },
+    "no_active_title": "No active orders",
+    "no_active_text": "An order shows up here until you pick it up",
+    "filter_empty": "No such orders",
+    "count": {
+      "one": "{} order",
+      "other": "{} orders"
+    },
+    "month_summary": "{count} · {sum}",
+    "load_more_failed": "Couldn't load older orders",
+    "months": {
+      "1": "January",
+      "2": "February",
+      "3": "March",
+      "4": "April",
+      "5": "May",
+      "6": "June",
+      "7": "July",
+      "8": "August",
+      "9": "September",
+      "10": "October",
+      "11": "November",
+      "12": "December"
+    }
   },
   "my_qr": {
     "title_one": "Your QR code",

@@ -22,14 +22,13 @@ void main() {
     );
   });
 
-  test('splits active orders from the history', () async {
+  test('loads only the active orders', () async {
     repository.kitchen('order-7', OrderStatus.pickedUp);
     final cubit = OrdersCubit(repository, events);
 
     await cubit.load();
 
-    expect(cubit.state.active, isEmpty);
-    expect(cubit.state.past.single.status, OrderStatus.pickedUp);
+    expect(cubit.state.orders, isEmpty);
     expect(cubit.state.forPickup, isEmpty);
   });
 
@@ -100,6 +99,6 @@ class _FailingAfterFirst extends FakeOrdersRepository {
   var _calls = 0;
 
   @override
-  Future<Result<List<Order>>> getMyOrders() async =>
-      _calls++ == 0 ? _inner.getMyOrders() : const Err(NetworkFailure());
+  Future<Result<List<Order>>> getActiveOrders() async =>
+      _calls++ == 0 ? _inner.getActiveOrders() : const Err(NetworkFailure());
 }

@@ -11,6 +11,7 @@ import 'domain/order_events.dart';
 import 'domain/orders_repository.dart';
 import 'presentation/checkout/checkout_cubit.dart';
 import 'presentation/order/order_cubit.dart';
+import 'presentation/orders/order_history_cubit.dart';
 import 'presentation/orders/orders_cubit.dart';
 
 void registerOrders(GetIt sl) {
@@ -29,6 +30,7 @@ void registerOrders(GetIt sl) {
           CheckoutCubit(sl(), sl(), items: items, defaultProvider: provider),
     )
     ..registerFactory(() => OrdersCubit(sl(), sl()))
+    ..registerFactory(() => OrderHistoryCubit(sl(), sl()))
     ..registerFactoryParam<OrderCubit, String, void>(
       (id, _) => OrderCubit(sl(), sl(), orderId: id),
     );

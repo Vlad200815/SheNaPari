@@ -26,6 +26,13 @@ public record OrderDto(
     List<OrderStatusChangeDto> History,
     Guid? PickupToken);
 
+/// One page of the customer's finished orders, newest first. [Months] covers the whole
+/// history under the same filter (not just this page), for the month headers.
+public record OrderHistoryDto(List<OrderDto> Items, bool HasMore, List<OrderMonthDto> Months);
+
+/// Spent: what the customer paid that month (cancelled orders are refunded, so not counted).
+public record OrderMonthDto(int Year, int Month, int Count, decimal Spent);
+
 /// What staff see on the order card.
 public record StaffOrderDto(
     Guid Id,

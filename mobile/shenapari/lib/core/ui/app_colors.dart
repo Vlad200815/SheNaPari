@@ -25,6 +25,11 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.accentSoft,
     required this.accentDecor,
     required this.dangerSoft,
+    required this.danger,
+    required this.success,
+    required this.successSoft,
+    required this.warning,
+    required this.warningSoft,
     required this.shadow,
     required this.decorOpacity,
   });
@@ -66,6 +71,15 @@ class AppColors extends ThemeExtension<AppColors> {
   /// A soft red behind red text (errors, delete).
   final Color dangerSoft;
 
+  /// Outcome marks in the order history: red (cancelled), green (picked up)
+  /// and orange (not picked up), each on its soft tint. The strong ones
+  /// are ≥ 4.5:1 on [surface], so they also work as small text.
+  final Color danger;
+  final Color success;
+  final Color successSoft;
+  final Color warning;
+  final Color warningSoft;
+
   /// Card shadows.
   final Color shadow;
 
@@ -88,6 +102,11 @@ class AppColors extends ThemeExtension<AppColors> {
     accentSoft: ColorName.primary100,
     accentDecor: Color(0x99FFE288),
     dangerSoft: ColorName.redLight,
+    danger: Color(0xFFC2432A),
+    success: Color(0xFF287A1C),
+    successSoft: Color(0xFFE6F4E2),
+    warning: Color(0xFFA35F00),
+    warningSoft: Color(0xFFFFF0D6),
     shadow: Color(0x0F000000),
     decorOpacity: 1,
   );
@@ -109,6 +128,11 @@ class AppColors extends ThemeExtension<AppColors> {
     accentSoft: Color(0xFF3A3017),
     accentDecor: Color(0x1FFEBC2F),
     dangerSoft: Color(0xFF3B211C),
+    danger: Color(0xFFF08A73),
+    success: Color(0xFF7BD06B),
+    successSoft: Color(0xFF1F3319),
+    warning: Color(0xFFF5B451),
+    warningSoft: Color(0xFF3A2C14),
     shadow: Color(0x66000000),
     decorOpacity: 0.5,
   );

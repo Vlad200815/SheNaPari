@@ -12,6 +12,7 @@ import 'package:shenapari/features/menu/domain/entities/category.dart';
 import 'package:shenapari/features/menu/domain/entities/dish.dart';
 import 'package:shenapari/features/menu/domain/menu_repository.dart';
 import 'package:shenapari/features/orders/domain/entities/order.dart';
+import 'package:shenapari/features/orders/domain/entities/order_history.dart';
 import 'package:shenapari/features/notifications/domain/entities/app_notification.dart';
 import 'package:shenapari/features/notifications/domain/notifications_repository.dart';
 import 'package:shenapari/features/orders/domain/order_events.dart';
@@ -205,8 +206,54 @@ class FakeOrdersRepository implements OrdersRepository {
     );
   }
 
+  /// Orders per history page, like the server's 20.
+  int historyPageSize = 20;
+  final historyRequests = <({OrderStatus? status, DateTime? before})>[];
+
   @override
-  Future<Result<List<Order>>> getMyOrders() async => Ok(List.of(orders));
+  Future<Result<List<Order>>> getActiveOrders() async => Ok([
+    for (final order in orders)
+      if (order.isActive) order,
+  ]);
+
+  @override
+  Future<Result<OrderHistoryPage>> getHistory({
+    OrderStatus? status,
+    DateTime? before,
+  }) async {
+    historyRequests.add((status: status, before: before));
+    final finished = [
+      for (final order in orders)
+        if (!order.isActive && (status == null || order.status == status))
+          order,
+    ]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    final rest = [
+      for (final order in finished)
+        if (before == null || order.createdAt.isBefore(before)) order,
+    ];
+    final months = <(int, int), List<Order>>{};
+    for (final order in finished) {
+      (months[(order.createdAt.year, order.createdAt.month)] ??= []).add(order);
+    }
+    return Ok(
+      OrderHistoryPage(
+        orders: rest.take(historyPageSize).toList(),
+        hasMore: rest.length > historyPageSize,
+        months: [
+          for (final MapEntry(key: (year, month), value: list)
+              in months.entries)
+            OrderMonth(
+              year: year,
+              month: month,
+              count: list.length,
+              spentKopecks: list
+                  .where((o) => o.status != OrderStatus.cancelled)
+                  .fold(0, (sum, o) => sum + o.totalKopecks),
+            ),
+        ],
+      ),
+    );
+  }
 
   @override
   Future<Result<Order>> getOrder(String id) async {
