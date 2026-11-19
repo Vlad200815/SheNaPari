@@ -129,17 +129,29 @@ class $AssetsImagesBottomNavGen {
   /// File path: assets/images/bottom_nav/ic_cart.svg
   SvgGenImage get icCart => const SvgGenImage('assets/images/bottom_nav/ic_cart.svg');
 
+  /// File path: assets/images/bottom_nav/ic_cart_filled.svg
+  SvgGenImage get icCartFilled => const SvgGenImage('assets/images/bottom_nav/ic_cart_filled.svg');
+
   /// File path: assets/images/bottom_nav/ic_home.svg
   SvgGenImage get icHome => const SvgGenImage('assets/images/bottom_nav/ic_home.svg');
+
+  /// File path: assets/images/bottom_nav/ic_home_filled.svg
+  SvgGenImage get icHomeFilled => const SvgGenImage('assets/images/bottom_nav/ic_home_filled.svg');
 
   /// File path: assets/images/bottom_nav/ic_more.svg
   SvgGenImage get icMore => const SvgGenImage('assets/images/bottom_nav/ic_more.svg');
 
+  /// File path: assets/images/bottom_nav/ic_more_filled.svg
+  SvgGenImage get icMoreFilled => const SvgGenImage('assets/images/bottom_nav/ic_more_filled.svg');
+
   /// File path: assets/images/bottom_nav/ic_orders.svg
   SvgGenImage get icOrders => const SvgGenImage('assets/images/bottom_nav/ic_orders.svg');
 
+  /// File path: assets/images/bottom_nav/ic_orders_filled.svg
+  SvgGenImage get icOrdersFilled => const SvgGenImage('assets/images/bottom_nav/ic_orders_filled.svg');
+
   /// List of all assets
-  List<SvgGenImage> get values => [icCart, icHome, icMore, icOrders];
+  List<SvgGenImage> get values => [icCart, icCartFilled, icHome, icHomeFilled, icMore, icMoreFilled, icOrders, icOrdersFilled];
 }
 
 class $AssetsImagesFlagsGen {
