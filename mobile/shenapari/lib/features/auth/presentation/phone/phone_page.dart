@@ -47,6 +47,7 @@ class PhonePage extends StatelessWidget {
               light: Assets.images.auth.phoneAuth,
               dark: Assets.images.auth.phoneAuthDark,
             ),
+            showLogo: true,
             title: LocaleKeys.auth_phone_title.tr(),
             subtitle: LocaleKeys.auth_phone_subtitle.tr(),
             form: PhoneField(
