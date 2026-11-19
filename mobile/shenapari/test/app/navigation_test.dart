@@ -334,6 +334,18 @@ void main() {
     expect(find.text('Замовлення №7'), findsOneWidget);
     expect(find.text('Готується'), findsOneWidget, reason: 'a step ahead');
 
+    // «Скасувати замовлення» asks first, with the sum; keeping changes nothing.
+    await tester.ensureVisible(find.text('Скасувати замовлення'));
+    await _tap(tester, 'Скасувати замовлення');
+    expect(find.text('Скасувати замовлення №7?'), findsOneWidget);
+    expect(
+      find.text('Кухня не готуватиме його, а 85 ₴ повернемо.'),
+      findsOneWidget,
+    );
+    await _tap(tester, 'Залишити замовлення');
+    expect(find.text('Скасувати замовлення №7?'), findsNothing);
+    expect(_orders.orders.single.status, OrderStatus.paid);
+
     // The cook marks it ready; SignalR says so; the QR appears.
     _orders.kitchen('order-7', OrderStatus.ready, pickupToken: 'token-7');
     _orderEvents.changed('order-7');
@@ -653,7 +665,7 @@ void main() {
     testWidgets('cancel keeps the account', (tester) async {
       await openDeleteDialog(tester);
 
-      await _tap(tester, 'Скасувати');
+      await _tap(tester, 'Залишити акаунт');
 
       expect(find.text('Видалити акаунт?'), findsNothing);
       expect(_profile.deleteCalls, 0);
@@ -665,7 +677,7 @@ void main() {
     ) async {
       await openDeleteDialog(tester);
 
-      await _tap(tester, 'Видалити');
+      await _tap(tester, 'Так, видалити');
 
       expect(_profile.deleteCalls, 1);
       expect(find.text(_phoneTitle), findsOneWidget);
@@ -681,7 +693,7 @@ void main() {
         code: 'profile.has_active_order',
       );
 
-      await _tap(tester, 'Видалити');
+      await _tap(tester, 'Так, видалити');
 
       expect(
         find.text('Спершу заберіть або скасуйте активне замовлення'),
