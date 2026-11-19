@@ -71,10 +71,33 @@ class _PhoneFieldState extends State<PhoneField> {
               : IconButton(
                   tooltip: LocaleKeys.common_clear.tr(),
                   onPressed: _clear,
-                  icon: Assets.images.auth.icClear.svg(),
+                  icon: const _ClearMark(),
                 ),
         ),
       ),
+    );
+  }
+}
+
+/// The iOS-style clear button: a filled circle with the cross cut out.
+/// Light on the dark theme, grey on the light one, so it reads on both.
+class _ClearMark extends StatelessWidget {
+  const _ClearMark();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      width: 22,
+      height: 22,
+      decoration: BoxDecoration(
+        color: dark
+            ? colors.textPrimary.withValues(alpha: 0.85)
+            : colors.textTertiary,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(Icons.close_rounded, size: 15, color: colors.surface),
     );
   }
 }
