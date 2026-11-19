@@ -8,7 +8,6 @@
     "back": "Back",
     "close": "Close",
     "cancel": "Cancel",
-    "no": "No",
     "continue": "Continue",
     "save": "Save",
     "saved": "Saved",
@@ -161,7 +160,7 @@
     "refunded": "Money refunded",
     "reason": "Reason: {reason}",
     "cancel_title": "Cancel order #{number}?",
-    "cancel_text": "The kitchen won’t cook it, and the money will be refunded.",
+    "cancel_text": "The kitchen won't cook it, and you'll get {sum} back.",
     "number_short": "#{number}",
     "filter": {
       "all": "All",
@@ -191,7 +190,9 @@
       "10": "October",
       "11": "November",
       "12": "December"
-    }
+    },
+    "cancel_confirm": "Yes, cancel it",
+    "cancel_keep": "Keep the order"
   },
   "my_qr": {
     "title_one": "Your QR code",
@@ -230,7 +231,8 @@
     "sign_out": "Sign out",
     "delete_title": "Delete the account?",
     "delete_text": "Your name and phone number will be erased, and you’ll be signed out on all devices. This can’t be undone.",
-    "delete": "Delete"
+    "delete_confirm": "Yes, delete",
+    "delete_keep": "Keep my account"
   },
   "settings": {
     "title": "Settings",
