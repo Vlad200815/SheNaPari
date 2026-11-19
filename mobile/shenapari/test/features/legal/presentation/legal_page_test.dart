@@ -7,6 +7,7 @@ import 'package:shenapari/features/legal/domain/legal_repository.dart';
 import 'package:shenapari/features/legal/presentation/legal_cubit.dart';
 import 'package:shenapari/features/legal/presentation/legal_page.dart';
 import 'package:shenapari/gen/colors.gen.dart';
+import 'package:shenapari/core/ui/app_colors.dart';
 import 'package:shenapari/core/ui/app_theme.dart';
 
 class _FakeLegalRepository implements LegalRepository {
@@ -124,5 +125,32 @@ void main() {
 
     expect(link.style?.color, ColorName.primary400);
     expect(plain.style?.color, isNot(ColorName.primary400));
+  });
+
+  testWidgets('dark theme: headings and text are light', (tester) async {
+    _content = '# Умови\n\n## 1. Розділ\n\n### 1.1 Пункт\n\nТекст.';
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: appDarkTheme,
+        home: const LegalPage(type: LegalDocumentType.terms),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final colors = <String, Color?>{};
+    for (final text in tester.widgetList<RichText>(find.byType(RichText))) {
+      text.text.visitChildren((span) {
+        if (span is TextSpan && span.text != null) {
+          colors[span.text!] = span.style?.color;
+        }
+        return true;
+      });
+    }
+    final light = AppColors.dark.textPrimary;
+    expect(colors['Умови'], light);
+    expect(colors['1. Розділ'], light);
+    expect(colors['1.1 Пункт'], light);
+    expect(colors['Текст.'], light);
   });
 }
