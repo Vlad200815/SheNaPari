@@ -70,7 +70,9 @@ Future<void> _pumpApp(
     ..unregister<ProfileRepository>()
     ..registerSingleton<ProfileRepository>(_profile)
     ..unregister<MenuRepository>()
-    ..registerSingleton<MenuRepository>(FakeMenuRepository())
+    ..registerSingleton<MenuRepository>(
+      FakeMenuRepository(language: () => sl<AppLocale>().languageCode),
+    )
     ..unregister<OrdersRepository>()
     ..registerSingleton<OrdersRepository>(_orders = FakeOrdersRepository())
     ..unregister<OrderEvents>()
@@ -506,6 +508,11 @@ void main() {
     await _back(tester, tooltip: 'Back');
     await tester.pumpAndSettle();
     expect(find.byTooltip('Home'), findsOneWidget);
+    // The menu was fetched again: category names come from the server.
+    await tester.tap(find.byTooltip('Home'));
+    await tester.pumpAndSettle();
+    expect(find.text('Burgers'), findsOneWidget);
+    expect(find.text('Бургери'), findsNothing);
   });
 
   testWidgets('settings: switch off order push and animations', (tester) async {
