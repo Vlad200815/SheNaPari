@@ -10,6 +10,7 @@ import '../../../../gen/colors.gen.dart';
 import 'registration_cubit.dart';
 import 'registration_state.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// The last sign-in step for a new customer: the name the kitchen calls out.
 class RegistrationProfilePage extends StatelessWidget {
@@ -45,7 +46,9 @@ class RegistrationProfilePage extends StatelessWidget {
                     const SizedBox(height: 20),
                     Text(
                       LocaleKeys.auth_name_subtitle.tr(),
-                      style: AppText.regular(color: ColorName.secondary500),
+                      style: AppText.regular(
+                        color: context.colors.textSecondary,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
@@ -59,7 +62,7 @@ class RegistrationProfilePage extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: LocaleKeys.auth_name_hint.tr(),
                         hintStyle: AppText.medium(
-                          color: ColorName.typography400,
+                          color: context.colors.textTertiary,
                         ),
                         counterText: '',
                       ),

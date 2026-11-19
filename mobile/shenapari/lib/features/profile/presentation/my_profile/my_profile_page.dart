@@ -12,6 +12,7 @@ import '../../../../gen/colors.gen.dart';
 import '../widgets/profile_ui.dart';
 import 'edit_profile_cubit.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// «Мій профіль»: the name (editable) and the phone (the login, so it
 /// cannot be changed), the way to settings and sign-out.
@@ -36,9 +37,9 @@ class MyProfilePage extends StatelessWidget {
           }
         },
         builder: (context, state) => Scaffold(
-          backgroundColor: ColorName.secondary100,
+          backgroundColor: context.colors.background,
           appBar: AppBar(
-            backgroundColor: ColorName.secondary100,
+            backgroundColor: context.colors.background,
             title: Text(
               LocaleKeys.more_my_profile.tr(),
               style: AppText.title(),
@@ -56,7 +57,9 @@ class MyProfilePage extends StatelessWidget {
                   children: [
                     Text(
                       state.failure!.text,
-                      style: AppText.regular(color: ColorName.typography500),
+                      style: AppText.regular(
+                        color: context.colors.textSecondary,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),
@@ -112,7 +115,7 @@ class _Form extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: ColorName.white,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
@@ -126,13 +129,13 @@ class _Form extends StatelessWidget {
                 initialValue: formatProfilePhone(state.phone),
                 readOnly: true,
                 enableInteractiveSelection: false,
-                style: AppText.medium(color: ColorName.typography500),
+                style: AppText.medium(color: context.colors.textSecondary),
                 decoration: InputDecoration(
                   labelText: LocaleKeys.profile_phone.tr(),
                   helperText: LocaleKeys.profile_phone_hint.tr(),
                   suffixIcon: Icon(
                     Icons.lock_outline_rounded,
-                    color: ColorName.secondary400,
+                    color: context.colors.iconMuted,
                   ),
                 ),
               ),
@@ -144,7 +147,7 @@ class _Form extends StatelessWidget {
           children: [
             MenuRow(
               icon: Icons.settings_outlined,
-              tint: ColorName.secondary400,
+              tint: context.colors.iconMuted,
               title: LocaleKeys.settings_title.tr(),
               onTap: () => context.push(Routes.settings),
             ),
@@ -155,8 +158,8 @@ class _Form extends StatelessWidget {
         Center(
           child: TextButton.icon(
             style: TextButton.styleFrom(
-              foregroundColor: ColorName.typography900,
-              backgroundColor: ColorName.white,
+              foregroundColor: context.colors.textPrimary,
+              backgroundColor: context.colors.surface,
               minimumSize: const Size(48, 48),
               padding: const EdgeInsets.symmetric(horizontal: 24),
               shape: const StadiumBorder(),

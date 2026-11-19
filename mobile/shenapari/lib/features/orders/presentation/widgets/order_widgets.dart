@@ -6,6 +6,7 @@ import '../../../../gen/colors.gen.dart';
 import '../../domain/entities/order.dart';
 import 'order_texts.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// The status in a rounded pill.
 class StatusChip extends StatelessWidget {
@@ -42,7 +43,7 @@ class OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: ColorName.white,
+      color: context.colors.surface,
       borderRadius: BorderRadius.circular(16),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -71,7 +72,7 @@ class OrderCard extends StatelessWidget {
                 order.itemsSummary,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: AppText.small(color: ColorName.typography900),
+                style: AppText.small(color: context.colors.textPrimary),
               ),
               const SizedBox(height: 8),
               Row(
@@ -81,7 +82,7 @@ class OrderCard extends StatelessWidget {
                         ? Icons.schedule_rounded
                         : Icons.event_outlined,
                     size: 16,
-                    color: ColorName.typography500,
+                    color: context.colors.textSecondary,
                   ),
                   const SizedBox(width: 4),
                   Expanded(
@@ -89,7 +90,7 @@ class OrderCard extends StatelessWidget {
                       order.isActive
                           ? order.whenLabel
                           : formatOrderDate(order.createdAt),
-                      style: AppText.small(),
+                      style: AppText.small(color: context.colors.textSecondary),
                     ),
                   ),
                   Text(
@@ -194,11 +195,11 @@ class _Step extends StatelessWidget {
                   height: 24,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: done ? ColorName.primary400 : ColorName.white,
+                    color: done ? ColorName.primary400 : context.colors.surface,
                     border: Border.all(
                       color: done
                           ? ColorName.primary400
-                          : ColorName.secondary200,
+                          : context.colors.border,
                       width: 2,
                     ),
                   ),
@@ -217,7 +218,7 @@ class _Step extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(vertical: 2),
                       color: done
                           ? ColorName.primary400
-                          : ColorName.secondary200,
+                          : context.colors.border,
                     ),
                   ),
               ],
@@ -238,8 +239,8 @@ class _Step extends StatelessWidget {
                           style:
                               AppText.medium(
                                 color: done
-                                    ? ColorName.typography900
-                                    : ColorName.typography400,
+                                    ? context.colors.textPrimary
+                                    : context.colors.textTertiary,
                               ).copyWith(
                                 fontWeight: isCurrent
                                     ? FontWeight.w700
@@ -251,11 +252,17 @@ class _Step extends StatelessWidget {
                         Text(
                           '${time.hour.toString().padLeft(2, '0')}:'
                           '${time.minute.toString().padLeft(2, '0')}',
-                          style: AppText.small(),
+                          style: AppText.small(
+                            color: context.colors.textSecondary,
+                          ),
                         ),
                     ],
                   ),
-                  if (isCurrent) Text(hint, style: AppText.small()),
+                  if (isCurrent)
+                    Text(
+                      hint,
+                      style: AppText.small(color: context.colors.textSecondary),
+                    ),
                 ],
               ),
             ),

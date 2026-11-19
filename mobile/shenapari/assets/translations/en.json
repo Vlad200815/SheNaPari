@@ -212,7 +212,11 @@
     "reduce_motion_text": "No smooth transitions, sliding sheets or shine on the QR button",
     "language": "Language",
     "language_system": "System default",
-    "delete_account": "Delete account"
+    "delete_account": "Delete account",
+    "theme": "Theme",
+    "theme_system": "System default",
+    "theme_light": "Light",
+    "theme_dark": "Dark"
   },
   "support": {
     "title": "Support",

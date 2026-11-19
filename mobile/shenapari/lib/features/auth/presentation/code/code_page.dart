@@ -12,6 +12,7 @@ import '../widgets/code_field.dart';
 import 'code_cubit.dart';
 import 'code_state.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// Step 2 of sign-in: the code from the SMS for [phone].
 class CodePage extends StatelessWidget {
@@ -108,7 +109,7 @@ class _ResendButton extends StatelessWidget {
       final seconds = state.resendIn.toString().padLeft(2, '0');
       return Text(
         LocaleKeys.auth_resend_in.tr(namedArgs: {'seconds': seconds}),
-        style: AppText.regular(color: ColorName.typography500),
+        style: AppText.regular(color: context.colors.textSecondary),
       );
     }
     return TextButton(

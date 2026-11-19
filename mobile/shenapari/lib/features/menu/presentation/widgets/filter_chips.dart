@@ -6,6 +6,7 @@ import '../../../../gen/colors.gen.dart';
 import '../../domain/entities/menu.dart';
 import '../home/menu_filter.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// "Усі", "Популярне" (when there are popular dishes) and one chip per
 /// category, scrolled horizontally.
@@ -72,7 +73,7 @@ class _Chip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: selected ? ColorName.primary400 : ColorName.white,
+          color: selected ? ColorName.primary400 : context.colors.surface,
           borderRadius: BorderRadius.circular(AppDimens.radius),
           border: Border.all(color: ColorName.primary400),
         ),
@@ -80,7 +81,7 @@ class _Chip extends StatelessWidget {
           label,
           // White on primary400 is only 1.7:1, so the text stays dark.
           style: AppText.small(
-            color: ColorName.typography900,
+            color: selected ? ColorName.black : context.colors.textPrimary,
             fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
           ),
         ),
