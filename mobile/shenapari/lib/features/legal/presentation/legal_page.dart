@@ -150,7 +150,13 @@ class _DocumentTextState extends State<_DocumentText> {
         padding: const EdgeInsets.fromLTRB(16, 16, 28, 16),
         onTapLink: (_, href, _) => _openLink(href),
         styleSheet: MarkdownStyleSheet(
-          h2: AppText.medium().copyWith(fontWeight: FontWeight.w700),
+          // Every style names its colour: Markdown does not take the
+          // theme's text colour, so a heading without one stayed dark on
+          // the dark theme.
+          h1: AppText.title(color: context.colors.textPrimary),
+          h2: AppText.medium(
+            color: context.colors.textPrimary,
+          ).copyWith(fontWeight: FontWeight.w700),
           h2Padding: const EdgeInsets.only(top: 8),
           h3: body.copyWith(fontWeight: FontWeight.w700),
           p: body,
