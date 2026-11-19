@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../core/ui/app_text.dart';
+import '../../core/ui/app_theme.dart';
 import '../../features/orders/presentation/orders/orders_cubit.dart';
 import '../di.dart';
 import '../../features/cart/domain/entities/cart.dart';
@@ -164,7 +165,7 @@ class _QrButtonSlot extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Positioned(
-          top: -24,
+          top: -AppDimens.tabBarOverhang,
           child: BlocSelector<OrdersCubit, OrdersState, int>(
             selector: (state) => state.readyCount,
             builder: (context, ready) => _QrButton(ready: ready),
