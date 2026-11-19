@@ -32,15 +32,27 @@ class HomePage extends StatelessWidget {
         BlocProvider(create: (_) => sl<HomeCubit>()..load()),
         BlocProvider(create: (_) => sl<UnreadNotificationsCubit>()..load()),
       ],
-      child: BlocListener<HomeCubit, HomeState>(
-        // A failed refresh keeps the old menu; tell the user with a snack bar.
-        listenWhen: (previous, current) =>
-            current.status == HomeStatus.loaded &&
-            current.failure != null &&
-            previous.failure != current.failure,
-        listener: (context, state) =>
-            showFailureSnackBar(context, state.failure!),
-        // Category names come from the server in the request's language.
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<HomeCubit, HomeState>(
+            // A failed refresh keeps the old menu; tell with a snack bar.
+            listenWhen: (previous, current) =>
+                current.status == HomeStatus.loaded &&
+                current.failure != null &&
+                previous.failure != current.failure,
+            listener: (context, state) =>
+                showFailureSnackBar(context, state.failure!),
+          ),
+          BlocListener<HomeCubit, HomeState>(
+            // The cart shows the dishes as the menu does now: names in the
+            // current language, current prices.
+            listenWhen: (previous, current) =>
+                current.menu != null && previous.menu != current.menu,
+            listener: (context, state) =>
+                context.read<CartCubit>().updateDishes(state.menu!.dishes),
+          ),
+        ],
+        // Menu texts come from the server in the request's language.
         child: LanguageListener(
           onChanged: (context) => context.read<HomeCubit>().refresh(),
           child: Scaffold(

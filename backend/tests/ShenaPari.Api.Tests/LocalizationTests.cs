@@ -146,4 +146,26 @@ public class LocalizationTests(ApiFactory api) : IClassFixture<ApiFactory>
 
         Assert.Equal("Салати", categories[^1].Name);
     }
+
+    [Fact]
+    public async Task Canteen_dishes_and_order_lines_come_in_the_requested_language()
+    {
+        var (customer, _) = await api.LoginCustomerAsync();
+        InEnglish(customer);
+
+        var dish = await customer.GetDataAsync<DishDto>("/dishes/1");
+        var canteen = await customer.GetDataAsync<CanteenDto>("/canteen");
+        var order = (await (await customer.PostJsonAsync("/orders",
+            new CreateOrderDto(null, PaymentProvider.GooglePay, [new CreateOrderItemDto(1, 1)])))
+            .ReadResultAsync<OrderDto>()).Data!;
+
+        Assert.Equal("Canteen, building 1", canteen.Name);
+        Assert.Equal("Cheeseburger", dish.Name);
+        Assert.Equal("Beef patty, cheddar, pickles, sauce", dish.Description);
+        Assert.Equal("Cheeseburger", Assert.Single(order.Items).Name);
+        // The kitchen reads the same order in Ukrainian.
+        var cook = await api.LoginCookAsync();
+        var board = await cook.GetDataAsync<List<StaffOrderDto>>("/staff/orders");
+        Assert.Equal("Чизбургер", Assert.Single(board.Single(o => o.Id == order.Id).Items).Name);
+    }
 }

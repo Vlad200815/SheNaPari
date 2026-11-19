@@ -110,11 +110,17 @@ class $AssetsImagesAuthGen {
   /// File path: assets/images/auth/otp_code.png
   AssetGenImage get otpCode => const AssetGenImage('assets/images/auth/otp_code.png');
 
+  /// File path: assets/images/auth/otp_code_dark.png
+  AssetGenImage get otpCodeDark => const AssetGenImage('assets/images/auth/otp_code_dark.png');
+
   /// File path: assets/images/auth/phone_auth.png
   AssetGenImage get phoneAuth => const AssetGenImage('assets/images/auth/phone_auth.png');
 
+  /// File path: assets/images/auth/phone_auth_dark.png
+  AssetGenImage get phoneAuthDark => const AssetGenImage('assets/images/auth/phone_auth_dark.png');
+
   /// List of all assets
-  List<dynamic> get values => [icUA, icClear, otpCode, phoneAuth];
+  List<dynamic> get values => [icUA, icClear, otpCode, otpCodeDark, phoneAuth, phoneAuthDark];
 }
 
 class $AssetsImagesBottomNavGen {

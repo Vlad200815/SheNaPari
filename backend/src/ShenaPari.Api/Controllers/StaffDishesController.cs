@@ -19,7 +19,7 @@ public class StaffDishesController(AppDbContext db) : ControllerBase
     {
         var dishes = await db.Dishes
             .OrderBy(d => d.CategoryId).ThenBy(d => d.Name)
-            .Select(d => new StaffDishDto(d.Id, d.CategoryId, d.Name, d.IsAvailable))
+            .Select(d => new StaffDishDto(d.Id, d.CategoryId, Lang.Pick(d.Name, d.NameEn), d.IsAvailable))
             .ToListAsync();
         return Result<List<StaffDishDto>>.Ok(dishes).ToActionResult();
     }
@@ -33,7 +33,7 @@ public class StaffDishesController(AppDbContext db) : ControllerBase
 
         dish.IsAvailable = dto.IsAvailable;
         await db.SaveChangesAsync();
-        return Result<StaffDishDto>.Ok(new StaffDishDto(dish.Id, dish.CategoryId, dish.Name, dish.IsAvailable))
+        return Result<StaffDishDto>.Ok(new StaffDishDto(dish.Id, dish.CategoryId, Lang.Pick(dish.Name, dish.NameEn), dish.IsAvailable))
             .ToActionResult();
     }
 }

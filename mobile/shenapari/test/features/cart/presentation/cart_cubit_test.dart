@@ -5,6 +5,7 @@ import 'package:shenapari/core/session/session_status.dart';
 import 'package:shenapari/features/cart/domain/cart_repository.dart';
 import 'package:shenapari/features/cart/domain/entities/cart.dart';
 import 'package:shenapari/features/cart/presentation/cart_cubit.dart';
+import 'package:shenapari/features/menu/domain/entities/dish.dart';
 
 import '../../menu/menu_samples.dart';
 
@@ -45,6 +46,23 @@ void main() {
       ..remove(lemonade.id);
 
     expect(repository.stored, const Cart().add(cheeseburger, quantity: 3));
+  });
+
+  test('fresh dishes from the menu are saved', () {
+    final repository = _MemoryCartRepository(const Cart().add(cheeseburger));
+    final cubit = CartCubit(repository, sessionChanges: session.stream);
+    final renamed = Dish(
+      id: cheeseburger.id,
+      categoryId: cheeseburger.categoryId,
+      name: 'Cheeseburger',
+      priceKopecks: cheeseburger.priceKopecks,
+      weightG: cheeseburger.weightG,
+      kcal: cheeseburger.kcal,
+    );
+
+    cubit.updateDishes([renamed]);
+
+    expect(repository.stored.items.single.dish.name, 'Cheeseburger');
   });
 
   test('signing out empties the cart', () async {
