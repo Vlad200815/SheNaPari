@@ -214,7 +214,11 @@
     "reduce_motion_text": "Без плавних переходів, виїзду шторок і відблиску на кнопці QR",
     "language": "Мова",
     "language_system": "Як у системі",
-    "delete_account": "Видалити акаунт"
+    "delete_account": "Видалити акаунт",
+    "theme": "Тема",
+    "theme_system": "Як у системі",
+    "theme_light": "Світла",
+    "theme_dark": "Темна"
   },
   "support": {
     "title": "Підтримка",

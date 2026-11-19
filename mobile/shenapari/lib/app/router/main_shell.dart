@@ -11,6 +11,7 @@ import '../../gen/assets.gen.dart';
 import '../../gen/colors.gen.dart';
 import 'routes.dart';
 import '../../core/l10n/l10n.dart';
+import '../../core/ui/app_colors.dart';
 
 /// The tab bar around the main screens. Each tab keeps its own stack.
 ///
@@ -53,10 +54,10 @@ class MainShell extends StatelessWidget {
         body: navigationShell,
         bottomNavigationBar: DecoratedBox(
           decoration: BoxDecoration(
-            color: ColorName.white,
+            color: context.colors.surface,
             boxShadow: [
               BoxShadow(
-                color: ColorName.black.withValues(alpha: 0.06),
+                color: context.colors.shadow,
                 blurRadius: 16,
                 offset: const Offset(0, -4),
               ),
@@ -111,7 +112,7 @@ class _TabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? ColorName.primary400 : ColorName.secondary500;
+    final color = selected ? ColorName.primary400 : context.colors.iconMuted;
     // No caption on screen; screen readers and long-press still get the name.
     return Semantics(
       selected: selected,
@@ -319,7 +320,7 @@ class _Badge extends StatelessWidget {
       decoration: BoxDecoration(
         color: ColorName.red,
         borderRadius: BorderRadius.circular(9),
-        border: Border.all(color: ColorName.white, width: 1.5),
+        border: Border.all(color: context.colors.surface, width: 1.5),
       ),
       child: Text(
         count > 99 ? '99+' : '$count',

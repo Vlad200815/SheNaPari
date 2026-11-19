@@ -14,6 +14,7 @@ import '../widgets/profile_ui.dart';
 import 'me_cubit.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../legal/presentation/legal_texts.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// The «Більше» tab: who is signed in, and everything that is not food —
 /// help and documents (notifications live behind the bell on the home screen).
@@ -25,7 +26,7 @@ class MorePage extends StatelessWidget {
     return BlocProvider(
       create: (_) => sl<MeCubit>()..load(),
       child: Scaffold(
-        backgroundColor: ColorName.secondary100,
+        backgroundColor: context.colors.background,
         body: SafeArea(
           bottom: false,
           child: ListView(
@@ -62,21 +63,21 @@ class MorePage extends StatelessWidget {
                 children: [
                   MenuRow(
                     icon: Icons.description_outlined,
-                    tint: ColorName.secondary400,
+                    tint: context.colors.iconMuted,
                     title: LegalDocumentType.terms.title,
                     onTap: () =>
                         context.push(Routes.legal(LegalDocumentType.terms)),
                   ),
                   MenuRow(
                     icon: Icons.privacy_tip_outlined,
-                    tint: ColorName.secondary400,
+                    tint: context.colors.iconMuted,
                     title: LegalDocumentType.privacy.title,
                     onTap: () =>
                         context.push(Routes.legal(LegalDocumentType.privacy)),
                   ),
                   MenuRow(
                     icon: Icons.currency_exchange_rounded,
-                    tint: ColorName.secondary400,
+                    tint: context.colors.iconMuted,
                     title: LegalDocumentType.refund.title,
                     onTap: () =>
                         context.push(Routes.legal(LegalDocumentType.refund)),
@@ -224,7 +225,7 @@ class _AppVersion extends StatelessWidget {
             : LocaleKeys.more_version.tr(
                 namedArgs: {'version': snapshot.data!},
               ),
-        style: AppText.small(color: ColorName.typography500),
+        style: AppText.small(color: context.colors.textSecondary),
         textAlign: TextAlign.center,
       ),
     );

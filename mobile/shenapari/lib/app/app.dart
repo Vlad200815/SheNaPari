@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -22,31 +23,42 @@ class App extends StatelessWidget {
         // The shared cart: a singleton, so `.value` keeps it alive.
         BlocProvider.value(value: sl<CartCubit>()),
       ],
-      child: MaterialApp.router(
-        onGenerateTitle: (_) => LocaleKeys.app_name.tr(),
-        theme: appTheme,
-        locale: context.locale,
-        supportedLocales: context.supportedLocales,
-        // material_ui's own delegates: its widgets look up material_ui's
-        // MaterialLocalizations, not flutter_localizations' one.
-        localizationsDelegates: [
-          EasyLocalization.of(context)!.delegate,
-          ...GlobalMaterialLocalizations.delegates,
-        ],
-        routerConfig: router,
-        debugShowCheckedModeBanner: false,
-        // «Вимкнути анімації» in the app adds to the phone's own setting:
-        // every animation in the app checks MediaQuery.disableAnimations.
-        builder: (context, child) => ListenableBuilder(
-          listenable: sl<AppPrefs>(),
-          builder: (context, _) {
+      // «Тема» in the settings: the whole app follows AppPrefs at once.
+      child: ListenableBuilder(
+        listenable: sl<AppPrefs>(),
+        builder: (context, _) => MaterialApp.router(
+          onGenerateTitle: (_) => LocaleKeys.app_name.tr(),
+          theme: appTheme,
+          darkTheme: appDarkTheme,
+          themeMode: sl<AppPrefs>().themeMode,
+          locale: context.locale,
+          supportedLocales: context.supportedLocales,
+          // material_ui's own delegates: its widgets look up material_ui's
+          // MaterialLocalizations, not flutter_localizations' one.
+          localizationsDelegates: [
+            EasyLocalization.of(context)!.delegate,
+            ...GlobalMaterialLocalizations.delegates,
+          ],
+          routerConfig: router,
+          debugShowCheckedModeBanner: false,
+          // «Вимкнути анімації» in the app adds to the phone's own setting:
+          // every animation in the app checks MediaQuery.disableAnimations.
+          builder: (context, child) {
             final media = MediaQuery.of(context);
-            return MediaQuery(
-              data: media.copyWith(
-                disableAnimations:
-                    media.disableAnimations || sl<AppPrefs>().reduceMotion,
+            final dark = Theme.of(context).brightness == Brightness.dark;
+            // Status bar icons for screens without an app bar (home, «Більше»):
+            // light on the dark theme, dark on the light one.
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: dark
+                  ? SystemUiOverlayStyle.light
+                  : SystemUiOverlayStyle.dark,
+              child: MediaQuery(
+                data: media.copyWith(
+                  disableAnimations:
+                      media.disableAnimations || sl<AppPrefs>().reduceMotion,
+                ),
+                child: child!,
               ),
-              child: child!,
             );
           },
         ),

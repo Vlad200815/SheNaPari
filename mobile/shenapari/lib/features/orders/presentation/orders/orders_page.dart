@@ -13,6 +13,7 @@ import '../../domain/entities/order.dart';
 import '../widgets/order_widgets.dart';
 import 'orders_cubit.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// The orders tab: active ones on top, then the history.
 class OrdersPage extends StatelessWidget {
@@ -30,9 +31,9 @@ class OrdersPage extends StatelessWidget {
         listener: (context, state) =>
             showFailureSnackBar(context, state.failure!),
         builder: (context, state) => Scaffold(
-          backgroundColor: ColorName.secondary100,
+          backgroundColor: context.colors.background,
           appBar: AppBar(
-            backgroundColor: ColorName.secondary100,
+            backgroundColor: context.colors.background,
             title: Text(LocaleKeys.orders_title.tr(), style: AppText.title()),
           ),
           body: switch (state.status) {
@@ -142,8 +143,8 @@ class _Message extends StatelessWidget {
             child: Container(
               width: 96,
               height: 96,
-              decoration: const BoxDecoration(
-                color: ColorName.primary100,
+              decoration: BoxDecoration(
+                color: context.colors.accentSoft,
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, size: 44, color: ColorName.primary500),
@@ -153,7 +154,11 @@ class _Message extends StatelessWidget {
           Text(title, style: AppText.title(), textAlign: TextAlign.center),
           if (subtitle != null) ...[
             const SizedBox(height: 8),
-            Text(subtitle, style: AppText.small(), textAlign: TextAlign.center),
+            Text(
+              subtitle,
+              style: AppText.small(color: context.colors.textSecondary),
+              textAlign: TextAlign.center,
+            ),
           ],
           const SizedBox(height: 24),
           AppButton.primary(text: button, onPressed: onPressed),

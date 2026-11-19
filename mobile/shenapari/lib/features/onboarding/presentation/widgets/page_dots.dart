@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../gen/colors.gen.dart';
+import '../../../../core/ui/app_colors.dart';
 
 /// Page indicator: the selected dot is orange.
 class PageDots extends StatelessWidget {
@@ -23,7 +24,7 @@ class PageDots extends StatelessWidget {
             decoration: BoxDecoration(
               color: i == selected
                   ? ColorName.primary400
-                  : ColorName.secondary300,
+                  : context.colors.disabled,
               borderRadius: BorderRadius.circular(6),
             ),
           ),

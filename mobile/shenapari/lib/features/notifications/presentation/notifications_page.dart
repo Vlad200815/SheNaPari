@@ -13,6 +13,7 @@ import '../../menu/presentation/home/break_countdown.dart';
 import '../domain/entities/app_notification.dart';
 import 'notifications_cubit.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/ui/app_colors.dart';
 
 /// What the kitchen told the customer about their orders, newest first.
 class NotificationsPage extends StatelessWidget {
@@ -30,9 +31,9 @@ class NotificationsPage extends StatelessWidget {
         listener: (context, state) =>
             showFailureSnackBar(context, state.failure!),
         builder: (context, state) => Scaffold(
-          backgroundColor: ColorName.secondary100,
+          backgroundColor: context.colors.background,
           appBar: AppBar(
-            backgroundColor: ColorName.secondary100,
+            backgroundColor: context.colors.background,
             title: Text(
               LocaleKeys.notifications_title.tr(),
               style: AppText.title(),
@@ -82,7 +83,7 @@ class _NotificationTile extends StatelessWidget {
     final orderId = item.orderId;
     final isNew = !item.isRead;
     return Material(
-      color: isNew ? ColorName.primary100 : ColorName.white,
+      color: isNew ? context.colors.accentSoft : context.colors.surface,
       borderRadius: BorderRadius.circular(16),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -98,13 +99,13 @@ class _NotificationTile extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: isNew ? ColorName.primary400 : ColorName.secondary100,
+                  color: isNew ? ColorName.primary400 : context.colors.fill,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.receipt_long_outlined,
                   size: 20,
-                  color: ColorName.black,
+                  color: isNew ? ColorName.black : context.colors.textPrimary,
                 ),
               ),
               const SizedBox(width: 12),
@@ -118,7 +119,7 @@ class _NotificationTile extends StatelessWidget {
                           child: Text(
                             item.title,
                             style: AppText.small(
-                              color: ColorName.typography900,
+                              color: context.colors.textPrimary,
                               fontWeight: isNew
                                   ? FontWeight.w700
                                   : FontWeight.w600,
@@ -143,12 +144,14 @@ class _NotificationTile extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       item.body,
-                      style: AppText.small(color: ColorName.typography900),
+                      style: AppText.small(color: context.colors.textPrimary),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       formatWhen(item.createdAt, DateTime.now()),
-                      style: AppText.small().copyWith(fontSize: 12),
+                      style: AppText.small(
+                        color: context.colors.textSecondary,
+                      ).copyWith(fontSize: 12),
                     ),
                   ],
                 ),
@@ -207,8 +210,8 @@ class _Empty extends StatelessWidget {
             child: Container(
               width: 96,
               height: 96,
-              decoration: const BoxDecoration(
-                color: ColorName.primary100,
+              decoration: BoxDecoration(
+                color: context.colors.accentSoft,
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, size: 44, color: ColorName.primary500),
@@ -218,7 +221,11 @@ class _Empty extends StatelessWidget {
           Text(title, style: AppText.title(), textAlign: TextAlign.center),
           if (subtitle != null) ...[
             const SizedBox(height: 8),
-            Text(subtitle, style: AppText.small(), textAlign: TextAlign.center),
+            Text(
+              subtitle,
+              style: AppText.small(color: context.colors.textSecondary),
+              textAlign: TextAlign.center,
+            ),
           ],
           if (button != null) ...[
             const SizedBox(height: 24),
