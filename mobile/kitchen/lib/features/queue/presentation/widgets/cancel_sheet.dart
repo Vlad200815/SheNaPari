@@ -252,8 +252,10 @@ class _SheetButton extends StatelessWidget {
             child: Text(
               text,
               style: AppText.button(
+                // The kitchen is dark, so its red is light: dark text on it
+                // (white on it was hard to read).
                 color: filled
-                    ? (enabled ? Colors.white : colors.textTertiary)
+                    ? (enabled ? colors.background : colors.textTertiary)
                     : colors.textPrimary,
               ),
             ),
