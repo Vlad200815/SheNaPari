@@ -1,9 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../core/ui/app_text.dart';
-import '../../../../core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// Short answers to what customers ask most. The rules quoted here are the
 /// backend's: 30 minutes to pick up, cancel until cooking, simulated pay.

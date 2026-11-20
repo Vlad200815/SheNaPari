@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
-import '../../../core/network/api_envelope.dart';
+import 'package:shenapari_core/network/api_envelope.dart';
 import 'dto/auth_dtos.dart';
 
 part 'auth_api.g.dart';

@@ -2,15 +2,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../app/di.dart';
-import '../../../../core/ui/app_button.dart';
-import '../../../../core/ui/app_text.dart';
-import '../../../../core/ui/app_theme.dart';
-import '../../../../core/ui/snack_bars.dart';
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/ui/app_button.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/snack_bars.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import 'registration_cubit.dart';
 import 'registration_state.dart';
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// The last sign-in step for a new customer: the name the kitchen calls out.
 class RegistrationProfilePage extends StatelessWidget {

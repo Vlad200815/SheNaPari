@@ -4,11 +4,11 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
-import '../../../../core/ui/app_button.dart';
-import '../../../../core/ui/app_text.dart';
-import '../../../../core/ui/app_theme.dart';
-import '../../../../core/ui/snack_bars.dart';
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/ui/app_button.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/snack_bars.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../../cart/presentation/cart_cubit.dart';
 import '../../../notifications/presentation/notifications_cubit.dart';
 import '../widgets/break_card.dart';
@@ -18,8 +18,8 @@ import '../widgets/home_header.dart';
 import 'home_cubit.dart';
 import 'home_state.dart';
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/l10n/language_listener.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/l10n/language_listener.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// The menu: canteen name, filters and the grid of dishes.
 class HomePage extends StatelessWidget {

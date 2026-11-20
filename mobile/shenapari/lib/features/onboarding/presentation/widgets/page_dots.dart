@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../gen/colors.gen.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// Page indicator: the selected dot is orange.
 class PageDots extends StatelessWidget {

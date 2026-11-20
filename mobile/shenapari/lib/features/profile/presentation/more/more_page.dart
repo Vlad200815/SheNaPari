@@ -3,19 +3,19 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../../../core/ui/app_logo.dart';
+import 'package:shenapari_core/ui/app_logo.dart';
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
-import '../../../../core/ui/app_text.dart';
-import '../../../../core/ui/app_theme.dart';
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../../legal/domain/entities/legal_document.dart';
 import '../../domain/entities/user.dart';
 import '../widgets/profile_ui.dart';
 import 'me_cubit.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../legal/presentation/legal_texts.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// The «Більше» tab: who is signed in, and everything that is not food —
 /// help and documents (notifications live behind the bell on the home screen).

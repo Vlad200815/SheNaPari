@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/result/failure.dart';
-import '../../../../core/result/result.dart';
+import 'package:shenapari_core/result/failure.dart';
+import 'package:shenapari_core/result/result.dart';
 import '../../domain/auth_repository.dart';
 import 'phone_state.dart';
 

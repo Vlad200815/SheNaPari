@@ -6,13 +6,13 @@ import '../widgets/dish_marks.dart';
 import 'widgets/nutrition_card.dart';
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
-import '../../../../core/ui/app_button.dart';
-import '../../../../core/ui/app_text.dart';
-import '../../../../core/ui/app_theme.dart';
-import '../../../../core/ui/format_price.dart';
-import '../../../../core/ui/quantity_stepper.dart';
-import '../../../../core/ui/snack_bars.dart';
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/ui/app_button.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/format_price.dart';
+import 'package:shenapari_core/ui/quantity_stepper.dart';
+import 'package:shenapari_core/ui/snack_bars.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../../cart/domain/entities/cart.dart';
 import '../../../cart/presentation/cart_cubit.dart';
 import '../../domain/entities/break_slot.dart';
@@ -22,7 +22,7 @@ import '../widgets/dish_card.dart';
 import 'dish_cubit.dart';
 import 'dish_state.dart';
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// A dish: big photo on top, details on a white sheet, and a bottom bar
 /// with the portion stepper and «Додати · 170 ₴».

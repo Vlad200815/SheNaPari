@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shenapari/core/session/session_status.dart';
+import 'package:shenapari_core/session/session_status.dart';
 import 'package:shenapari/features/cart/domain/cart_repository.dart';
 import 'package:shenapari/features/cart/domain/entities/cart.dart';
 import 'package:shenapari/features/cart/presentation/cart_cubit.dart';

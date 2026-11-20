@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' show ThemeMode;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shenapari/core/l10n/app_language.dart';
-import 'package:shenapari/core/l10n/app_locale.dart';
-import 'package:shenapari/core/result/failure.dart';
-import 'package:shenapari/core/result/result.dart';
-import 'package:shenapari/core/storage/app_prefs.dart';
+import 'package:shenapari_core/l10n/app_language.dart';
+import 'package:shenapari_core/l10n/app_locale.dart';
+import 'package:shenapari_core/result/failure.dart';
+import 'package:shenapari_core/result/result.dart';
+import 'package:shenapari_core/storage/app_prefs.dart';
 import 'package:shenapari/features/profile/domain/entities/user.dart';
 import 'package:shenapari/features/profile/presentation/settings/settings_cubit.dart';
 

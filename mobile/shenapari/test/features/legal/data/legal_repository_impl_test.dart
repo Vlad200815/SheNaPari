@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shenapari/core/network/api_envelope.dart';
+import 'package:shenapari_core/network/api_envelope.dart';
 import 'package:shenapari/features/legal/data/legal_api.dart';
 import 'package:shenapari/features/legal/data/legal_document_dto.dart';
 import 'package:shenapari/features/legal/data/legal_repository_impl.dart';

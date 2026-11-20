@@ -3,17 +3,17 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../app/router/routes.dart';
-import '../../../core/ui/app_button.dart';
-import '../../../core/ui/app_text.dart';
-import '../../../core/ui/app_theme.dart';
-import '../../../core/ui/format_price.dart';
-import '../../../core/ui/quantity_stepper.dart';
-import '../../../gen/colors.gen.dart';
+import 'package:shenapari_core/ui/app_button.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/format_price.dart';
+import 'package:shenapari_core/ui/quantity_stepper.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../menu/presentation/widgets/dish_card.dart';
 import '../domain/entities/cart.dart';
 import 'cart_cubit.dart';
 import '../../../core/l10n/l10n.dart';
-import '../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// The cart tab: dishes with steppers, the total and «Оформити замовлення».
 class CartPage extends StatelessWidget {

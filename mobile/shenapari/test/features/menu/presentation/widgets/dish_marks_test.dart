@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:shenapari/core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
 import 'package:shenapari/features/menu/domain/entities/dish.dart';
 import 'package:shenapari/features/menu/presentation/dish/widgets/nutrition_card.dart';
 import 'package:shenapari/features/menu/presentation/widgets/dish_marks.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shenapari/core/ui/format_price.dart';
+import 'package:shenapari_core/ui/format_price.dart';
 
 void main() {
   test('whole hryvnias have no kopecks', () {

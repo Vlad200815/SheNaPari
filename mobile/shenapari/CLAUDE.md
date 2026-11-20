@@ -5,7 +5,8 @@
 ## Команди
 
 ```bash
-flutter pub get
+flutter pub get                         # увесь workspace (../pubspec.yaml): клієнт + shenapari_core
+(cd ../packages/shenapari_core && dart run build_runner build -d)   # спершу пакет: кольори й лого
 dart run build_runner build -d          # freezed, json_serializable, retrofit, flutter_gen
 flutter analyze
 flutter test
@@ -19,16 +20,21 @@ flutter run --dart-define-from-file=env/device.json   # справжній те�
 
 Clean Architecture + Cubit/Bloc + Feature-First. Залежності: `presentation → domain ← data`.
 
+Спільне з «ШеНаПарі Кухня» живе в пакеті `../packages/shenapari_core` (Flutter pub workspace, корінь — `../pubspec.yaml`): `network/`, `result/`, `session/`, `storage/`, `l10n/` (крім `l10n.dart`), `ui/` (тема, AppText, AppButton, AppLogo, шторки), `ColorName` і `CoreAssets` (лого). Імпорт — `package:shenapari_core/...`. Тексти, які бере пакет, — ключі `CoreKeys`; вони мають бути в `assets/translations` кожного застосунку (тест це перевіряє). Код лише для клієнта (`core/device`: яскравість і заборона скриншотів для QR) лишається тут.
+
 ```
 lib/
   main.dart            — лише bootstrap()
   app/                 — bootstrap, DI (di.dart), env, router (redirect за статусом сесії), splash
-  core/                — технічне, без бізнес-логіки:
+  core/                — що лишилось клієнтського з технічного:
+    device/            — QrDisplayMode (яскравість, без скриншотів на видачі)
+    l10n/l10n.dart     — один імпорт текстів: LocaleKeys клієнта + CoreKeys пакета
+  (у shenapari_core:)
     result/            — sealed Result<T> (Ok/Err) і Failure
     network/           — Dio, AuthInterceptor, ApiEnvelope, apiCall
     session/           — SessionRepository (єдине джерело правди про вхід), SessionCubit
     storage/           — TokenStorage (secure storage), AppPrefs (прапорці)
-    ui/                — тема, AppText, AppButton, снекбари
+    ui/                — тема, AppText, AppButton, AppLogo, снекбари, шторки
   features/<feature>/
     data/              — Retrofit API, *Dto (з toEntity()), *RepositoryImpl
     domain/            — entities, інтерфейс репозиторію, use cases

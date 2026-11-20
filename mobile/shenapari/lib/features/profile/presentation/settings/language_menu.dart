@@ -1,11 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../core/l10n/app_language.dart';
+import 'package:shenapari_core/l10n/app_language.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../gen/assets.gen.dart';
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../widgets/choice_menu_row.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// How a language is named in the list: each in its own language, so it is
 /// found even by someone who cannot read the current one.

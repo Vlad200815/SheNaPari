@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../core/network/api_call.dart';
-import '../../../core/result/result.dart';
+import 'package:shenapari_core/network/api_call.dart';
+import 'package:shenapari_core/result/result.dart';
 import '../domain/entities/legal_document.dart';
 import '../domain/legal_repository.dart';
 import 'legal_api.dart';
