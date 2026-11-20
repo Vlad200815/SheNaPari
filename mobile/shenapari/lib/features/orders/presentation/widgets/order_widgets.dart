@@ -4,6 +4,7 @@ import 'package:shenapari_core/ui/app_text.dart';
 import 'package:shenapari_core/ui/format_price.dart';
 import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../domain/entities/order.dart';
+import '../../../menu/presentation/home/break_countdown.dart';
 import 'order_texts.dart';
 import '../../../../core/l10n/l10n.dart';
 import 'package:shenapari_core/ui/app_colors.dart';
@@ -109,7 +110,10 @@ class OrderCard extends StatelessWidget {
   }
 }
 
-/// Paid → Accepted → Cooking → Ready → PickedUp as a vertical timeline.
+/// Paid → Cooking → Ready → PickedUp as a vertical timeline. «Accepted» is
+/// not a step of its own: the kitchen's «Прийняти» starts cooking at once,
+/// so it would only repeat the same minute; an accepted order shows as
+/// cooking, with the promised time under it.
 class StatusSteps extends StatelessWidget {
   const StatusSteps({super.key, required this.order});
 
@@ -120,11 +124,6 @@ class StatusSteps extends StatelessWidget {
       OrderStatus.paid,
       LocaleKeys.orders_steps_paid.tr(),
       LocaleKeys.orders_steps_paid_text.tr(),
-    ),
-    (
-      OrderStatus.accepted,
-      LocaleKeys.orders_steps_accepted.tr(),
-      LocaleKeys.orders_steps_accepted_text.tr(),
     ),
     (
       OrderStatus.cooking,
@@ -145,14 +144,29 @@ class StatusSteps extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final current = _steps.indexWhere((step) => step.$1 == order.status);
+    final status = order.status == OrderStatus.accepted
+        ? OrderStatus.cooking
+        : order.status;
+    final current = _steps.indexWhere((step) => step.$1 == status);
+    final readyAt = order.estimatedReadyAt;
     return Column(
       children: [
         for (var i = 0; i < _steps.length; i++)
           _Step(
             title: _steps[i].$2,
-            hint: _steps[i].$3,
-            time: order.reachedAt(_steps[i].$1),
+            // While cooking, the promise is more useful than «Вже на плиті».
+            hint:
+                _steps[i].$1 == OrderStatus.cooking &&
+                    i == current &&
+                    readyAt != null
+                ? LocaleKeys.orders_ready_at.tr(
+                    namedArgs: {'time': formatClock(readyAt)},
+                  )
+                : _steps[i].$3,
+            time: _steps[i].$1 == OrderStatus.cooking
+                ? order.reachedAt(OrderStatus.cooking) ??
+                      order.reachedAt(OrderStatus.accepted)
+                : order.reachedAt(_steps[i].$1),
             done: i <= current,
             isCurrent: i == current,
             isLast: i == _steps.length - 1,
