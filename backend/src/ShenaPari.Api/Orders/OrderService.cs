@@ -137,7 +137,7 @@ public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier noti
     {
         var order = await Query().FirstOrDefaultAsync(o => o.Id == orderId && o.CustomerId == customerId);
         if (order is null) return OrderErrors.NotFound;
-        if (!OrderStatusRules.CanMove(order.Status, OrderStatus.Cancelled)) return OrderErrors.CannotCancel;
+        if (!OrderStatusRules.CustomerCanCancel(order.Status)) return OrderErrors.CannotCancel;
 
         Cancel(order, customerId, reason: null);
         await db.SaveChangesAsync();
