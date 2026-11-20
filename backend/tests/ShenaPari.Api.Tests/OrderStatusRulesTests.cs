@@ -13,6 +13,7 @@ public class OrderStatusRulesTests
     [InlineData(Accepted, Cooking)]
     [InlineData(Accepted, Cancelled)]
     [InlineData(Cooking, Ready)]
+    [InlineData(Cooking, Cancelled)] // the kitchen ran out of something
     [InlineData(Ready, PickedUp)]
     [InlineData(Ready, NotPickedUp)]
     public void Allowed_transitions(OrderStatus from, OrderStatus to) =>
@@ -23,7 +24,6 @@ public class OrderStatusRulesTests
     [InlineData(Paid, Ready)]
     [InlineData(Paid, PickedUp)]
     [InlineData(Accepted, Ready)]
-    [InlineData(Cooking, Cancelled)] // food is already being made
     [InlineData(Cooking, PickedUp)]
     [InlineData(Ready, Cancelled)]
     [InlineData(Ready, Cooking)]     // no way back
@@ -44,4 +44,12 @@ public class OrderStatusRulesTests
     [Fact]
     public void Eta_options_are_5_10_15_20() =>
         Assert.Equal([5, 10, 15, 20], OrderStatusRules.EtaOptions);
+
+    [Theory]
+    [InlineData(Paid, true)]
+    [InlineData(Accepted, true)]
+    [InlineData(Cooking, false)] // the food is being made: only the kitchen may stop it
+    [InlineData(Ready, false)]
+    public void The_customer_cancels_only_before_cooking(OrderStatus status, bool allowed) =>
+        Assert.Equal(allowed, OrderStatusRules.CustomerCanCancel(status));
 }

@@ -17,6 +17,8 @@ class StaffOrderDto {
     this.breakSlot,
     this.estimatedReadyAt,
     this.readyAt,
+    this.total = 0,
+    this.history = const [],
   });
 
   factory StaffOrderDto.fromJson(Map<String, dynamic> json) =>
@@ -32,6 +34,10 @@ class StaffOrderDto {
   final DateTime? readyAt;
   final List<StaffOrderItemDto> items;
 
+  /// `decimal` hryvnias: `85` or `42.5`.
+  final num total;
+  final List<StaffStatusChangeDto> history;
+
   KitchenOrder toEntity() => KitchenOrder(
     id: id,
     number: number,
@@ -45,7 +51,32 @@ class StaffOrderDto {
       for (final item in items)
         KitchenOrderItem(name: item.name, quantity: item.quantity),
     ],
+    totalKopecks: (total * 100).round(),
+    history: [
+      for (final change in history)
+        KitchenOrderStep(
+          status: parseOrderStatus(change.status),
+          at: change.at.toLocal(),
+          reason: change.reason,
+        ),
+    ]..sort((a, b) => a.at.compareTo(b.at)),
   );
+}
+
+@JsonSerializable(createToJson: false)
+class StaffStatusChangeDto {
+  const StaffStatusChangeDto({
+    required this.status,
+    required this.at,
+    this.reason,
+  });
+
+  factory StaffStatusChangeDto.fromJson(Map<String, dynamic> json) =>
+      _$StaffStatusChangeDtoFromJson(json);
+
+  final String status;
+  final DateTime at;
+  final String? reason;
 }
 
 @JsonSerializable(createToJson: false)

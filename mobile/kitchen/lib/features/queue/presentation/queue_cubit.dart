@@ -64,6 +64,12 @@ class QueueCubit extends Cubit<QueueState> {
   Future<void> handOver(String id) =>
       _act(id, () => _queue.setStatus(id, OrderStatus.pickedUp));
 
+  /// «Скасувати» with the reason the customer sees; the money goes back.
+  Future<void> cancel(String id, {required String reason}) => _act(
+    id,
+    () => _queue.setStatus(id, OrderStatus.cancelled, reason: reason),
+  );
+
   Future<void> _act(String id, Future<Result<void>> Function() call) async {
     if (state.busy.contains(id)) return;
     emit(state.copyWith(busy: {...state.busy, id}, failure: null));

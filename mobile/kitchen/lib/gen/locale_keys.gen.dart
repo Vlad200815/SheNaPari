@@ -2,7 +2,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class LocaleKeys {
+abstract class  LocaleKeys {
   static const app_name = 'app.name';
   static const app_title = 'app.title';
   static const app = 'app';
@@ -65,4 +65,31 @@ abstract class LocaleKeys {
   static const queue_retry = 'queue.retry';
   static const queue_column_empty = 'queue.column_empty';
   static const queue = 'queue';
+  static const order_title = 'order.title';
+  static const order_customer = 'order.customer';
+  static const order_total = 'order.total';
+  static const order_history = 'order.history';
+  static const order_cancel = 'order.cancel';
+  static const order_close = 'order.close';
+  static const order_steps_paid = 'order.steps.paid';
+  static const order_steps_accepted = 'order.steps.accepted';
+  static const order_steps_cooking = 'order.steps.cooking';
+  static const order_steps_ready = 'order.steps.ready';
+  static const order_steps_picked_up = 'order.steps.picked_up';
+  static const order_steps_cancelled = 'order.steps.cancelled';
+  static const order_steps_not_picked_up = 'order.steps.not_picked_up';
+  static const order_steps = 'order.steps';
+  static const order = 'order';
+  static const cancel_title = 'cancel.title';
+  static const cancel_text = 'cancel.text';
+  static const cancel_reasons_out_of_stock = 'cancel.reasons.out_of_stock';
+  static const cancel_reasons_overloaded = 'cancel.reasons.overloaded';
+  static const cancel_reasons_technical = 'cancel.reasons.technical';
+  static const cancel_reasons_something_else = 'cancel.reasons.something_else';
+  static const cancel_reasons = 'cancel.reasons';
+  static const cancel_other_hint = 'cancel.other_hint';
+  static const cancel_confirm = 'cancel.confirm';
+  static const cancel_keep = 'cancel.keep';
+  static const cancel = 'cancel';
+
 }
