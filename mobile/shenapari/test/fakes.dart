@@ -15,7 +15,7 @@ import 'package:shenapari/features/orders/domain/entities/order.dart';
 import 'package:shenapari/features/orders/domain/entities/order_history.dart';
 import 'package:shenapari/features/notifications/domain/entities/app_notification.dart';
 import 'package:shenapari/features/notifications/domain/notifications_repository.dart';
-import 'package:shenapari/features/orders/domain/order_events.dart';
+import 'package:shenapari_core/orders/order_events.dart';
 import 'package:shenapari/features/orders/domain/orders_repository.dart';
 import 'package:shenapari/features/cart/domain/entities/cart.dart';
 import 'package:shenapari/features/profile/domain/entities/user.dart';
