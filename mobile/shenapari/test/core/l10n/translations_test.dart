@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shenapari/core/l10n/l10n.dart';
-import 'package:shenapari/core/result/failure.dart';
+import 'package:shenapari_core/result/failure.dart';
 
 import '../../l10n_helper.dart';
 
@@ -30,6 +30,16 @@ void main() {
 
   test('uk and en have the same keys', () {
     expect(_keys(readTranslations('en')), _keys(readTranslations('uk')));
+  });
+
+  test('the keys the shared package uses are here too', () {
+    for (final code in ['uk', 'en']) {
+      expect(
+        _keys(readTranslations(code)),
+        containsAll(CoreKeys.all),
+        reason: '$code.json',
+      );
+    }
   });
 
   test('no Cyrillic letters slipped into en.json', () {

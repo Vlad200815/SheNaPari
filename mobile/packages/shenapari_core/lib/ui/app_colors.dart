@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../../gen/colors.gen.dart';
+import '../gen/colors.gen.dart';
 
 /// Colors by meaning, one set per theme: widgets ask for «the card colour»
 /// or «secondary text», not for a hex value, so the dark theme only has to

@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../../menu/presentation/home/break_countdown.dart';
 import '../../domain/entities/order.dart';
 import '../../../../core/l10n/l10n.dart';

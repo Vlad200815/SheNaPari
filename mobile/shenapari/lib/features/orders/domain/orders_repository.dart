@@ -1,4 +1,4 @@
-import '../../../core/result/result.dart';
+import 'package:shenapari_core/result/result.dart';
 import '../../cart/domain/entities/cart.dart';
 import 'entities/order.dart';
 import 'entities/order_history.dart';

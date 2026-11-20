@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shenapari/core/l10n/l10n.dart';
-import 'package:shenapari/core/result/failure.dart';
+import 'package:shenapari_core/result/failure.dart';
 
 void main() {
   group('Failure', () {

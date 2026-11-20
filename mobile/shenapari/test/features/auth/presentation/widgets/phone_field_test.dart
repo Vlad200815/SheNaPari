@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:shenapari/core/ui/app_colors.dart';
-import 'package:shenapari/core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
 import 'package:shenapari/features/auth/presentation/widgets/phone_field.dart';
 
 void main() {

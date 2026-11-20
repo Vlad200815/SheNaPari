@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../../gen/colors.gen.dart';
+import '../gen/colors.gen.dart';
 import '../result/failure.dart';
 import 'app_text.dart';
 import '../l10n/l10n.dart';

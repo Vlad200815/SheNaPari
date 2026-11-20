@@ -4,11 +4,11 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shenapari/core/network/auth_interceptor.dart';
-import 'package:shenapari/core/session/auth_tokens.dart';
-import 'package:shenapari/core/session/session_repository_impl.dart';
-import 'package:shenapari/core/session/session_status.dart';
-import 'package:shenapari/core/storage/in_memory_token_storage.dart';
+import 'package:shenapari_core/network/auth_interceptor.dart';
+import 'package:shenapari_core/session/auth_tokens.dart';
+import 'package:shenapari_core/session/session_repository_impl.dart';
+import 'package:shenapari_core/session/session_status.dart';
+import 'package:shenapari_core/storage/in_memory_token_storage.dart';
 
 const _old = AuthTokens(accessToken: 'a1', refreshToken: 'r1');
 const _new = AuthTokens(accessToken: 'a2', refreshToken: 'r2');

@@ -5,19 +5,19 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-import '../../../../core/ui/app_logo.dart';
+import 'package:shenapari_core/ui/app_logo.dart';
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
 import '../../../../core/device/qr_display_mode.dart';
-import '../../../../core/ui/app_button.dart';
-import '../../../../core/ui/app_text.dart';
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/ui/app_button.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../domain/entities/order.dart';
 import '../orders/orders_cubit.dart';
 import '../widgets/order_texts.dart';
 import '../widgets/order_widgets.dart';
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// «Мій QR»: a white sheet over the app, which stays visible on top behind
 /// frosted yellow glass. Tapping the glass, swiping the sheet down or ✕

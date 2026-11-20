@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:shenapari/core/result/failure.dart';
-import 'package:shenapari/core/result/result.dart';
+import 'package:shenapari_core/result/failure.dart';
+import 'package:shenapari_core/result/result.dart';
 import 'package:shenapari/features/menu/domain/entities/menu.dart';
 import 'package:shenapari/features/menu/domain/menu_repository.dart';
 import 'package:shenapari/features/menu/domain/usecases/get_menu_use_case.dart';

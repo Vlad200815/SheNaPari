@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_text.dart';
 import '../../domain/entities/break_slot.dart';
 import '../../domain/entities/canteen.dart';
 import '../home/break_countdown.dart';
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../../../core/l10n/l10n.dart';
 
 /// The orange card under the greeting: when the next break is, how long

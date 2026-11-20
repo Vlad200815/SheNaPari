@@ -1,4 +1,4 @@
-import '../../../core/result/result.dart';
+import 'package:shenapari_core/result/result.dart';
 import 'entities/user.dart';
 
 abstract interface class ProfileRepository {

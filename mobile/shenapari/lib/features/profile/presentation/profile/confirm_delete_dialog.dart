@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/ui/confirm_sheet.dart';
+import 'package:shenapari_core/ui/confirm_sheet.dart';
 
 /// Asks "really delete?" and explains what happens. True only when the user
 /// pressed «Так, видалити»; swiping the sheet away or «Залишити акаунт»

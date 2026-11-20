@@ -2,11 +2,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:material_ui/material_ui.dart' show ThemeMode;
 
-import '../../../../core/l10n/app_language.dart';
-import '../../../../core/l10n/app_locale.dart';
-import '../../../../core/result/failure.dart';
-import '../../../../core/result/result.dart';
-import '../../../../core/storage/app_prefs.dart';
+import 'package:shenapari_core/l10n/app_language.dart';
+import 'package:shenapari_core/l10n/app_locale.dart';
+import 'package:shenapari_core/result/failure.dart';
+import 'package:shenapari_core/result/result.dart';
+import 'package:shenapari_core/storage/app_prefs.dart';
 import '../../domain/profile_repository.dart';
 
 part 'settings_cubit.freezed.dart';

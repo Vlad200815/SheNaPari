@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:retrofit/retrofit.dart';
 
-import '../../../core/network/api_envelope.dart';
+import 'package:shenapari_core/network/api_envelope.dart';
 import '../domain/entities/app_notification.dart';
 
 part 'notifications_api.g.dart';

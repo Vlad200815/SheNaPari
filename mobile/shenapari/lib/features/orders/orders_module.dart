@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../core/session/session_repository.dart';
+import 'package:shenapari_core/session/session_repository.dart';
 import '../cart/domain/entities/cart.dart';
 import 'data/orders_api.dart';
 import 'data/orders_repository_impl.dart';

@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import 'app_text.dart';
-import '../../core/l10n/l10n.dart';
+import '../l10n/l10n.dart';
 import 'app_colors.dart';
 
 /// `−  2  +` in a rounded pill. A button turns grey at its limit.
@@ -37,7 +37,7 @@ class QuantityStepper extends StatelessWidget {
         children: [
           _StepButton(
             icon: Icons.remove_rounded,
-            label: LocaleKeys.common_less.tr(),
+            label: CoreKeys.commonLess.tr(),
             size: size,
             onTap: value > min ? () => onChanged(value - 1) : null,
           ),
@@ -51,7 +51,7 @@ class QuantityStepper extends StatelessWidget {
           ),
           _StepButton(
             icon: Icons.add_rounded,
-            label: LocaleKeys.common_more.tr(),
+            label: CoreKeys.commonMore.tr(),
             size: size,
             onTap: value < max ? () => onChanged(value + 1) : null,
           ),
