@@ -126,7 +126,6 @@ abstract class LocaleKeys {
   static const orders_active = 'orders.active';
   static const orders_history = 'orders.history';
   static const orders_status_paid = 'orders.status.paid';
-  static const orders_status_accepted = 'orders.status.accepted';
   static const orders_status_cooking = 'orders.status.cooking';
   static const orders_status_ready = 'orders.status.ready';
   static const orders_status_picked_up = 'orders.status.picked_up';
@@ -139,8 +138,6 @@ abstract class LocaleKeys {
   static const orders_asap = 'orders.asap';
   static const orders_steps_paid = 'orders.steps.paid';
   static const orders_steps_paid_text = 'orders.steps.paid_text';
-  static const orders_steps_accepted = 'orders.steps.accepted';
-  static const orders_steps_accepted_text = 'orders.steps.accepted_text';
   static const orders_steps_cooking = 'orders.steps.cooking';
   static const orders_steps_cooking_text = 'orders.steps.cooking_text';
   static const orders_steps_ready = 'orders.steps.ready';
