@@ -1,8 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:shenapari/core/result/failure.dart';
-import 'package:shenapari/core/result/result.dart';
+import 'package:shenapari_core/result/failure.dart';
+import 'package:shenapari_core/result/result.dart';
 import 'package:shenapari/features/cart/domain/entities/cart.dart';
 import 'package:shenapari/features/menu/domain/entities/break_slot.dart';
 import 'package:shenapari/features/menu/domain/entities/canteen.dart';

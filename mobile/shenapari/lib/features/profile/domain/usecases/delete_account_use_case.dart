@@ -1,5 +1,5 @@
-import '../../../../core/result/result.dart';
-import '../../../../core/session/session_repository.dart';
+import 'package:shenapari_core/result/result.dart';
+import 'package:shenapari_core/session/session_repository.dart';
 import '../profile_repository.dart';
 
 /// Deletes the account and, only if the server agreed, forgets the session.

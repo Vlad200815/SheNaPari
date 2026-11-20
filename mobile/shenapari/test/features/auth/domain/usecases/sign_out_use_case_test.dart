@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:shenapari/core/result/failure.dart';
-import 'package:shenapari/core/result/result.dart';
-import 'package:shenapari/core/session/auth_tokens.dart';
-import 'package:shenapari/core/session/session_repository_impl.dart';
-import 'package:shenapari/core/session/session_status.dart';
-import 'package:shenapari/core/storage/in_memory_token_storage.dart';
+import 'package:shenapari_core/result/failure.dart';
+import 'package:shenapari_core/result/result.dart';
+import 'package:shenapari_core/session/auth_tokens.dart';
+import 'package:shenapari_core/session/session_repository_impl.dart';
+import 'package:shenapari_core/session/session_status.dart';
+import 'package:shenapari_core/storage/in_memory_token_storage.dart';
 import 'package:shenapari/features/auth/domain/auth_repository.dart';
 import 'package:shenapari/features/auth/domain/usecases/sign_out_use_case.dart';
 

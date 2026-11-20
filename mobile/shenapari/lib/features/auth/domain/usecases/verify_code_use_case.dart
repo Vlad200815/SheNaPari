@@ -1,5 +1,5 @@
-import '../../../../core/result/result.dart';
-import '../../../../core/session/session_repository.dart';
+import 'package:shenapari_core/result/result.dart';
+import 'package:shenapari_core/session/session_repository.dart';
 import '../auth_repository.dart';
 
 /// Checks the code and, only on success, stores the session.

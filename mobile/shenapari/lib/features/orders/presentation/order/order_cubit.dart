@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/result/failure.dart';
-import '../../../../core/result/result.dart';
+import 'package:shenapari_core/result/failure.dart';
+import 'package:shenapari_core/result/result.dart';
 import '../../domain/entities/order.dart';
 import '../../domain/order_events.dart';
 import '../../domain/orders_repository.dart';

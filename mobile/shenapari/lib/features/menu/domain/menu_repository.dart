@@ -1,4 +1,4 @@
-import '../../../core/result/result.dart';
+import 'package:shenapari_core/result/result.dart';
 import 'entities/break_slot.dart';
 import 'entities/canteen.dart';
 import 'entities/category.dart';

@@ -1,5 +1,5 @@
-import '../../../core/network/api_call.dart';
-import '../../../core/result/result.dart';
+import 'package:shenapari_core/network/api_call.dart';
+import 'package:shenapari_core/result/result.dart';
 import '../domain/entities/app_notification.dart';
 import '../domain/notifications_repository.dart';
 import 'notifications_api.dart';

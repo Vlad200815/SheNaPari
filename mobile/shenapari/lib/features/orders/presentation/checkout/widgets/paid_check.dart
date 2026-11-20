@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 
 /// The tick on «Оплачено», played once: the yellow circle pops in, the
 /// tick draws itself, a soft ring and a handful of confetti in the logo's

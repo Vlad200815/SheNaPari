@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import '../../core/l10n/l10n.dart';
+import '../l10n/l10n.dart';
 
 /// A stand-in for a screen that is not designed yet: a title, an optional
 /// note and buttons that let us walk through the navigation.
@@ -27,7 +27,7 @@ class PlaceholderPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                LocaleKeys.common_placeholder.tr(),
+                CoreKeys.commonPlaceholder.tr(),
                 style: theme.textTheme.labelLarge,
               ),
               if (note != null) ...[

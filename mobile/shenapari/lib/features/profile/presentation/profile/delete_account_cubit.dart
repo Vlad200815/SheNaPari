@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/result/failure.dart';
-import '../../../../core/result/result.dart';
+import 'package:shenapari_core/result/failure.dart';
+import 'package:shenapari_core/result/result.dart';
 import '../../domain/usecases/delete_account_use_case.dart';
 
 part 'delete_account_cubit.freezed.dart';

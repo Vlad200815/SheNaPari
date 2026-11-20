@@ -1,4 +1,4 @@
-import '../../../../core/session/session_repository.dart';
+import 'package:shenapari_core/session/session_repository.dart';
 import '../auth_repository.dart';
 
 /// Revokes the refresh token on the server and clears the local session.

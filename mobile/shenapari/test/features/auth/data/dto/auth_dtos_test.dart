@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shenapari/core/session/auth_tokens.dart';
+import 'package:shenapari_core/session/auth_tokens.dart';
 import 'package:shenapari/features/auth/data/dto/auth_dtos.dart';
 import 'package:shenapari/features/auth/domain/entities/sign_in.dart';
 

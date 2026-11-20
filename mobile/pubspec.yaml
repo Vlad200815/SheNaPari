@@ -1,0 +1,11 @@
+# The Flutter workspace: the customer app, the kitchen app and the code they
+# share. `flutter pub get` in any member resolves all of them together.
+name: shenapari_workspace
+publish_to: none
+
+environment:
+  sdk: ^3.10.7
+
+workspace:
+  - shenapari
+  - packages/shenapari_core

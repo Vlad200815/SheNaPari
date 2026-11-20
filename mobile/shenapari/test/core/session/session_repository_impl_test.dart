@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shenapari/core/session/auth_tokens.dart';
-import 'package:shenapari/core/session/session_repository_impl.dart';
-import 'package:shenapari/core/session/session_status.dart';
-import 'package:shenapari/core/storage/in_memory_token_storage.dart';
-import 'package:shenapari/core/storage/token_storage.dart';
+import 'package:shenapari_core/session/auth_tokens.dart';
+import 'package:shenapari_core/session/session_repository_impl.dart';
+import 'package:shenapari_core/session/session_status.dart';
+import 'package:shenapari_core/storage/in_memory_token_storage.dart';
+import 'package:shenapari_core/storage/token_storage.dart';
 
 const _tokens = AuthTokens(accessToken: 'access', refreshToken: 'refresh');
 
