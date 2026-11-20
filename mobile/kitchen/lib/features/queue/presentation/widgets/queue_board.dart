@@ -13,6 +13,7 @@ import '../../../../core/l10n/l10n.dart';
 import '../../domain/entities/kitchen_order.dart';
 import '../queue_cubit.dart';
 import '../queue_state.dart';
+import 'order_details.dart';
 import 'order_ticket.dart';
 import 'queue_colors.dart';
 
@@ -154,6 +155,7 @@ class _QueueBoardState extends State<QueueBoard> {
       onAccept: (minutes) => cubit.accept(order.id, minutes: minutes),
       onReady: () => cubit.markReady(order.id),
       onHandOver: () => _handOver(order),
+      onOpen: () => showOrderDetails(context, order, tablet: widget.tablet),
     );
   }
 }
