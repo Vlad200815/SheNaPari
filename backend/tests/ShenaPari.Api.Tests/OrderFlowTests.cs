@@ -106,7 +106,7 @@ public class OrderFlowTests(ApiFactory api) : IClassFixture<ApiFactory>
     }
 
     [Fact]
-    public async Task Nobody_can_cancel_once_cooking_has_started()
+    public async Task Once_cooking_only_the_kitchen_can_cancel()
     {
         var (customer, _) = await api.LoginCustomerAsync();
         var cook = await api.LoginCookAsync();
@@ -115,9 +115,29 @@ public class OrderFlowTests(ApiFactory api) : IClassFixture<ApiFactory>
         await SetStatusAsync(cook, order.Id, OrderStatus.Cooking);
 
         var byCustomer = await customer.PostAsync($"/orders/{order.Id}/cancel", null);
+        Assert.Equal(["order.cannot_cancel"], (await byCustomer.ReadResultAsync<object>()).Errors);
+
+        // The kitchen ran out of something halfway: it may still cancel, and the money goes back.
+        var byCook = await SetStatusAsync(cook, order.Id, OrderStatus.Cancelled, "Закінчились продукти");
+        Assert.Equal(HttpStatusCode.OK, byCook.StatusCode);
+        var cancelled = await customer.GetDataAsync<OrderDto>($"/orders/{order.Id}");
+        Assert.Equal(OrderStatus.Cancelled, cancelled.Status);
+        Assert.Equal("Закінчились продукти", cancelled.History[^1].Reason);
+        Assert.True(await api.WithDbAsync(db => db.Payments.AnyAsync(p => p.OrderId == order.Id && p.Status == PaymentStatus.Refunded)));
+    }
+
+    [Fact]
+    public async Task A_ready_order_cannot_be_cancelled()
+    {
+        var (customer, _) = await api.LoginCustomerAsync();
+        var cook = await api.LoginCookAsync();
+        var order = await PlaceAsync(customer);
+        await AcceptAsync(cook, order.Id);
+        await SetStatusAsync(cook, order.Id, OrderStatus.Cooking);
+        await SetStatusAsync(cook, order.Id, OrderStatus.Ready);
+
         var byCook = await SetStatusAsync(cook, order.Id, OrderStatus.Cancelled);
 
-        Assert.Equal(["order.cannot_cancel"], (await byCustomer.ReadResultAsync<object>()).Errors);
         Assert.Equal(["order.invalid_transition"], (await byCook.ReadResultAsync<object>()).Errors);
     }
 

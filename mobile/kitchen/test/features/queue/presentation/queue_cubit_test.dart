@@ -134,4 +134,15 @@ void main() {
     expect(c.state.count(QueueColumn.fresh), 4);
     await c.close();
   });
+
+  test('«Скасувати» with a reason takes it off the board', () async {
+    final c = cubit();
+    await c.load();
+
+    await c.cancel('o38', reason: 'Закінчились продукти');
+
+    expect(repository.calls, contains('cancelled o38: Закінчились продукти'));
+    expect(c.state.count(QueueColumn.cooking), 0);
+    await c.close();
+  });
 }
