@@ -1,5 +1,5 @@
-import '../../../../core/result/result.dart';
-import '../../../../core/session/session_repository.dart';
+import 'package:shenapari_core/result/result.dart';
+import 'package:shenapari_core/session/session_repository.dart';
 import '../profile_repository.dart';
 
 /// Saves the name of a new customer, then marks the profile as filled in.

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/result/result.dart';
+import 'package:shenapari_core/result/result.dart';
 import '../../../cart/domain/entities/cart.dart';
 import '../../../menu/domain/entities/break_slot.dart';
 import '../../../menu/domain/menu_repository.dart';

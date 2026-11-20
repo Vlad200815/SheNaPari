@@ -5,11 +5,11 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
-import '../../../../core/ui/app_button.dart';
-import '../../../../core/ui/app_text.dart';
-import '../../../../core/ui/snack_bars.dart';
+import 'package:shenapari_core/ui/app_button.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/snack_bars.dart';
 import '../../../../gen/assets.gen.dart';
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../../legal/domain/entities/legal_document.dart';
 import '../widgets/auth_layout.dart';
 import '../widgets/phone_field.dart';

@@ -1,11 +1,11 @@
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_text.dart';
 import '../../../../gen/assets.gen.dart';
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// Ukrainian phone input: fixed `+380` prefix with a flag, then
 /// `67 123 45 67`. [onChanged] gets the text as shown, with spaces.

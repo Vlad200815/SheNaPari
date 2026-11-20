@@ -1,0 +1,7 @@
+# Flutter workspace root: tool caches and builds of every member.
+.dart_tool/
+build/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+.idea/
+*.iml

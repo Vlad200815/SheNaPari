@@ -5,15 +5,15 @@ import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../app/di.dart';
-import '../../../core/ui/app_text.dart';
-import '../../../core/ui/app_theme.dart';
-import '../../../core/ui/snack_bars.dart';
-import '../../../gen/colors.gen.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/snack_bars.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../domain/entities/legal_document.dart';
 import 'legal_cubit.dart';
 import '../../../core/l10n/l10n.dart';
 import 'legal_texts.dart';
-import '../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// Terms of use, privacy policy or refund terms: a title, a hint and the Markdown text in
 /// a framed box with a always-visible scrollbar, so it is clear how long

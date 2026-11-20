@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
-import '../../../core/network/api_envelope.dart';
+import 'package:shenapari_core/network/api_envelope.dart';
 import 'legal_document_dto.dart';
 
 part 'legal_api.g.dart';

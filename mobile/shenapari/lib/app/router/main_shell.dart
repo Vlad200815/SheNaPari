@@ -4,17 +4,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../../core/ui/app_text.dart';
-import '../../core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
 import '../../features/orders/presentation/orders/orders_cubit.dart';
 import '../di.dart';
 import '../../features/cart/domain/entities/cart.dart';
 import '../../features/cart/presentation/cart_cubit.dart';
 import '../../gen/assets.gen.dart';
-import '../../gen/colors.gen.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import 'routes.dart';
 import '../../core/l10n/l10n.dart';
-import '../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// The tab bar around the main screens. Each tab keeps its own stack.
 ///

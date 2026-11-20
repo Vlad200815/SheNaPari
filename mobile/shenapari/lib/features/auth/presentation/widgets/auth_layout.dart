@@ -1,9 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../core/ui/app_logo.dart';
-import '../../../../core/ui/app_text.dart';
-import '../../../../core/ui/app_theme.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_logo.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 import '../../../../gen/assets.gen.dart';
 
 /// The step's picture: the dark variant has a dark grey cloud behind the
