@@ -11,6 +11,11 @@ abstract interface class QueueRepository {
   /// cooking — one tap in the kitchen; the customer still sees both steps.
   Future<Result<void>> accept(String id, {required int minutes});
 
-  /// Cooking → ready, or ready → picked up («Видати без QR»).
-  Future<Result<void>> setStatus(String id, OrderStatus status);
+  /// Cooking → ready, ready → picked up («Видати без QR»), or cancelled
+  /// with the [reason] the customer will see.
+  Future<Result<void>> setStatus(
+    String id,
+    OrderStatus status, {
+    String? reason,
+  });
 }

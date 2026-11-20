@@ -16,6 +16,19 @@ class KitchenOrderItem extends Equatable {
   List<Object?> get props => [name, quantity];
 }
 
+/// One step of the order's history: when it moved and why (a reason only
+/// for a kitchen cancellation).
+class KitchenOrderStep extends Equatable {
+  const KitchenOrderStep({required this.status, required this.at, this.reason});
+
+  final OrderStatus status;
+  final DateTime at;
+  final String? reason;
+
+  @override
+  List<Object?> get props => [status, at, reason];
+}
+
 /// An order as the kitchen sees it (backend `StaffOrderDto`).
 class KitchenOrder extends Equatable {
   const KitchenOrder({
@@ -28,6 +41,8 @@ class KitchenOrder extends Equatable {
     this.breakStartsAt,
     this.estimatedReadyAt,
     this.readyAt,
+    this.totalKopecks = 0,
+    this.history = const [],
   });
 
   final String id;
@@ -43,6 +58,16 @@ class KitchenOrder extends Equatable {
   final DateTime? estimatedReadyAt;
   final DateTime? readyAt;
   final List<KitchenOrderItem> items;
+  final int totalKopecks;
+
+  /// Oldest first.
+  final List<KitchenOrderStep> history;
+
+  /// The kitchen may stop it until it is ready (it ran out of something).
+  bool get canCancel =>
+      status == OrderStatus.paid ||
+      status == OrderStatus.accepted ||
+      status == OrderStatus.cooking;
 
   bool get isAsap => breakStartsAt == null;
 
@@ -69,5 +94,7 @@ class KitchenOrder extends Equatable {
     estimatedReadyAt,
     readyAt,
     items,
+    totalKopecks,
+    history,
   ];
 }

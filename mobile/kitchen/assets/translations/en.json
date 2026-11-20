@@ -67,5 +67,35 @@
     "keep": "No",
     "retry": "Try again",
     "column_empty": "Empty"
+  },
+  "order": {
+    "title": "Order #{number}",
+    "customer": "Customer: {name}",
+    "total": "Total",
+    "history": "History",
+    "cancel": "Cancel",
+    "close": "Close",
+    "steps": {
+      "paid": "Paid",
+      "accepted": "Accepted",
+      "cooking": "Cooking",
+      "ready": "Ready",
+      "picked_up": "Picked up",
+      "cancelled": "Cancelled",
+      "not_picked_up": "Not picked up"
+    }
+  },
+  "cancel": {
+    "title": "Cancel order #{number}?",
+    "text": "The customer sees the reason; {sum} is refunded automatically.",
+    "reasons": {
+      "out_of_stock": "Ran out of ingredients",
+      "overloaded": "The kitchen is overloaded",
+      "technical": "Technical problem",
+      "something_else": "Another reason…"
+    },
+    "other_hint": "What happened? The customer will see it",
+    "confirm": "Yes, cancel",
+    "keep": "Keep it"
   }
 }
