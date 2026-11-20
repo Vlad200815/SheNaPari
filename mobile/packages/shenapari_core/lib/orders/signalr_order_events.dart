@@ -3,13 +3,14 @@ import 'dart:developer' as developer;
 
 import 'package:signalr_netcore/signalr_client.dart';
 
-import 'package:shenapari_core/session/session_repository.dart';
-import '../domain/order_events.dart';
+import '../session/session_repository.dart';
+import 'order_events.dart';
 
 /// [OrderEvents] over the backend's SignalR hub `/hubs/orders`.
 ///
-/// The hub puts each connection into the group of its user, so only the
-/// customer's own orders arrive. The connection opens when the first screen
+/// The hub puts each connection into the group of its user, so a customer
+/// gets only their own orders; staff are also in the staff group and get
+/// every order, new ones included (`OrderCreated`). The connection opens when the first screen
 /// starts listening and closes when the last one stops (or on sign-out).
 ///
 /// The access token is read at connect time. Screens load orders over REST
@@ -56,6 +57,11 @@ class SignalROrderEvents implements OrderEvents {
       ..on('OrderStatusChanged', (arguments) {
         final event = arguments?.firstOrNull;
         if (event is Map) _controller.add(event['orderId']?.toString());
+      })
+      // Staff only: a new paid order (the payload is the whole order).
+      ..on('OrderCreated', (arguments) {
+        final event = arguments?.firstOrNull;
+        if (event is Map) _controller.add(event['id']?.toString());
       })
       // Events sent while offline are lost: ask screens to reload.
       ..onreconnected(({connectionId}) => _controller.add(null))

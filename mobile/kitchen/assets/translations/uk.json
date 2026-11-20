@@ -34,6 +34,38 @@
     "sign_out": "Вийти",
     "sign_out_title": "Вийти з кухні?",
     "sign_out_text": "Щоб повернутись, знадобляться пошта й пароль.",
-    "stay": "Залишитись"
+    "stay": "Залишитись",
+    "columns": {
+      "fresh": "Нові",
+      "cooking": "Готуються",
+      "ready": "Готові"
+    },
+    "status": {
+      "fresh": "нове",
+      "cooking": "готується",
+      "ready": "готове"
+    },
+    "asap": "Якнайшвидше",
+    "break_at": "Перерва {time}",
+    "filter_all": "Усі",
+    "just_now": "щойно",
+    "min_ago": "{n} хв тому",
+    "left": "ще {n} хв",
+    "late": "+{n} хв",
+    "ready_for": "{n} хв",
+    "waiting_long": "чекає {n} хв",
+    "eta": "{n} хв",
+    "accept": "Прийняти · {n} хв",
+    "ready_btn": "Готово",
+    "hand_over": "Видати без QR",
+    "new_order": "Нове замовлення №{number}",
+    "new_orders": "Нові замовлення: {numbers}",
+    "hand_over_title": "Видати №{number} без QR?",
+    "hand_over_text": "Звірте ім’я: {name}. Замовлення закриється як видане.",
+    "hand_over_text_noname": "Замовлення закриється як видане.",
+    "hand_over_confirm": "Видати",
+    "keep": "Ні",
+    "retry": "Спробувати ще раз",
+    "column_empty": "Порожньо"
   }
 }

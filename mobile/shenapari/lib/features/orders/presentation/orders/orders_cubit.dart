@@ -6,7 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:shenapari_core/result/failure.dart';
 import 'package:shenapari_core/result/result.dart';
 import '../../domain/entities/order.dart';
-import '../../domain/order_events.dart';
+import 'package:shenapari_core/orders/order_events.dart';
 import '../../domain/orders_repository.dart';
 
 part 'orders_cubit.freezed.dart';

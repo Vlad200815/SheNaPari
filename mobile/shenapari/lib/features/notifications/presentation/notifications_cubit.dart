@@ -5,7 +5,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:shenapari_core/result/failure.dart';
 import 'package:shenapari_core/result/result.dart';
-import '../../orders/domain/order_events.dart';
+import 'package:shenapari_core/orders/order_events.dart';
 import '../domain/entities/app_notification.dart';
 import '../domain/notifications_repository.dart';
 

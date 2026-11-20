@@ -1,19 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:shenapari_core/orders/order_status.dart';
+
+export 'package:shenapari_core/orders/order_status.dart';
 
 import '../../../menu/domain/entities/break_slot.dart';
-
-/// Paid → Accepted → Cooking → Ready → PickedUp; Cancelled before cooking,
-/// NotPickedUp when nobody came for a ready order.
-enum OrderStatus {
-  paid,
-  accepted,
-  cooking,
-  ready,
-  pickedUp,
-  cancelled,
-  notPickedUp,
-  unknown,
-}
 
 /// Payment is simulated: the provider only says which button was used.
 enum PaymentProvider { googlePay, applePay, unknown }
