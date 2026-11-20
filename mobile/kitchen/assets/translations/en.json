@@ -97,5 +97,20 @@
     "other_hint": "What happened? The customer will see it",
     "confirm": "Yes, cancel",
     "keep": "Keep it"
+  },
+  "pickup": {
+    "scan_hint": "Point the camera at the customer's QR",
+    "no_camera": "No camera — type the order number",
+    "manual": "Or the order number",
+    "ok": "OK",
+    "waiting": "Scan a QR or type a number",
+    "done": "#{number} handed over",
+    "hand_over": "Hand over #{number}",
+    "ready_for": "Ready · {name}",
+    "problems": {
+      "not_our_code": "Not a SheNaPari code",
+      "no_such_number": "No order with this number",
+      "not_ready": "#{number} is not ready yet"
+    }
   }
 }
