@@ -1,3 +1,4 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shenapari_core/gen/colors.gen.dart';
 import 'package:shenapari_core/ui/app_colors.dart';
@@ -5,13 +6,17 @@ import 'package:shenapari_core/ui/app_logo.dart';
 import 'package:shenapari_core/ui/app_text.dart';
 import 'package:shenapari_core/ui/confirm_sheet.dart';
 
+import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
+import '../domain/entities/kitchen_order.dart';
+import 'queue_cubit.dart';
+import 'widgets/queue_board.dart';
 
 enum KitchenTab { queue, pickup, stopList }
 
 /// The kitchen's frame: on a tablet a top bar with the logo, the three tabs
-/// and the employee button; on a phone a header and a bottom bar. For now
-/// only the empty queue is there — the columns come next.
+/// and the employee button; on a phone a header and a bottom bar. The queue
+/// cubit lives here, so the «Черга» tab can count the new orders.
 class QueuePage extends StatefulWidget {
   const QueuePage({super.key, required this.onSignOut});
 
@@ -40,37 +45,40 @@ class _QueuePageState extends State<QueuePage> {
 
   @override
   Widget build(BuildContext context) {
-    final body = switch (_tab) {
-      KitchenTab.queue => const _Empty(),
-      KitchenTab.pickup || KitchenTab.stopList => const _Soon(),
-    };
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final tablet = constraints.maxWidth >= QueuePage.tabletWidth;
-        return Scaffold(
-          body: SafeArea(
-            bottom: tablet,
-            child: Column(
-              children: [
-                tablet
-                    ? _TopBar(
-                        tab: _tab,
-                        onTab: (tab) => setState(() => _tab = tab),
-                        onSignOut: _signOut,
-                      )
-                    : _PhoneHeader(tab: _tab, onSignOut: _signOut),
-                Expanded(child: body),
-              ],
+    return BlocProvider(
+      create: (_) => sl<QueueCubit>()..load(),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final tablet = constraints.maxWidth >= QueuePage.tabletWidth;
+          final body = switch (_tab) {
+            KitchenTab.queue => QueueBoard(tablet: tablet),
+            KitchenTab.pickup || KitchenTab.stopList => const _Soon(),
+          };
+          return Scaffold(
+            body: SafeArea(
+              bottom: tablet,
+              child: Column(
+                children: [
+                  tablet
+                      ? _TopBar(
+                          tab: _tab,
+                          onTab: (tab) => setState(() => _tab = tab),
+                          onSignOut: _signOut,
+                        )
+                      : _PhoneHeader(tab: _tab, onSignOut: _signOut),
+                  Expanded(child: body),
+                ],
+              ),
             ),
-          ),
-          bottomNavigationBar: tablet
-              ? null
-              : _BottomBar(
-                  tab: _tab,
-                  onTab: (tab) => setState(() => _tab = tab),
-                ),
-        );
-      },
+            bottomNavigationBar: tablet
+                ? null
+                : _BottomBar(
+                    tab: _tab,
+                    onTab: (tab) => setState(() => _tab = tab),
+                  ),
+          );
+        },
+      ),
     );
   }
 }
@@ -133,6 +141,7 @@ class _TopBar extends StatelessWidget {
                     label: _label(t),
                     selected: t == tab,
                     onTap: () => onTab(t),
+                    count: t == KitchenTab.queue ? const _NewCount() : null,
                   ),
               ],
             ),
@@ -150,11 +159,13 @@ class _TabChip extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
+    this.count,
   });
 
   final String label;
   final bool selected;
   final VoidCallback onTap;
+  final Widget? count;
 
   @override
   Widget build(BuildContext context) {
@@ -172,12 +183,18 @@ class _TabChip extends StatelessWidget {
             color: selected ? colors.fill : Colors.transparent,
             borderRadius: BorderRadius.circular(9),
           ),
-          child: Text(
-            label,
-            style: AppText.small(
-              color: selected ? colors.textPrimary : colors.textSecondary,
-              fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: AppText.small(
+                  color: selected ? colors.textPrimary : colors.textSecondary,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                ),
+              ),
+              ?count,
+            ],
           ),
         ),
       ),
@@ -292,50 +309,6 @@ class _BottomBar extends StatelessWidget {
   }
 }
 
-/// «Поки тихо»: nothing in the queue.
-class _Empty extends StatelessWidget {
-  const _Empty();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 96,
-              height: 96,
-              decoration: BoxDecoration(
-                color: colors.fill,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.check_rounded,
-                size: 46,
-                color: ColorName.primary400,
-              ),
-            ),
-            const SizedBox(height: 18),
-            Text(
-              LocaleKeys.queue_empty_title.tr(),
-              style: AppText.title().copyWith(fontSize: 22),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              LocaleKeys.queue_empty_text.tr(),
-              textAlign: TextAlign.center,
-              style: AppText.regular(color: colors.textSecondary),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _Soon extends StatelessWidget {
   const _Soon();
 
@@ -346,4 +319,32 @@ class _Soon extends StatelessWidget {
       style: AppText.regular(color: context.colors.textSecondary),
     ),
   );
+}
+
+/// The yellow count of new orders on the «Черга» tab (nothing when none).
+class _NewCount extends StatelessWidget {
+  const _NewCount();
+
+  @override
+  Widget build(BuildContext context) {
+    final count = context.select<QueueCubit, int>(
+      (cubit) => cubit.state.count(QueueColumn.fresh),
+    );
+    if (count == 0) return const SizedBox.shrink();
+    return Container(
+      margin: const EdgeInsets.only(left: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      decoration: BoxDecoration(
+        color: ColorName.primary400,
+        borderRadius: BorderRadius.circular(99),
+      ),
+      child: Text(
+        '$count',
+        style: AppText.small(
+          color: ColorName.black,
+          fontWeight: FontWeight.w700,
+        ).copyWith(fontSize: 11),
+      ),
+    );
+  }
 }

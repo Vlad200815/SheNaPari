@@ -23,7 +23,7 @@ import 'package:shenapari/features/auth/domain/usecases/sign_out_use_case.dart';
 import 'package:shenapari/features/auth/presentation/widgets/code_field.dart';
 import 'package:shenapari/features/menu/domain/menu_repository.dart';
 import 'package:shenapari/features/orders/domain/entities/order.dart';
-import 'package:shenapari/features/orders/domain/order_events.dart';
+import 'package:shenapari_core/orders/order_events.dart';
 import 'package:shenapari/features/orders/domain/orders_repository.dart';
 import 'package:shenapari/features/notifications/domain/notifications_repository.dart';
 import 'package:shenapari/features/onboarding/presentation/onboarding_page.dart';
