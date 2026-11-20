@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shenapari/core/network/api_envelope.dart';
+import 'package:shenapari_core/network/api_envelope.dart';
 
 void main() {
   group('ApiEnvelope.fromJson', () {

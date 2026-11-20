@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../core/l10n/l10n.dart';
-import '../core/session/session_cubit.dart';
-import '../core/storage/app_prefs.dart';
-import '../core/ui/app_theme.dart';
+import 'package:shenapari_core/session/session_cubit.dart';
+import 'package:shenapari_core/storage/app_prefs.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
 import '../features/cart/presentation/cart_cubit.dart';
 import 'di.dart';
 

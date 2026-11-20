@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/result/result.dart';
+import 'package:shenapari_core/result/result.dart';
 import '../../domain/usecases/complete_registration_use_case.dart';
 import 'registration_state.dart';
 

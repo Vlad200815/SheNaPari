@@ -1,7 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../../../core/ui/app_button.dart';
-import '../../../core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/app_button.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/app_logo.dart';
 import '../../../gen/assets.gen.dart';
 import 'widgets/onboarding_slide.dart';
 import 'widgets/page_dots.dart';
@@ -62,7 +63,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Assets.images.icLogo.svg(),
+              child: const AppLogo(),
             ),
             Expanded(
               child: PageView(

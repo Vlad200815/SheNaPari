@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/session/session_status.dart';
+import 'package:shenapari_core/session/session_status.dart';
 import '../../menu/domain/entities/dish.dart';
 import '../domain/cart_repository.dart';
 import '../domain/entities/cart.dart';

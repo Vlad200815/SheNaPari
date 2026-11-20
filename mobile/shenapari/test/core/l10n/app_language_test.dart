@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shenapari/core/l10n/app_language.dart';
+import 'package:shenapari_core/l10n/app_language.dart';
 
 void main() {
   group('resolveLanguageCode', () {

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shenapari/core/network/api_envelope.dart';
-import 'package:shenapari/core/network/failure_mapper.dart';
-import 'package:shenapari/core/result/failure.dart';
+import 'package:shenapari_core/network/api_envelope.dart';
+import 'package:shenapari_core/network/failure_mapper.dart';
+import 'package:shenapari_core/result/failure.dart';
 
 final _options = RequestOptions(path: '/test');
 

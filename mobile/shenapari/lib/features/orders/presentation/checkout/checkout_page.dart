@@ -5,15 +5,15 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'widgets/paid_check.dart';
-import '../../../../core/ui/app_logo.dart';
+import 'package:shenapari_core/ui/app_logo.dart';
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
-import '../../../../core/ui/app_button.dart';
-import '../../../../core/ui/app_text.dart';
-import '../../../../core/ui/app_theme.dart';
-import '../../../../core/ui/format_price.dart';
-import '../../../../core/ui/snack_bars.dart';
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/ui/app_button.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/format_price.dart';
+import 'package:shenapari_core/ui/snack_bars.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../../cart/domain/entities/cart.dart';
 import '../../../cart/presentation/cart_cubit.dart';
 import '../../../menu/presentation/home/break_countdown.dart';
@@ -21,7 +21,7 @@ import '../../domain/entities/order.dart';
 import 'checkout_cubit.dart';
 import 'checkout_state.dart';
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// When to pick up, what is ordered, how to pay — then «Оплатити».
 class CheckoutPage extends StatelessWidget {

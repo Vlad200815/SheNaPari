@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../core/session/session_repository.dart';
+import 'package:shenapari_core/session/session_repository.dart';
 import 'data/cart_repository_impl.dart';
 import 'domain/cart_repository.dart';
 import 'presentation/cart_cubit.dart';

@@ -1,9 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../../core/l10n/l10n.dart';
-import '../../../../../core/ui/app_colors.dart';
-import '../../../../../core/ui/app_text.dart';
-import '../../../../../core/ui/format_price.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/format_price.dart';
 import '../../../domain/entities/order.dart';
 import '../../widgets/order_texts.dart';
 

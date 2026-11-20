@@ -38,9 +38,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/ic_chili.svg
   SvgGenImage get icChili => const SvgGenImage('assets/images/ic_chili.svg');
 
-  /// File path: assets/images/ic_logo.svg
-  SvgGenImage get icLogo => const SvgGenImage('assets/images/ic_logo.svg');
-
   /// File path: assets/images/ic_scan.svg
   SvgGenImage get icScan => const SvgGenImage('assets/images/ic_scan.svg');
 
@@ -60,7 +57,7 @@ class $AssetsImagesGen {
   AssetGenImage get test => const AssetGenImage('assets/images/test.jpg');
 
   /// List of all assets
-  List<dynamic> get values => [appIcon, icBackArrow, icChili, icLogo, icScan, icTestError, starRating, test];
+  List<dynamic> get values => [appIcon, icBackArrow, icChili, icScan, icTestError, starRating, test];
 }
 
 class $AssetsLegalGen {

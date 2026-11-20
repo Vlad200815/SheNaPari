@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shenapari/core/network/language_interceptor.dart';
+import 'package:shenapari_core/network/language_interceptor.dart';
 
 void main() {
   test('every request says which language the app shows', () async {

@@ -1,4 +1,4 @@
-import '../../core/session/session_status.dart';
+import 'package:shenapari_core/session/session_status.dart';
 import 'routes.dart';
 
 /// Decides where the user must be for the current session state.

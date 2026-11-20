@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/result/result.dart';
+import 'package:shenapari_core/result/result.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/profile_repository.dart';
 

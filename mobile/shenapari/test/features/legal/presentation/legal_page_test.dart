@@ -6,9 +6,9 @@ import 'package:shenapari/features/legal/domain/entities/legal_document.dart';
 import 'package:shenapari/features/legal/domain/legal_repository.dart';
 import 'package:shenapari/features/legal/presentation/legal_cubit.dart';
 import 'package:shenapari/features/legal/presentation/legal_page.dart';
-import 'package:shenapari/gen/colors.gen.dart';
-import 'package:shenapari/core/ui/app_colors.dart';
-import 'package:shenapari/core/ui/app_theme.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
 
 class _FakeLegalRepository implements LegalRepository {
   _FakeLegalRepository(this.content);

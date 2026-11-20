@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/session/session_repository.dart';
-import '../../core/storage/app_prefs.dart';
+import 'package:shenapari_core/session/session_repository.dart';
+import 'package:shenapari_core/storage/app_prefs.dart';
 import '../../features/auth/presentation/code/code_page.dart';
 import '../../features/auth/presentation/phone/phone_page.dart';
 import '../../features/cart/presentation/cart_page.dart';

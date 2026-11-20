@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../core/l10n/app_locale.dart';
+import 'package:shenapari_core/l10n/app_locale.dart';
 import 'data/legal_api.dart';
 import 'data/legal_repository_impl.dart';
 import 'domain/entities/legal_document.dart';
