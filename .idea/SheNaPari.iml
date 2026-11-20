@@ -3,6 +3,12 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/mobile/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/mobile/build" />
+      <excludeFolder url="file://$MODULE_DIR$/mobile/kitchen/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/mobile/kitchen/build" />
+      <excludeFolder url="file://$MODULE_DIR$/mobile/packages/shenapari_core/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/mobile/packages/shenapari_core/build" />
       <excludeFolder url="file://$MODULE_DIR$/mobile/shenapari/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/mobile/shenapari/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/mobile/shenapari/build" />
