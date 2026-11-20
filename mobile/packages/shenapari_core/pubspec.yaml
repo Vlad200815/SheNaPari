@@ -19,6 +19,7 @@ dependencies:
   google_fonts: ^9.0.0
   material_ui: ^1.11.1
   shared_preferences: ^2.3.4
+  signalr_netcore: ^1.4.4
 
 dev_dependencies:
   flutter_test:
