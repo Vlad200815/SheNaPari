@@ -2,7 +2,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class  LocaleKeys {
+abstract class LocaleKeys {
   static const app_name = 'app.name';
   static const app_title = 'app.title';
   static const app = 'app';
@@ -91,5 +91,18 @@ abstract class  LocaleKeys {
   static const cancel_confirm = 'cancel.confirm';
   static const cancel_keep = 'cancel.keep';
   static const cancel = 'cancel';
-
+  static const pickup_scan_hint = 'pickup.scan_hint';
+  static const pickup_no_camera = 'pickup.no_camera';
+  static const pickup_manual = 'pickup.manual';
+  static const pickup_ok = 'pickup.ok';
+  static const pickup_waiting = 'pickup.waiting';
+  static const pickup_done = 'pickup.done';
+  static const pickup_hand_over = 'pickup.hand_over';
+  static const pickup_ready_for = 'pickup.ready_for';
+  static const pickup_problems_not_our_code = 'pickup.problems.not_our_code';
+  static const pickup_problems_no_such_number =
+      'pickup.problems.no_such_number';
+  static const pickup_problems_not_ready = 'pickup.problems.not_ready';
+  static const pickup_problems = 'pickup.problems';
+  static const pickup = 'pickup';
 }
