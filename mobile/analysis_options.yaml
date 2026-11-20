@@ -1,0 +1,6 @@
+# The workspace root: no code of its own, only build caches (iOS Swift
+# packages land in build/ here). Keep the analyzer out of them.
+analyzer:
+  exclude:
+    - build/**
+    - .dart_tool/**
