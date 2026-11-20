@@ -28,6 +28,12 @@ class QueueRepositoryImpl implements QueueRepository {
   }
 
   @override
+  Future<Result<KitchenOrder>> pickUp(String token) => apiCall(
+    () => _api.pickup(PickupDto(token: token)),
+    (dto) => dto.toEntity(),
+  );
+
+  @override
   Future<Result<void>> setStatus(
     String id,
     OrderStatus status, {
