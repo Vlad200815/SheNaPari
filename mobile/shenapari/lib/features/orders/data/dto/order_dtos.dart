@@ -85,12 +85,10 @@ class OrderDto {
   );
 
   /// `PickedUp` → [OrderStatus.pickedUp]; anything new → `unknown`.
-  static OrderStatus parseStatus(String value) =>
-      OrderStatus.values.asNameMap()[_camel(value)] ?? OrderStatus.unknown;
+  static OrderStatus parseStatus(String value) => parseOrderStatus(value);
 
   /// [OrderStatus.pickedUp] → `PickedUp`.
-  static String statusName(OrderStatus status) =>
-      status.name[0].toUpperCase() + status.name.substring(1);
+  static String statusName(OrderStatus status) => orderStatusName(status);
 
   /// [PaymentProvider.googlePay] → `GooglePay`.
   static String providerName(PaymentProvider provider) =>
@@ -145,9 +143,6 @@ class OrderStatusChangeDto {
 }
 
 int toKopecks(num hryvnias) => (hryvnias * 100).round();
-
-String _camel(String value) =>
-    value.isEmpty ? value : value[0].toLowerCase() + value.substring(1);
 
 /// `GET /orders/my/history`
 @JsonSerializable(createToJson: false)
