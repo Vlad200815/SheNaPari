@@ -2,21 +2,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../core/ui/confirm_sheet.dart';
+import 'package:shenapari_core/ui/confirm_sheet.dart';
 import '../../../../app/di.dart';
 import '../../../../app/router/routes.dart';
-import '../../../../core/ui/app_button.dart';
-import '../../../../core/ui/app_text.dart';
-import '../../../../core/ui/app_theme.dart';
-import '../../../../core/ui/format_price.dart';
-import '../../../../core/ui/snack_bars.dart';
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/ui/app_button.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/format_price.dart';
+import 'package:shenapari_core/ui/snack_bars.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../domain/entities/order.dart';
 import '../widgets/order_texts.dart';
 import '../widgets/order_widgets.dart';
 import 'order_cubit.dart';
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// One order: status steps (live), the QR once ready, what was ordered and
 /// cancellation while the kitchen has not started cooking.

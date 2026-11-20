@@ -1,8 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../core/core_module.dart';
-import '../core/storage/token_storage.dart';
+import 'package:shenapari_core/core_module.dart';
+import 'package:shenapari_core/storage/token_storage.dart';
+
+import '../core/device/qr_display_mode.dart';
 import '../features/auth/auth_module.dart';
 import '../features/cart/cart_module.dart';
 import '../features/legal/legal_module.dart';
@@ -24,6 +26,8 @@ void setupDi({required SharedPreferences prefs, TokenStorage? tokenStorage}) {
     prefs: prefs,
     tokenStorage: tokenStorage,
   );
+  // The customer's own device bits: brightness up and no screenshots at pickup.
+  sl.registerLazySingleton<QrDisplayMode>(DeviceQrDisplayMode.new);
   registerAuth(sl);
   registerProfile(sl);
   registerMenu(sl);

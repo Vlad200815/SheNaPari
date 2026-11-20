@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/result/failure.dart';
+import 'package:shenapari_core/result/failure.dart';
 import '../../../menu/domain/entities/break_slot.dart';
 import '../../domain/entities/order.dart';
 

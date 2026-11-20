@@ -4,18 +4,18 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../app/di.dart';
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/l10n/switch_language.dart';
-import '../../../../core/ui/app_text.dart';
-import '../../../../core/ui/app_theme.dart';
-import '../../../../core/ui/snack_bars.dart';
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/l10n/switch_language.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/ui/app_theme.dart';
+import 'package:shenapari_core/ui/snack_bars.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../profile/confirm_delete_dialog.dart';
 import '../profile/delete_account_cubit.dart';
 import '../widgets/profile_ui.dart';
 import 'language_menu.dart';
 import 'theme_menu.dart';
 import 'settings_cubit.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// «Налаштування»: order push on/off, the phone's notification permission,
 /// «Вимкнути анімації» and,

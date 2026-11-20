@@ -1,5 +1,5 @@
-import '../../../core/network/api_call.dart';
-import '../../../core/result/result.dart';
+import 'package:shenapari_core/network/api_call.dart';
+import 'package:shenapari_core/result/result.dart';
 import '../domain/entities/user.dart';
 import '../domain/profile_repository.dart';
 import 'dto/me_dto.dart';

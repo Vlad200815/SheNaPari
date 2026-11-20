@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shenapari/core/result/failure.dart';
-import 'package:shenapari/core/result/result.dart';
+import 'package:shenapari_core/result/failure.dart';
+import 'package:shenapari_core/result/result.dart';
 import 'package:shenapari/features/cart/domain/entities/cart.dart';
 import 'package:shenapari/features/orders/domain/entities/order.dart';
 import 'package:shenapari/features/orders/presentation/orders/orders_cubit.dart';

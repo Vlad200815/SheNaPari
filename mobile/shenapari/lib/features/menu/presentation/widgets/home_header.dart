@@ -1,9 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../core/ui/app_text.dart';
-import '../../../../gen/colors.gen.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// "Привіт, Влад" + "Що будемо їсти?" and the notifications bell.
 class HomeHeader extends StatelessWidget {

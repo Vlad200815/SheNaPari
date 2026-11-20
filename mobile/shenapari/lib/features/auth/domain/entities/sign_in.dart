@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../core/session/auth_tokens.dart';
+import 'package:shenapari_core/session/auth_tokens.dart';
 
 /// The result of a successful code check.
 class SignIn extends Equatable {

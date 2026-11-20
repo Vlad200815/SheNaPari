@@ -1,8 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:shenapari/core/result/failure.dart';
-import 'package:shenapari/core/result/result.dart';
+import 'package:shenapari_core/result/failure.dart';
+import 'package:shenapari_core/result/result.dart';
 import 'package:shenapari/features/menu/domain/menu_repository.dart';
 import 'package:shenapari/features/menu/presentation/dish/dish_cubit.dart';
 import 'package:shenapari/features/menu/presentation/dish/dish_state.dart';

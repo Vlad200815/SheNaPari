@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:shenapari/core/device/qr_display_mode.dart';
-import 'package:shenapari/core/result/failure.dart';
-import 'package:shenapari/core/result/result.dart';
-import 'package:shenapari/core/session/auth_tokens.dart';
+import 'package:shenapari_core/result/failure.dart';
+import 'package:shenapari_core/result/result.dart';
+import 'package:shenapari_core/session/auth_tokens.dart';
 import 'package:shenapari/features/auth/domain/auth_repository.dart';
 import 'package:shenapari/features/auth/domain/entities/sign_in.dart';
 import 'package:shenapari/features/menu/domain/entities/break_slot.dart';

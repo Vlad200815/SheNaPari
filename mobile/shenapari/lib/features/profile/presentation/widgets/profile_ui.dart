@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../../../../core/ui/app_text.dart';
-import '../../../../gen/colors.gen.dart';
-import '../../../../core/ui/app_colors.dart';
+import 'package:shenapari_core/ui/app_text.dart';
+import 'package:shenapari_core/gen/colors.gen.dart';
+import 'package:shenapari_core/ui/app_colors.dart';
 
 /// `+380681234567` → `+38 (068) 123-45-67`.
 String formatProfilePhone(String phone) {

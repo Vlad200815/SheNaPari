@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../gen/assets.gen.dart';
+import '../gen/assets.gen.dart';
 import '../l10n/l10n.dart';
 
 /// The «ШеНа ПАРІ» wordmark, always as drawn: own colours, own proportions
@@ -15,9 +15,9 @@ class AppLogo extends StatelessWidget {
   final double width;
 
   @override
-  Widget build(BuildContext context) => Assets.images.icLogo.svg(
+  Widget build(BuildContext context) => CoreAssets.images.icLogo.svg(
     width: width,
     height: width * 40 / 62,
-    semanticsLabel: LocaleKeys.app_name.tr(),
+    semanticsLabel: CoreKeys.appName.tr(),
   );
 }

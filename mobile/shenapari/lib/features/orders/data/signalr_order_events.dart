@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:signalr_netcore/signalr_client.dart';
 
-import '../../../core/session/session_repository.dart';
+import 'package:shenapari_core/session/session_repository.dart';
 import '../domain/order_events.dart';
 
 /// [OrderEvents] over the backend's SignalR hub `/hubs/orders`.

@@ -6,10 +6,10 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../core/l10n/app_locale.dart';
-import '../core/session/session_repository.dart';
-import '../core/storage/app_prefs.dart';
-import '../core/storage/token_storage.dart';
+import 'package:shenapari_core/l10n/app_locale.dart';
+import 'package:shenapari_core/session/session_repository.dart';
+import 'package:shenapari_core/storage/app_prefs.dart';
+import 'package:shenapari_core/storage/token_storage.dart';
 import '../features/auth/domain/usecases/sign_out_use_case.dart';
 import 'app.dart';
 import 'di.dart';

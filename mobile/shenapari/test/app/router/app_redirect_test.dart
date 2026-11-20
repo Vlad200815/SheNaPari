@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shenapari/app/router/app_redirect.dart';
 import 'package:shenapari/app/router/routes.dart';
-import 'package:shenapari/core/session/session_status.dart';
+import 'package:shenapari_core/session/session_status.dart';
 import 'package:shenapari/features/legal/domain/entities/legal_document.dart';
 
 String? _redirect(

@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../../../core/session/auth_tokens.dart';
+import 'package:shenapari_core/session/auth_tokens.dart';
 import '../../domain/entities/sign_in.dart';
 
 part 'auth_dtos.g.dart';
