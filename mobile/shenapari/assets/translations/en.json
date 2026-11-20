@@ -138,7 +138,6 @@
     "history": "History",
     "status": {
       "paid": "Paid",
-      "accepted": "Accepted",
       "cooking": "Cooking",
       "ready": "Ready, pick it up",
       "picked_up": "Picked up",
@@ -152,8 +151,6 @@
     "steps": {
       "paid": "Paid",
       "paid_text": "The kitchen got the order",
-      "accepted": "Accepted",
-      "accepted_text": "The cook set the ready time",
       "cooking": "Cooking",
       "cooking_text": "Already on the stove",
       "ready": "Ready",

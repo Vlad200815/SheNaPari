@@ -10,7 +10,8 @@ import '../../../../core/l10n/l10n.dart';
 extension OrderTexts on Order {
   String get statusLabel => switch (status) {
     OrderStatus.paid => LocaleKeys.orders_status_paid.tr(),
-    OrderStatus.accepted => LocaleKeys.orders_status_accepted.tr(),
+    // The kitchen accepts and starts cooking in one tap.
+    OrderStatus.accepted ||
     OrderStatus.cooking => LocaleKeys.orders_status_cooking.tr(),
     OrderStatus.ready => LocaleKeys.orders_status_ready.tr(),
     OrderStatus.pickedUp => LocaleKeys.orders_status_picked_up.tr(),
