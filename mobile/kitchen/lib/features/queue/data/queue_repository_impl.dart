@@ -28,8 +28,15 @@ class QueueRepositoryImpl implements QueueRepository {
   }
 
   @override
-  Future<Result<void>> setStatus(String id, OrderStatus status) => apiCall(
-    () => _api.setStatus(id, UpdateStatusDto(status: orderStatusName(status))),
+  Future<Result<void>> setStatus(
+    String id,
+    OrderStatus status, {
+    String? reason,
+  }) => apiCall(
+    () => _api.setStatus(
+      id,
+      UpdateStatusDto(status: orderStatusName(status), reason: reason),
+    ),
     (_) {},
   );
 }

@@ -66,8 +66,14 @@ class FakeQueueRepository implements QueueRepository {
   }
 
   @override
-  Future<Result<void>> setStatus(String id, OrderStatus status) async {
-    calls.add('${status.name} $id');
+  Future<Result<void>> setStatus(
+    String id,
+    OrderStatus status, {
+    String? reason,
+  }) async {
+    calls.add(
+      reason == null ? '${status.name} $id' : '${status.name} $id: $reason',
+    );
     if (_fail() case final failure?) return Err(failure);
     _set(id, status);
     return const Ok(null);
@@ -84,7 +90,8 @@ class FakeQueueRepository implements QueueRepository {
       for (final o in orders)
         if (o.id != id)
           o
-        else if (status != OrderStatus.pickedUp)
+        else if (status != OrderStatus.pickedUp &&
+            status != OrderStatus.cancelled)
           KitchenOrder(
             id: o.id,
             number: o.number,

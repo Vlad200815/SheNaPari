@@ -18,9 +18,13 @@ class OrderTicket extends StatefulWidget {
     required this.onAccept,
     required this.onReady,
     required this.onHandOver,
+    this.onOpen,
   });
 
   final KitchenOrder order;
+
+  /// A tap on the card (not on its buttons): the order's details.
+  final VoidCallback? onOpen;
   final DateTime now;
   final bool busy;
   final ValueChanged<int> onAccept;
@@ -51,70 +55,73 @@ class _OrderTicketState extends State<OrderTicket> {
       color: colors.fill,
       borderRadius: BorderRadius.circular(14),
       clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            color: look.tint,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: Row(
-              children: [
-                Text(
-                  '№${order.number}',
-                  style: AppText.title().copyWith(fontSize: 21),
-                ),
-                const Spacer(),
-                Icon(look.icon, size: 14, color: look.onTint),
-                const SizedBox(width: 4),
-                Text(
-                  columnStatusWord(column),
-                  style: AppText.small(
-                    color: look.onTint,
-                    fontWeight: FontWeight.w600,
-                  ).copyWith(fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    _WhenChip(order: order),
-                    ..._timing(order),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                for (final item in order.items)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 2),
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: '${item.quantity}×  ',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontFeatures: [FontFeature.tabularFigures()],
-                            ),
-                          ),
-                          TextSpan(text: item.name),
-                        ],
-                      ),
-                      style: AppText.regular(color: colors.textPrimary),
-                    ),
+      child: InkWell(
+        onTap: widget.onOpen,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              color: look.tint,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Row(
+                children: [
+                  Text(
+                    '№${order.number}',
+                    style: AppText.title().copyWith(fontSize: 21),
                   ),
-                ..._actions(column),
-              ],
+                  const Spacer(),
+                  Icon(look.icon, size: 14, color: look.onTint),
+                  const SizedBox(width: 4),
+                  Text(
+                    columnStatusWord(column),
+                    style: AppText.small(
+                      color: look.onTint,
+                      fontWeight: FontWeight.w600,
+                    ).copyWith(fontSize: 12),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      WhenChip(order: order),
+                      ..._timing(order),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  for (final item in order.items)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '${item.quantity}×  ',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontFeatures: [FontFeature.tabularFigures()],
+                              ),
+                            ),
+                            TextSpan(text: item.name),
+                          ],
+                        ),
+                        style: AppText.regular(color: colors.textPrimary),
+                      ),
+                    ),
+                  ..._actions(column),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -215,8 +222,9 @@ class _OrderTicketState extends State<OrderTicket> {
   };
 }
 
-class _WhenChip extends StatelessWidget {
-  const _WhenChip({required this.order});
+/// «⚡ Якнайшвидше» (yellow) or «Перерва 11:40» (grey).
+class WhenChip extends StatelessWidget {
+  const WhenChip({super.key, required this.order});
 
   final KitchenOrder order;
 
