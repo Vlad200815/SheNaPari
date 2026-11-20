@@ -1,0 +1,39 @@
+{
+  "app": {
+    "name": "SheNaPari",
+    "title": "SheNaPari Kitchen"
+  },
+  "common": {
+    "more": "More",
+    "less": "Less",
+    "placeholder": "Placeholder"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "No connection to the server"
+  },
+  "kitchen": "Kitchen",
+  "login": {
+    "title": "Staff sign-in",
+    "subtitle": "The admin gives out the e-mail and password",
+    "email": "E-mail",
+    "password": "Password",
+    "show": "Show",
+    "hide": "Hide",
+    "submit": "Sign in",
+    "forgot": "Forgot the password? Ask the admin to reset it.",
+    "brand_text": "Order queue, QR pickup and the stop list for the canteen"
+  },
+  "queue": {
+    "tab_queue": "Queue",
+    "tab_pickup": "Pickup",
+    "tab_stop": "Stop list",
+    "empty_title": "All quiet",
+    "empty_text": "New orders show up here with a sound.",
+    "soon": "Coming soon",
+    "sign_out": "Sign out",
+    "sign_out_title": "Sign out of the kitchen?",
+    "sign_out_text": "Coming back takes the e-mail and password.",
+    "stay": "Stay"
+  }
+}

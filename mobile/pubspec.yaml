@@ -8,4 +8,5 @@ environment:
 
 workspace:
   - shenapari
+  - kitchen
   - packages/shenapari_core
