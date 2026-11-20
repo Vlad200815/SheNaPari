@@ -7,7 +7,7 @@ import 'package:shenapari_core/result/failure.dart';
 import 'package:shenapari_core/result/result.dart';
 import '../../domain/entities/order.dart';
 import '../../domain/entities/order_history.dart';
-import '../../domain/order_events.dart';
+import 'package:shenapari_core/orders/order_events.dart';
 import '../../domain/orders_repository.dart';
 
 part 'order_history_cubit.freezed.dart';

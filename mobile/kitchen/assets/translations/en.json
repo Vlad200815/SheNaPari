@@ -34,6 +34,38 @@
     "sign_out": "Sign out",
     "sign_out_title": "Sign out of the kitchen?",
     "sign_out_text": "Coming back takes the e-mail and password.",
-    "stay": "Stay"
+    "stay": "Stay",
+    "columns": {
+      "fresh": "New",
+      "cooking": "Cooking",
+      "ready": "Ready"
+    },
+    "status": {
+      "fresh": "new",
+      "cooking": "cooking",
+      "ready": "ready"
+    },
+    "asap": "ASAP",
+    "break_at": "Break {time}",
+    "filter_all": "All",
+    "just_now": "just now",
+    "min_ago": "{n} min ago",
+    "left": "{n} min left",
+    "late": "+{n} min",
+    "ready_for": "{n} min",
+    "waiting_long": "waiting {n} min",
+    "eta": "{n} min",
+    "accept": "Accept · {n} min",
+    "ready_btn": "Ready",
+    "hand_over": "Hand over without QR",
+    "new_order": "New order #{number}",
+    "new_orders": "New orders: {numbers}",
+    "hand_over_title": "Hand over #{number} without QR?",
+    "hand_over_text": "Check the name: {name}. The order closes as picked up.",
+    "hand_over_text_noname": "The order closes as picked up.",
+    "hand_over_confirm": "Hand over",
+    "keep": "No",
+    "retry": "Try again",
+    "column_empty": "Empty"
   }
 }

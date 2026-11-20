@@ -4,6 +4,7 @@ import 'package:shenapari_core/core_module.dart';
 import 'package:shenapari_core/storage/token_storage.dart';
 
 import '../features/auth/auth_module.dart';
+import '../features/queue/queue_module.dart';
 import 'env.dart';
 
 /// Service locator. Use it only here, in feature modules and in
@@ -18,4 +19,5 @@ void setupDi({required SharedPreferences prefs, TokenStorage? tokenStorage}) {
     tokenStorage: tokenStorage,
   );
   registerAuth(sl);
+  registerQueue(sl, apiBaseUrl: Env.apiBaseUrl);
 }

@@ -135,7 +135,6 @@ dependencies:
   vector_graphics: any
   flutter_native_splash: any
   material_ui: ^1.11.1
-  signalr_netcore: ^1.4.4
   qr_flutter: ^4.1.0
   screen_brightness: ^2.1.11
   wakelock_plus: ^1.8.0

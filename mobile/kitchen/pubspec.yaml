@@ -15,6 +15,7 @@ dependencies:
   shenapari_core:
     path: ../packages/shenapari_core
 
+  audioplayers: ^6.5.1
   dio: ^5.7.0
   easy_localization: ^3.0.8
   equatable: ^3.0.0
@@ -43,6 +44,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/translations/
+    - assets/sounds/
 
 # `dart run flutter_launcher_icons`: the logo on the kitchen's near-black,
 # so on a tablet it is never mistaken for the customer app.
