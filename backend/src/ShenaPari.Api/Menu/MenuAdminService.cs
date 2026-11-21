@@ -1,3 +1,4 @@
+using ShenaPari.Api.Orders;
 using Microsoft.EntityFrameworkCore;
 using ShenaPari.Api.Common;
 using ShenaPari.Api.Data;
@@ -7,7 +8,7 @@ using ShenaPari.Api.Entities;
 namespace ShenaPari.Api.Menu;
 
 /// Menu management for admins: categories, dishes, prices and dish photos.
-public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
+public class MenuAdminService(AppDbContext db, IWebHostEnvironment env, OrderNotifier notifier)
 {
     private const long MaxImageBytes = 5 * 1024 * 1024;
     private const string ImageFolder = "images/dishes";
@@ -38,7 +39,7 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
 
         var category = new Category { Name = name, NameEn = nameEn, SortOrder = dto.SortOrder };
         db.Categories.Add(category);
-        await db.SaveChangesAsync();
+        await SaveAndAnnounceAsync(null);
         return new AdminCategoryDto(category.Id, category.Name, category.NameEn, category.SortOrder, 0);
     }
 
@@ -54,7 +55,7 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
         category.Name = name;
         category.NameEn = nameEn;
         category.SortOrder = dto.SortOrder;
-        await db.SaveChangesAsync();
+        await SaveAndAnnounceAsync(null);
         return new AdminCategoryDto(category.Id, category.Name, category.NameEn, category.SortOrder, category.Dishes.Count);
     }
 
@@ -65,7 +66,7 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
         if (await db.Dishes.AnyAsync(d => d.CategoryId == id)) return MenuErrors.CategoryNotEmpty;
 
         db.Categories.Remove(category);
-        await db.SaveChangesAsync();
+        await SaveAndAnnounceAsync(null);
         return Result.Ok();
     }
 
@@ -84,7 +85,7 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
         var dish = new Dish { Name = dto.Name.Trim() };
         Apply(dish, dto);
         db.Dishes.Add(dish);
-        await db.SaveChangesAsync();
+        await SaveAndAnnounceAsync(dish);
         return ToDto(dish);
     }
 
@@ -96,11 +97,11 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
         if (await ValidateAsync(dto) is { } error) return error;
 
         Apply(dish, dto);
-        await db.SaveChangesAsync();
+        await SaveAndAnnounceAsync(dish);
         return ToDto(dish);
     }
 
-    /// A dish that was ever ordered can't be deleted (the history points at it): hide it instead.
+    /// A dish that was ever ordered can't be deleted (the history points at it): it is archived.
     public async Task<Result<object?>> DeleteDishAsync(int id)
     {
         var dish = await db.Dishes.FindAsync(id);
@@ -109,13 +110,13 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
         if (await db.OrderItems.AnyAsync(i => i.DishId == id))
         {
             dish.IsArchived = true;
-            await db.SaveChangesAsync();
+            await SaveAndAnnounceAsync(dish);
             return Result.Ok();
         }
 
         DeleteImageFile(dish.ImageUrl);
         db.Dishes.Remove(dish);
-        await db.SaveChangesAsync();
+        await SaveAndAnnounceAsync(dish);
         return Result.Ok();
     }
 
@@ -137,11 +138,19 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
 
         DeleteImageFile(dish.ImageUrl);
         dish.ImageUrl = $"/{ImageFolder}/{fileName}";
-        await db.SaveChangesAsync();
+        await SaveAndAnnounceAsync(dish);
         return ToDto(dish);
     }
 
     // ---------- helpers ----------
+
+    /// Saves, then tells every open app to reload the menu (live, no pull to refresh).
+    private async Task SaveAndAnnounceAsync(Dish? dish)
+    {
+        await db.SaveChangesAsync();
+        await notifier.MenuChangedAsync(dish?.Id);
+    }
+
 
     private async Task<Error?> ValidateAsync(SaveDishDto dto)
     {
