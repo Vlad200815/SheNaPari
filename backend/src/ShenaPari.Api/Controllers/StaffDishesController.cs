@@ -5,13 +5,14 @@ using ShenaPari.Api.Auth;
 using ShenaPari.Api.Common;
 using ShenaPari.Api.Data;
 using ShenaPari.Api.Dtos;
+using ShenaPari.Api.Orders;
 
 namespace ShenaPari.Api.Controllers;
 
 [ApiController]
 [Authorize(Policy = Policies.Cook)]
 [Route("staff/dishes")]
-public class StaffDishesController(AppDbContext db) : ControllerBase
+public class StaffDishesController(AppDbContext db, OrderNotifier notifier) : ControllerBase
 {
     // GET /staff/dishes — the whole menu, hidden dishes included
     [HttpGet]
@@ -34,6 +35,7 @@ public class StaffDishesController(AppDbContext db) : ControllerBase
 
         dish.IsAvailable = dto.IsAvailable;
         await db.SaveChangesAsync();
+        await notifier.MenuChangedAsync(dish.Id);
         return Result<StaffDishDto>.Ok(new StaffDishDto(dish.Id, dish.CategoryId, Lang.Pick(dish.Name, dish.NameEn), dish.IsAvailable))
             .ToActionResult();
     }

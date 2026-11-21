@@ -52,6 +52,11 @@ public class OrderNotifier(IHubContext<OrdersHub> hub, PushService push, CampusC
     public Task CanteenChangedAsync(CanteenDto canteen) =>
         hub.Clients.All.SendAsync("CanteenChanged", canteen);
 
+    /// A dish ran out / came back (stop list) or the admin edited the menu →
+    /// everyone connected reloads it. [dishId] is null for category changes.
+    public Task MenuChangedAsync(int? dishId) =>
+        hub.Clients.All.SendAsync("MenuChanged", new MenuChangedEvent(dishId));
+
     private async Task<bool> WantsPushAsync(Guid customerId) =>
         await db.Customers
             .Where(c => c.Id == customerId)

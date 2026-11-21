@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shenapari_core/orders/order_events.dart';
 
 import 'package:shenapari_core/result/result.dart';
 import '../../../profile/domain/entities/user.dart';
@@ -8,16 +11,38 @@ import '../../domain/usecases/get_menu_use_case.dart';
 import 'home_state.dart';
 import 'menu_filter.dart';
 
+/// The menu. Stays fresh by itself: reloads when the kitchen switches a
+/// dish or the admin edits the menu (SignalR `MenuChanged`), and after a
+/// reconnect, when such events may have been missed.
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit(this._getMenu, this._profile) : super(const HomeState());
+  HomeCubit(this._getMenu, this._profile, this._events)
+    : super(const HomeState());
 
   final GetMenuUseCase _getMenu;
   final ProfileRepository _profile;
+  final OrderEvents _events;
+  StreamSubscription<void>? _menuChanges;
+  StreamSubscription<void>? _reconnects;
+  Timer? _debounce;
+
+  /// «Увімкнути все» on the kitchen sends an event per dish: one reload.
+  static const debounce = Duration(milliseconds: 400);
 
   /// First load, or "try again" after it failed: shows the skeleton.
   Future<void> load() async {
     emit(state.copyWith(status: HomeStatus.loading, failure: null));
     await _fetch();
+    _menuChanges ??= _events.menuChanges.listen((_) => _reloadSoon());
+    _reconnects ??= _events.changes
+        .where((id) => id == null)
+        .listen((_) => _reloadSoon());
+  }
+
+  void _reloadSoon() {
+    _debounce?.cancel();
+    _debounce = Timer(debounce, () {
+      if (!isClosed) refresh();
+    });
   }
 
   /// Pull-to-refresh: the old menu stays on screen while loading.
@@ -28,6 +53,14 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void selectFilter(MenuFilter filter) => emit(state.copyWith(filter: filter));
+
+  @override
+  Future<void> close() async {
+    _debounce?.cancel();
+    await _menuChanges?.cancel();
+    await _reconnects?.cancel();
+    return super.close();
+  }
 
   Future<void> _fetch() async {
     final (menuResult, meResult) = await (_getMenu(), _profile.getMe()).wait;

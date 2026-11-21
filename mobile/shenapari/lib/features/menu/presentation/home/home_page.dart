@@ -53,21 +53,23 @@ class HomePage extends StatelessWidget {
           ),
         ],
         // Menu texts come from the server in the request's language.
-        child: LanguageListener(
-          onChanged: (context) => context.read<HomeCubit>().refresh(),
-          child: Scaffold(
-            backgroundColor: context.colors.background,
-            body: SafeArea(
-              bottom: false,
-              child: BlocBuilder<HomeCubit, HomeState>(
-                builder: (context, state) => switch (state.status) {
-                  HomeStatus.loading => const _HomeSkeleton(),
-                  HomeStatus.failure => _LoadError(
-                    message: state.failure!.text,
-                    onRetry: context.read<HomeCubit>().load,
-                  ),
-                  HomeStatus.loaded => _MenuView(state: state),
-                },
+        child: _RefreshOnResume(
+          child: LanguageListener(
+            onChanged: (context) => context.read<HomeCubit>().refresh(),
+            child: Scaffold(
+              backgroundColor: context.colors.background,
+              body: SafeArea(
+                bottom: false,
+                child: BlocBuilder<HomeCubit, HomeState>(
+                  builder: (context, state) => switch (state.status) {
+                    HomeStatus.loading => const _HomeSkeleton(),
+                    HomeStatus.failure => _LoadError(
+                      message: state.failure!.text,
+                      onRetry: context.read<HomeCubit>().load,
+                    ),
+                    HomeStatus.loaded => _MenuView(state: state),
+                  },
+                ),
               ),
             ),
           ),
@@ -290,4 +292,36 @@ class _Bone extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Back from the background (the phone was in a pocket): the menu may be
+/// old, and live events can't be trusted to have arrived meanwhile.
+class _RefreshOnResume extends StatefulWidget {
+  const _RefreshOnResume({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_RefreshOnResume> createState() => _RefreshOnResumeState();
+}
+
+class _RefreshOnResumeState extends State<_RefreshOnResume> {
+  late final _lifecycle = AppLifecycleListener(
+    onResume: () => context.read<HomeCubit>().refresh(),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycle; // start listening
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
