@@ -57,6 +57,28 @@ class FakeQueueRepository implements QueueRepository {
     return Ok(List.of(orders));
   }
 
+  /// QR tokens of ready orders: token → order id.
+  final tokens = <String, String>{};
+
+  @override
+  Future<Result<KitchenOrder>> pickUp(String token) async {
+    calls.add('pickUp $token');
+    final id = tokens[token];
+    final order = orders.where((o) => o.id == id).firstOrNull;
+    if (order == null) {
+      return const Err(
+        NotFoundFailure('Замовлення не знайдено', code: 'order.not_found'),
+      );
+    }
+    if (order.status != OrderStatus.ready) {
+      return const Err(
+        ConflictFailure('Замовлення ще не готове', code: 'order.not_ready'),
+      );
+    }
+    _set(order.id, OrderStatus.pickedUp);
+    return Ok(order);
+  }
+
   @override
   Future<Result<void>> accept(String id, {required int minutes}) async {
     calls.add('accept $id $minutes');

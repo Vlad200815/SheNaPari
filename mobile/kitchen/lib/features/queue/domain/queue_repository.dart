@@ -11,6 +11,11 @@ abstract interface class QueueRepository {
   /// cooking — one tap in the kitchen; the customer still sees both steps.
   Future<Result<void>> accept(String id, {required int minutes});
 
+  /// The QR at the counter: the server finds the order by its pickup token
+  /// and hands it over. Codes: `order.not_found` (404), `order.not_ready`,
+  /// `order.already_picked_up` (409).
+  Future<Result<KitchenOrder>> pickUp(String token);
+
   /// Cooking → ready, ready → picked up («Видати без QR»), or cancelled
   /// with the [reason] the customer will see.
   Future<Result<void>> setStatus(
