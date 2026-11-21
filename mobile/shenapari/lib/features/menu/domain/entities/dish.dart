@@ -16,6 +16,7 @@ class Dish extends Equatable {
     this.carbsG,
     this.spicyLevel = 0,
     this.isVegan = false,
+    this.isAvailable = true,
   });
 
   final int id;
@@ -42,6 +43,29 @@ class Dish extends Equatable {
   final int spicyLevel;
   final bool isVegan;
 
+  /// False while the dish is on the kitchen's stop list («закінчилось»):
+  /// shown greyed out, can't be ordered.
+  final bool isAvailable;
+
+  /// The same dish, sold out.
+  Dish soldOut() => Dish(
+    id: id,
+    categoryId: categoryId,
+    name: name,
+    description: description,
+    priceKopecks: priceKopecks,
+    weightG: weightG,
+    kcal: kcal,
+    imageUrl: imageUrl,
+    isPopular: isPopular,
+    proteinG: proteinG,
+    fatG: fatG,
+    carbsG: carbsG,
+    spicyLevel: spicyLevel,
+    isVegan: isVegan,
+    isAvailable: false,
+  );
+
   bool get hasMacros => proteinG != null && fatG != null && carbsG != null;
 
   @override
@@ -58,6 +82,7 @@ class Dish extends Equatable {
     proteinG,
     fatG,
     carbsG,
+    isAvailable,
     spicyLevel,
     isVegan,
   ];

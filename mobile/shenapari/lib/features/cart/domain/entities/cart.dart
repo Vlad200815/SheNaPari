@@ -29,10 +29,18 @@ class Cart extends Equatable {
 
   bool get isEmpty => items.isEmpty;
 
-  /// Number of portions, for the badge on the tab bar.
-  int get count => items.fold(0, (sum, item) => sum + item.quantity);
+  /// Dishes that ran out since they were added: the order can't include
+  /// them, so they are removed before checkout.
+  bool get hasSoldOut => items.any((item) => !item.dish.isAvailable);
 
-  int get totalKopecks => items.fold(0, (sum, item) => sum + item.totalKopecks);
+  Iterable<CartItem> get _orderable =>
+      items.where((item) => item.dish.isAvailable);
+
+  /// Portions that can be ordered, for the badge and the total.
+  int get count => _orderable.fold(0, (sum, item) => sum + item.quantity);
+
+  int get totalKopecks =>
+      _orderable.fold(0, (sum, item) => sum + item.totalKopecks);
 
   int quantityOf(int dishId) {
     for (final item in items) {
@@ -64,18 +72,25 @@ class Cart extends Equatable {
   }
 
   /// The same portions with the dishes as the menu shows them now: names in
-  /// the app's current language, current prices. A dish the menu no longer
-  /// has keeps its copy (the server says so at checkout).
+  /// the app's current language, current prices, sold out or not.
+  /// [dishes] is the whole menu: a dish it no longer has was removed from
+  /// the menu and counts as sold out.
   Cart withFreshDishes(Iterable<Dish> dishes) {
     final byId = {for (final dish in dishes) dish.id: dish};
     return Cart([
       for (final item in items)
         CartItem(
-          dish: byId[item.dish.id] ?? item.dish,
+          dish: byId[item.dish.id] ?? item.dish.soldOut(),
           quantity: item.quantity,
         ),
     ]);
   }
+
+  /// «Прибрати те, що закінчилось».
+  Cart withoutSoldOut() => Cart([
+    for (final item in items)
+      if (item.dish.isAvailable) item,
+  ]);
 
   Cart remove(int dishId) => Cart([
     for (final item in items)

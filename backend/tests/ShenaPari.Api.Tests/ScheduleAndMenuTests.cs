@@ -122,16 +122,26 @@ public class MenuAdminTests(ApiFactory api) : IClassFixture<ApiFactory>
     }
 
     [Fact]
-    public async Task Ordered_dish_and_non_empty_category_cannot_be_deleted()
+    public async Task Ordered_dish_is_archived_instead_of_deleted()
     {
         var admin = await api.LoginSuperAdminAsync();
+        var cook = await api.LoginCookAsync();
         var (customer, _) = await api.LoginCustomerAsync();
-        await customer.PostJsonAsync("/orders", new CreateOrderDto(null, PaymentProvider.GooglePay, [new(2, 1)]));
+        var created = await admin.PostJsonAsync("/admin/dishes", new SaveDishDto(1, "Архівний бургер", null, 100m, 200, 500));
+        var dishId = (await created.ReadResultAsync<AdminDishDto>()).Data!.Id;
+        await customer.PostJsonAsync("/orders", new CreateOrderDto(null, PaymentProvider.GooglePay, [new(dishId, 1)]));
 
-        var dish = await admin.DeleteAsync("/admin/dishes/2");
+        var deleted = await admin.DeleteAsync($"/admin/dishes/{dishId}");
         var category = await admin.DeleteAsync("/admin/categories/1");
 
-        Assert.Equal(["menu.dish_in_use"], (await dish.ReadResultAsync<object>()).Errors);
+        // Gone for everyone (not even «sold out»), but past orders keep it.
+        Assert.Equal(HttpStatusCode.OK, deleted.StatusCode);
+        Assert.DoesNotContain(await customer.GetDataAsync<List<DishDto>>("/dishes"), d => d.Id == dishId);
+        Assert.Equal(HttpStatusCode.NotFound, (await customer.GetAsync($"/dishes/{dishId}")).StatusCode);
+        Assert.DoesNotContain(await cook.GetDataAsync<List<StaffDishDto>>("/staff/dishes"), d => d.Id == dishId);
+        Assert.DoesNotContain(await admin.GetDataAsync<List<AdminDishDto>>("/admin/dishes"), d => d.Id == dishId);
+        var order = await customer.PostJsonAsync("/orders", new CreateOrderDto(null, PaymentProvider.GooglePay, [new(dishId, 1)]));
+        Assert.Equal(["order.dish_unavailable"], (await order.ReadResultAsync<object>()).Errors);
         Assert.Equal(["menu.category_not_empty"], (await category.ReadResultAsync<object>()).Errors);
     }
 

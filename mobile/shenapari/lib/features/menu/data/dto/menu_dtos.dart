@@ -76,6 +76,7 @@ class DishDto {
     this.carbsG,
     this.spicyLevel = 0,
     this.isVegan = false,
+    this.isAvailable = true,
   });
 
   factory DishDto.fromJson(Map<String, dynamic> json) =>
@@ -100,6 +101,9 @@ class DishDto {
   final int spicyLevel;
   final bool isVegan;
 
+  /// False = on the kitchen's stop list. Older servers don't send it.
+  final bool isAvailable;
+
   /// [baseUrl] is the server address the relative [imageUrl] belongs to.
   Dish toEntity({required String baseUrl}) => Dish(
     id: id,
@@ -118,5 +122,6 @@ class DishDto {
     carbsG: carbsG,
     spicyLevel: spicyLevel.clamp(0, 3),
     isVegan: isVegan,
+    isAvailable: isAvailable,
   );
 }
