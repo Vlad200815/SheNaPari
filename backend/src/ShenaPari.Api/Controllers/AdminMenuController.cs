@@ -45,7 +45,7 @@ public class AdminMenuController(MenuAdminService menu) : ControllerBase
     public async Task<ActionResult<Result<AdminDishDto>>> UpdateDish(int id, SaveDishDto dto) =>
         (await menu.UpdateDishAsync(id, dto)).ToActionResult();
 
-    // A dish that appears in past orders can't be deleted; set isAvailable = false instead.
+    // A dish that appears in past orders is archived (hidden for good) instead.
     [HttpDelete("dishes/{id:int}")]
     public async Task<ActionResult<Result<object?>>> DeleteDish(int id) =>
         (await menu.DeleteDishAsync(id)).ToActionResult();

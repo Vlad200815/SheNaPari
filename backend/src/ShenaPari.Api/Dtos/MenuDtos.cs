@@ -19,7 +19,8 @@ public record DishDto(
     int? FatG = null,
     int? CarbsG = null,
     int SpicyLevel = 0,
-    bool IsVegan = false);
+    bool IsVegan = false,
+    bool IsAvailable = true);
 
 /// Staff view of a dish: includes the ones hidden from clients.
 public record StaffDishDto(int Id, int CategoryId, string Name, bool IsAvailable);

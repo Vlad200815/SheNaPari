@@ -26,6 +26,12 @@ public class Dish
     /// No animal products at all (no meat, fish, milk, eggs, honey).
     public bool IsVegan { get; set; }
     public string? ImageUrl { get; set; }
+
+    /// Kitchen stop list: false = «закінчилось» today. Customers still see
+    /// the dish, greyed out, and can't order it.
     public bool IsAvailable { get; set; } = true;
+
+    /// Removed by the admin but kept for past orders: hidden from everyone.
+    public bool IsArchived { get; set; }
     public bool IsPopular { get; set; }
 }

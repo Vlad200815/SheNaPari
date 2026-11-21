@@ -60,7 +60,6 @@ public static class MenuErrors
     public static readonly Error InvalidDish = new("menu.invalid_dish", "Некоректні дані страви", 400);
     public static readonly Error InvalidImage = new("menu.invalid_image", "Потрібне фото JPEG, PNG або WebP до 5 МБ", 400);
     public static readonly Error CategoryNotEmpty = new("menu.category_not_empty", "Спершу перенесіть або видаліть страви цієї категорії", 409);
-    public static readonly Error DishInUse = new("menu.dish_in_use", "Страва є в замовленнях. Сховайте її замість видалення", 409);
 }
 
 public static class OrderErrors

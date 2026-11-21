@@ -66,6 +66,7 @@ abstract class LocaleKeys {
   static const home_weight = 'home.weight';
   static const home_kcal = 'home.kcal';
   static const home_add_to_cart = 'home.add_to_cart';
+  static const home_sold_out = 'home.sold_out';
   static const home = 'home';
   static const break_card_paused_title = 'break_card.paused_title';
   static const break_card_paused_text = 'break_card.paused_text';
@@ -95,6 +96,7 @@ abstract class LocaleKeys {
   static const dish_spicy_2 = 'dish.spicy_2';
   static const dish_spicy_3 = 'dish.spicy_3';
   static const dish_vegan = 'dish.vegan';
+  static const dish_sold_out = 'dish.sold_out';
   static const dish = 'dish';
   static const cart_title = 'cart.title';
   static const cart_total = 'cart.total';
@@ -102,6 +104,9 @@ abstract class LocaleKeys {
   static const cart_checkout = 'cart.checkout';
   static const cart_empty_title = 'cart.empty_title';
   static const cart_empty_text = 'cart.empty_text';
+  static const cart_sold_out_note = 'cart.sold_out_note';
+  static const cart_remove_sold_out = 'cart.remove_sold_out';
+  static const cart_remove = 'cart.remove';
   static const cart = 'cart';
   static const checkout_title = 'checkout.title';
   static const checkout_paused = 'checkout.paused';

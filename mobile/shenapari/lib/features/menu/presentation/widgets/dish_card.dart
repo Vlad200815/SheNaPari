@@ -11,6 +11,8 @@ import '../../../../core/l10n/l10n.dart';
 import 'package:shenapari_core/ui/app_colors.dart';
 
 /// A dish in the menu grid: photo, name, weight, price and a quick «+».
+/// A sold-out dish is grey with «Закінчилось» over the photo and no «+»;
+/// it still opens, so its details stay readable.
 class DishCard extends StatelessWidget {
   const DishCard({super.key, required this.dish, this.onTap, this.onAdd});
 
@@ -24,7 +26,8 @@ class DishCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
+    final soldOut = !dish.isAvailable;
+    final card = Material(
       color: context.colors.surface,
       borderRadius: BorderRadius.circular(AppDimens.radius),
       clipBehavior: Clip.antiAlias,
@@ -40,7 +43,13 @@ class DishCard extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     DishImage(url: dish.imageUrl),
-                    if (dish.isPopular)
+                    if (soldOut)
+                      const Positioned(
+                        left: 6,
+                        bottom: 6,
+                        child: SoldOutBadge(),
+                      )
+                    else if (dish.isPopular)
                       const Positioned(top: 6, left: 6, child: _PopularBadge()),
                     // Peppers / leaf as icons in the other corner.
                     Positioned(
@@ -76,10 +85,50 @@ class DishCard extends StatelessWidget {
                       style: AppText.title(),
                     ),
                   ),
-                  if (onAdd != null) _AddButton(dish: dish, onTap: onAdd!),
+                  if (onAdd != null && !soldOut)
+                    _AddButton(dish: dish, onTap: onAdd!),
                 ],
               ),
             ],
+          ),
+        ),
+      ),
+    );
+    if (!soldOut) return card;
+    // Grey, not just paler: the photo loses its colour too.
+    return Opacity(
+      opacity: 0.6,
+      child: ColorFiltered(colorFilter: greyscale, child: card),
+    );
+  }
+}
+
+/// Turns any colours grey (luminance weights of sRGB).
+const greyscale = ColorFilter.matrix(<double>[
+  0.2126, 0.7152, 0.0722, 0, 0, //
+  0.2126, 0.7152, 0.0722, 0, 0, //
+  0.2126, 0.7152, 0.0722, 0, 0, //
+  0, 0, 0, 1, 0, //
+]);
+
+/// «Закінчилось» on a dark chip, readable on any photo.
+class SoldOutBadge extends StatelessWidget {
+  const SoldOutBadge({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: ColorName.black.withValues(alpha: 0.75),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        child: Text(
+          LocaleKeys.home_sold_out.tr(),
+          style: AppText.small(
+            color: ColorName.white,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),

@@ -18,7 +18,8 @@ public class DishesController(AppDbContext db) : ControllerBase
     public async Task<ActionResult<Result<List<DishDto>>>> GetAll(int? categoryId, bool? popular)
     {
         // IQueryable = a query that is only *described* here; SQL runs at ToListAsync().
-        IQueryable<Dish> query = db.Dishes.Where(d => d.IsAvailable);
+        // Sold-out dishes stay in the menu (greyed out); archived ones don't.
+        IQueryable<Dish> query = db.Dishes.Where(d => !d.IsArchived);
         if (categoryId is not null) query = query.Where(d => d.CategoryId == categoryId);
         if (popular is not null) query = query.Where(d => d.IsPopular == popular);
 
@@ -30,12 +31,12 @@ public class DishesController(AppDbContext db) : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Result<DishDto>>> GetById(int id)
     {
-        var dish = await db.Dishes.FirstOrDefaultAsync(d => d.Id == id && d.IsAvailable);
+        var dish = await db.Dishes.FirstOrDefaultAsync(d => d.Id == id && !d.IsArchived);
         Result<DishDto> result = dish is null ? MenuErrors.DishNotFound : ToDto(dish);
         return result.ToActionResult();
     }
 
     private static DishDto ToDto(Dish d) =>
         new(d.Id, d.CategoryId, Lang.Pick(d.Name, d.NameEn), Lang.PickOptional(d.Description, d.DescriptionEn), d.Price, d.WeightG, d.Kcal, d.ImageUrl, d.IsPopular,
-            d.ProteinG, d.FatG, d.CarbsG, d.SpicyLevel, d.IsVegan);
+            d.ProteinG, d.FatG, d.CarbsG, d.SpicyLevel, d.IsVegan, d.IsAvailable);
 }
