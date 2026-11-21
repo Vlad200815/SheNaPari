@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using ShenaPari.Api.Common;
 using ShenaPari.Api.Data;
 using ShenaPari.Api.Dtos;
@@ -8,7 +9,7 @@ using ShenaPari.Api.Schedules;
 
 namespace ShenaPari.Api.Orders;
 
-public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier notifier)
+public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier notifier, IOptions<OrderOptions> options)
 {
     private const int MaxQuantity = 20;
 
@@ -249,6 +250,7 @@ public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier noti
         var now = clock.UtcNow;
         order.Status = status;
         if (status == OrderStatus.Ready) order.ReadyAt = now;
+        if (status == OrderStatus.PickedUp) order.PickedUpAt = now;
         order.StatusChanges.Add(new OrderStatusChange
         {
             Status = status, ChangedByUserId = changedBy, Reason = reason, At = now,
@@ -269,6 +271,7 @@ public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier noti
         .Include(o => o.Items)
         .Include(o => o.StatusChanges)
         .Include(o => o.Payments)
+        .Include(o => o.Rating)
         .AsSplitQuery(); // several collections: separate SELECTs instead of one huge JOIN
 
     private Task<Order?> LoadAsync(Guid id) => Query().FirstOrDefaultAsync(o => o.Id == id);
@@ -282,10 +285,18 @@ public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier noti
         o.StatusChanges.OrderBy(c => c.At).ThenBy(c => c.Id)
             .Select(c => new OrderStatusChangeDto(c.Status, c.At, c.Reason)).ToList();
 
-    private static OrderDto ToClientDto(Order o) => new(
+    private OrderDto ToClientDto(Order o) => new(
         o.Id, o.Number, o.Status, o.Total, o.CreatedAt, ToSlotDto(o.BreakSlot), o.EstimatedReadyAt, o.ReadyAt,
         o.Payments.OrderBy(p => p.CreatedAt).Last().Provider, ToItemDtos(o), ToHistory(o),
-        o.Status == OrderStatus.Ready ? o.PickupToken : null);
+        o.Status == OrderStatus.Ready ? o.PickupToken : null,
+        RatingService.ToDto(o.Rating), RateUntil(o));
+
+    /// Null when it can't be rated (not picked up, or too long ago).
+    private DateTimeOffset? RateUntil(Order o) =>
+        o is { Status: OrderStatus.PickedUp, PickedUpAt: { } at }
+        && at.AddDays(options.Value.RatingWindowDays) is var until && until > clock.UtcNow
+            ? until
+            : null;
 
     private static StaffOrderDto ToStaffDto(Order o) => new(
         o.Id, o.Number, o.Status, o.Total, o.Customer.Name, o.CreatedAt, ToSlotDto(o.BreakSlot),
