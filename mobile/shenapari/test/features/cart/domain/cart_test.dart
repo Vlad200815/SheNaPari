@@ -63,7 +63,29 @@ void main() {
 
     expect(fresh.items, [
       const CartItem(dish: english, quantity: 2),
-      CartItem(dish: lemonade, quantity: 1),
-    ], reason: 'a dish missing from the menu keeps its copy');
+      CartItem(dish: lemonade.soldOut(), quantity: 1),
+    ], reason: 'a dish removed from the menu counts as sold out');
+  });
+
+  test('a sold-out dish: greyed in the cart, not in the count or total', () {
+    final cart = const Cart()
+        .add(cheeseburger, quantity: 2)
+        .add(lemonade)
+        .withFreshDishes([cheeseburger, lemonade.soldOut()]);
+
+    expect(cart.hasSoldOut, isTrue);
+    expect(cart.items, hasLength(2), reason: 'still shown, greyed out');
+    expect(cart.count, 2);
+    expect(cart.totalKopecks, 2 * 8500);
+  });
+
+  test('«Прибрати те, що закінчилось» keeps the rest', () {
+    final cart = const Cart()
+        .add(cheeseburger)
+        .add(lemonade.soldOut())
+        .withoutSoldOut();
+
+    expect(cart.items, [const CartItem(dish: cheeseburger, quantity: 1)]);
+    expect(cart.hasSoldOut, isFalse);
   });
 }

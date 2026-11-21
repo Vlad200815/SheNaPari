@@ -77,6 +77,14 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         );
         // The chosen break started while the user was deciding.
         if (failure.code == 'order.break_passed') await _refreshBreaks();
+        // A dish ran out after the menu was loaded.
+        if (failure.code == 'order.dish_unavailable') await _refreshDishes();
+    }
+  }
+
+  Future<void> _refreshDishes() async {
+    if (await _menu.getDishes() case Ok(value: final dishes)) {
+      emit(state.copyWith(freshDishes: dishes));
     }
   }
 

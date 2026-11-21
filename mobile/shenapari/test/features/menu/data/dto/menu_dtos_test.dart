@@ -70,6 +70,16 @@ void main() {
     expect(dish.hasMacros, isFalse);
     expect(dish.spicyLevel, 0);
     expect(dish.isVegan, isFalse);
+    expect(dish.isAvailable, isTrue);
+  });
+
+  test('a dish on the stop list comes as sold out', () {
+    final dish = DishDto.fromJson({
+      ..._dishJson(),
+      'isAvailable': false,
+    }).toEntity(baseUrl: _baseUrl);
+
+    expect(dish.isAvailable, isFalse);
   });
 
   test('a dish without a photo keeps imageUrl null', () {

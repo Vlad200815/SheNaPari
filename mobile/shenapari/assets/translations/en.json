@@ -68,7 +68,8 @@
     "hit": "Hit",
     "weight": "{grams} g",
     "kcal": "{kcal} kcal",
-    "add_to_cart": "Add {name} to the cart"
+    "add_to_cart": "Add {name} to the cart",
+    "sold_out": "Sold out"
   },
   "break_card": {
     "paused_title": "The kitchen is paused",
@@ -99,7 +100,8 @@
     "spicy_1": "A little spicy",
     "spicy_2": "Spicy",
     "spicy_3": "Very spicy",
-    "vegan": "Vegan"
+    "vegan": "Vegan",
+    "sold_out": "Sold out · come back later"
   },
   "cart": {
     "title": "Cart",
@@ -110,7 +112,10 @@
     },
     "checkout": "Place order",
     "empty_title": "Your cart is empty",
-    "empty_text": "Add dishes from the menu and we’ll have them ready by the break"
+    "empty_text": "Add dishes from the menu and we’ll have them ready by the break",
+    "sold_out_note": "Some dishes have sold out. Remove them to place the order.",
+    "remove_sold_out": "Remove sold-out dishes",
+    "remove": "Remove {name}"
   },
   "checkout": {
     "title": "Checkout",

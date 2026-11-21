@@ -65,6 +65,19 @@ void main() {
     expect(repository.stored.items.single.dish.name, 'Cheeseburger');
   });
 
+  test('the kitchen ran out: the dish greys out, then can be removed', () {
+    final repository = _MemoryCartRepository(
+      const Cart().add(cheeseburger).add(lemonade),
+    );
+    final cubit = CartCubit(repository, sessionChanges: session.stream);
+
+    cubit.updateDishes([cheeseburger, lemonade.soldOut(), hamburger]);
+    expect(cubit.state.hasSoldOut, isTrue);
+
+    cubit.removeSoldOut();
+    expect(repository.stored, const Cart().add(cheeseburger));
+  });
+
   test('signing out empties the cart', () async {
     final repository = _MemoryCartRepository(const Cart().add(lemonade));
     final cubit = CartCubit(repository, sessionChanges: session.stream);

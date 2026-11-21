@@ -184,6 +184,30 @@ void main() {
   );
 
   blocTest<CheckoutCubit, CheckoutState>(
+    'a dish ran out meanwhile: the menu reloads, so the cart can show which',
+    setUp: () {
+      answerOrder(
+        const Err(
+          ConflictFailure(
+            'Одна зі страв недоступна',
+            code: 'order.dish_unavailable',
+          ),
+        ),
+      );
+      when(
+        () => menu.getDishes(),
+      ).thenAnswer((_) async => Ok([cheeseburger.soldOut(), lemonade]));
+    },
+    build: build,
+    seed: () => _ready,
+    act: (cubit) => cubit.pay(),
+    verify: (cubit) {
+      expect(cubit.state.failure?.code, 'order.dish_unavailable');
+      expect(cubit.state.freshDishes, [cheeseburger.soldOut(), lemonade]);
+    },
+  );
+
+  blocTest<CheckoutCubit, CheckoutState>(
     'a second tap while paying is ignored',
     build: build,
     seed: () => _ready.copyWith(status: CheckoutStatus.placing),

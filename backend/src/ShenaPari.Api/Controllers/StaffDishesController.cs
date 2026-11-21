@@ -18,6 +18,7 @@ public class StaffDishesController(AppDbContext db) : ControllerBase
     public async Task<ActionResult<Result<List<StaffDishDto>>>> GetAll()
     {
         var dishes = await db.Dishes
+            .Where(d => !d.IsArchived)
             .OrderBy(d => d.CategoryId).ThenBy(d => d.Name)
             .Select(d => new StaffDishDto(d.Id, d.CategoryId, Lang.Pick(d.Name, d.NameEn), d.IsAvailable))
             .ToListAsync();
@@ -29,7 +30,7 @@ public class StaffDishesController(AppDbContext db) : ControllerBase
     public async Task<ActionResult<Result<StaffDishDto>>> SetAvailability(int id, SetAvailabilityDto dto)
     {
         var dish = await db.Dishes.FindAsync(id);
-        if (dish is null) return Result<StaffDishDto>.Fail(MenuErrors.DishNotFound).ToActionResult();
+        if (dish is null || dish.IsArchived) return Result<StaffDishDto>.Fail(MenuErrors.DishNotFound).ToActionResult();
 
         dish.IsAvailable = dto.IsAvailable;
         await db.SaveChangesAsync();

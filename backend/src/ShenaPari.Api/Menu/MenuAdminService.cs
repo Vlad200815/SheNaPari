@@ -73,7 +73,7 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
 
     public async Task<List<AdminDishDto>> GetDishesAsync()
     {
-        var dishes = await db.Dishes.OrderBy(d => d.CategoryId).ThenBy(d => d.Name).ToListAsync();
+        var dishes = await db.Dishes.Where(d => !d.IsArchived).OrderBy(d => d.CategoryId).ThenBy(d => d.Name).ToListAsync();
         return dishes.Select(ToDto).ToList();
     }
 
@@ -105,7 +105,13 @@ public class MenuAdminService(AppDbContext db, IWebHostEnvironment env)
     {
         var dish = await db.Dishes.FindAsync(id);
         if (dish is null) return MenuErrors.DishNotFound;
-        if (await db.OrderItems.AnyAsync(i => i.DishId == id)) return MenuErrors.DishInUse;
+        // Past orders point at it: hide it for good instead of deleting.
+        if (await db.OrderItems.AnyAsync(i => i.DishId == id))
+        {
+            dish.IsArchived = true;
+            await db.SaveChangesAsync();
+            return Result.Ok();
+        }
 
         DeleteImageFile(dish.ImageUrl);
         db.Dishes.Remove(dish);

@@ -363,24 +363,34 @@ class _AddToCartBar extends StatelessWidget {
             AppDimens.horizontalPadding,
             12,
           ),
-          child: Row(
-            children: [
-              QuantityStepper(
-                value: state.quantity,
-                max: Cart.maxQuantity,
-                onChanged: cubit.setQuantity,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: AppButton.primary(
-                  text: inCart
-                      ? LocaleKeys.dish_update.tr(namedArgs: {'total': total})
-                      : LocaleKeys.dish_add.tr(namedArgs: {'total': total}),
-                  onPressed: () => _save(context, inCart: inCart),
+          child: !state.dish!.isAvailable
+              // On the stop list: say so where «Додати» would be.
+              ? AppButton.primary(
+                  text: LocaleKeys.dish_sold_out.tr(),
+                  onPressed: null,
+                )
+              : Row(
+                  children: [
+                    QuantityStepper(
+                      value: state.quantity,
+                      max: Cart.maxQuantity,
+                      onChanged: cubit.setQuantity,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: AppButton.primary(
+                        text: inCart
+                            ? LocaleKeys.dish_update.tr(
+                                namedArgs: {'total': total},
+                              )
+                            : LocaleKeys.dish_add.tr(
+                                namedArgs: {'total': total},
+                              ),
+                        onPressed: () => _save(context, inCart: inCart),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
         ),
       ),
     );

@@ -36,6 +36,8 @@ class CartCubit extends Cubit<Cart> {
 
   void remove(int dishId) => _update(state.remove(dishId));
 
+  void removeSoldOut() => _update(state.withoutSoldOut());
+
   void clear() => _update(const Cart());
 
   void _update(Cart cart) {
