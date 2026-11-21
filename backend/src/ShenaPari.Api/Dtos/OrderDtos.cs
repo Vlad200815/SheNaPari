@@ -62,3 +62,6 @@ public record CanteenDto(string Name, bool IsAcceptingOrders, DateTimeOffset? Pa
 public record SetAcceptingDto(bool IsAcceptingOrders);
 
 public record SetAvailabilityDto(bool IsAvailable);
+
+/// SignalR `MenuChanged`: reload the menu; [DishId] says which dish, if one.
+public record MenuChangedEvent(int? DishId);

@@ -7,4 +7,8 @@ abstract interface class OrderEvents {
 
   /// The kitchen paused (`false`) or resumed (`true`) taking orders.
   Stream<bool> get acceptingOrders;
+
+  /// The menu changed: a dish ran out or came back (stop list), or the
+  /// admin edited it. The id of that dish, or null (e.g. a category).
+  Stream<int?> get menuChanges;
 }
