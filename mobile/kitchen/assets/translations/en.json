@@ -130,6 +130,7 @@
     "pause_confirm": "Pause",
     "keep": "No",
     "banner": "Orders paused · no new orders are coming in",
+    "banner_at": "Orders paused at {time} · no new orders are coming in",
     "resume": "Resume"
   }
 }

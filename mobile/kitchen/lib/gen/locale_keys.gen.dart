@@ -120,6 +120,7 @@ abstract class LocaleKeys {
   static const canteen_pause_confirm = 'canteen.pause_confirm';
   static const canteen_keep = 'canteen.keep';
   static const canteen_banner = 'canteen.banner';
+  static const canteen_banner_at = 'canteen.banner_at';
   static const canteen_resume = 'canteen.resume';
   static const canteen = 'canteen';
 }

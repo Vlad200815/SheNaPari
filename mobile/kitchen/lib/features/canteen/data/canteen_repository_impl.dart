@@ -11,12 +11,12 @@ class CanteenRepositoryImpl implements CanteenRepository {
   final CanteenApi _api;
 
   @override
-  Future<Result<bool>> isAcceptingOrders() =>
-      apiCall(_api.get, (dto) => dto.isAcceptingOrders);
+  Future<Result<KitchenSwitch>> get() =>
+      apiCall(_api.get, (dto) => dto.toEntity());
 
   @override
-  Future<Result<bool>> setAcceptingOrders(bool accepting) => apiCall(
+  Future<Result<KitchenSwitch>> setAcceptingOrders(bool accepting) => apiCall(
     () => _api.setAccepting(SetAcceptingDto(isAcceptingOrders: accepting)),
-    (dto) => dto.isAcceptingOrders,
+    (dto) => dto.toEntity(),
   );
 }

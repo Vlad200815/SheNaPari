@@ -11,6 +11,9 @@ abstract class CanteenState with _$CanteenState {
     @Default(CanteenStatus.loading) CanteenStatus status,
     @Default(true) bool accepting,
 
+    /// When the pause began (local); null while accepting or unknown.
+    DateTime? pausedAt,
+
     /// A pause / resume request is in flight.
     @Default(false) bool busy,
     Failure? failure,
