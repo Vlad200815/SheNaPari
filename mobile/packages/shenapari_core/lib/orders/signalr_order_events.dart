@@ -32,12 +32,17 @@ class SignalROrderEvents implements OrderEvents {
       onListen: _listened,
       onCancel: _cancelled,
     );
+    _menu = StreamController<int?>.broadcast(
+      onListen: _listened,
+      onCancel: _cancelled,
+    );
   }
 
   final String _url;
   final SessionRepository _session;
   late final StreamController<String?> _controller;
   late final StreamController<bool> _accepting;
+  late final StreamController<int?> _menu;
   HubConnection? _hub;
   Timer? _retry;
 
@@ -52,7 +57,11 @@ class SignalROrderEvents implements OrderEvents {
   @override
   Stream<bool> get acceptingOrders => _accepting.stream;
 
-  bool get _hasListener => _controller.hasListener || _accepting.hasListener;
+  @override
+  Stream<int?> get menuChanges => _menu.stream;
+
+  bool get _hasListener =>
+      _controller.hasListener || _accepting.hasListener || _menu.hasListener;
 
   void _listened() => _connect();
 
@@ -85,6 +94,11 @@ class SignalROrderEvents implements OrderEvents {
         final event = arguments?.firstOrNull;
         final accepting = event is Map ? event['isAcceptingOrders'] : null;
         if (accepting is bool) _accepting.add(accepting);
+      })
+      ..on('MenuChanged', (arguments) {
+        final event = arguments?.firstOrNull;
+        final dishId = event is Map ? event['dishId'] : null;
+        _menu.add(dishId is int ? dishId : null);
       })
       // Events sent while offline are lost: ask screens to reload.
       ..onreconnected(({connectionId}) => _controller.add(null))

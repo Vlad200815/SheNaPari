@@ -11,6 +11,7 @@ import 'package:shenapari/features/menu/presentation/home/menu_filter.dart';
 import 'package:shenapari/features/profile/domain/entities/user.dart';
 import 'package:shenapari/features/profile/domain/profile_repository.dart';
 
+import '../../../../fakes.dart';
 import '../../menu_samples.dart';
 
 class _MockGetMenuUseCase extends Mock implements GetMenuUseCase {}
@@ -26,6 +27,7 @@ final _loaded = HomeState(
 void main() {
   late _MockGetMenuUseCase getMenu;
   late _MockProfileRepository profile;
+  late FakeOrderEvents events;
 
   void answer(Result<Menu> result) =>
       when(() => getMenu()).thenAnswer((_) async => result);
@@ -36,10 +38,11 @@ void main() {
   setUp(() {
     getMenu = _MockGetMenuUseCase();
     profile = _MockProfileRepository();
+    events = FakeOrderEvents();
     answerMe(const Ok(User(id: '1', role: UserRole.customer, name: 'Влад')));
   });
 
-  HomeCubit build() => HomeCubit(getMenu, profile);
+  HomeCubit build() => HomeCubit(getMenu, profile, events);
 
   group('load', () {
     blocTest<HomeCubit, HomeState>(
@@ -158,6 +161,59 @@ void main() {
       seed: () => _loaded,
       act: (cubit) => cubit.selectFilter(const PopularDishes()),
       expect: () => [_loaded.copyWith(filter: const PopularDishes())],
+    );
+  });
+
+  group('live', () {
+    blocTest<HomeCubit, HomeState>(
+      'the kitchen switched a dish: the menu reloads by itself',
+      setUp: () => answer(Ok(sampleMenu)),
+      build: build,
+      act: (cubit) async {
+        await cubit.load();
+        events.menuChanged(10);
+        await Future<void>.delayed(HomeCubit.debounce * 2);
+      },
+      verify: (_) => verify(() => getMenu()).called(2),
+    );
+
+    blocTest<HomeCubit, HomeState>(
+      '«Увімкнути все» sends a burst of events: one reload',
+      setUp: () => answer(Ok(sampleMenu)),
+      build: build,
+      act: (cubit) async {
+        await cubit.load();
+        events
+          ..menuChanged(10)
+          ..menuChanged(11)
+          ..menuChanged(12);
+        await Future<void>.delayed(HomeCubit.debounce * 2);
+      },
+      verify: (_) => verify(() => getMenu()).called(2),
+    );
+
+    blocTest<HomeCubit, HomeState>(
+      'after a reconnect (updates may be missed): reloads too',
+      setUp: () => answer(Ok(sampleMenu)),
+      build: build,
+      act: (cubit) async {
+        await cubit.load();
+        events.changed(null);
+        await Future<void>.delayed(HomeCubit.debounce * 2);
+      },
+      verify: (_) => verify(() => getMenu()).called(2),
+    );
+
+    blocTest<HomeCubit, HomeState>(
+      'an order status event does not reload the menu',
+      setUp: () => answer(Ok(sampleMenu)),
+      build: build,
+      act: (cubit) async {
+        await cubit.load();
+        events.changed('order-1');
+        await Future<void>.delayed(HomeCubit.debounce * 2);
+      },
+      verify: (_) => verify(() => getMenu()).called(1),
     );
   });
 }
