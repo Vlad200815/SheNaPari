@@ -12,8 +12,9 @@ import 'home_state.dart';
 import 'menu_filter.dart';
 
 /// The menu. Stays fresh by itself: reloads when the kitchen switches a
-/// dish or the admin edits the menu (SignalR `MenuChanged`), and after a
-/// reconnect, when such events may have been missed.
+/// dish or the admin edits the menu (SignalR `MenuChanged`), when the
+/// kitchen pauses or resumes (`CanteenChanged`, the break card shows it),
+/// and after a reconnect, when such events may have been missed.
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit(this._getMenu, this._profile, this._events)
     : super(const HomeState());
@@ -23,6 +24,7 @@ class HomeCubit extends Cubit<HomeState> {
   final OrderEvents _events;
   StreamSubscription<void>? _menuChanges;
   StreamSubscription<void>? _reconnects;
+  StreamSubscription<void>? _pause;
   Timer? _debounce;
 
   /// «Увімкнути все» on the kitchen sends an event per dish: one reload.
@@ -33,6 +35,7 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(status: HomeStatus.loading, failure: null));
     await _fetch();
     _menuChanges ??= _events.menuChanges.listen((_) => _reloadSoon());
+    _pause ??= _events.acceptingOrders.listen((_) => _reloadSoon());
     _reconnects ??= _events.changes
         .where((id) => id == null)
         .listen((_) => _reloadSoon());
@@ -59,6 +62,7 @@ class HomeCubit extends Cubit<HomeState> {
     _debounce?.cancel();
     await _menuChanges?.cancel();
     await _reconnects?.cancel();
+    await _pause?.cancel();
     return super.close();
   }
 
