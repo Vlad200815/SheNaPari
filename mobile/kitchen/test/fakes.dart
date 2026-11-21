@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:kitchen/core/device/new_order_alert.dart';
 import 'package:kitchen/features/auth/domain/staff_auth_repository.dart';
+import 'package:kitchen/features/canteen/domain/canteen_repository.dart';
 import 'package:kitchen/features/queue/domain/entities/kitchen_order.dart';
 import 'package:kitchen/features/queue/domain/queue_repository.dart';
+import 'package:kitchen/features/stop_list/domain/entities/stop_list_dish.dart';
+import 'package:kitchen/features/stop_list/domain/stop_list_repository.dart';
 import 'package:shenapari_core/orders/order_events.dart';
 import 'package:shenapari_core/result/failure.dart';
 import 'package:shenapari_core/result/result.dart';
@@ -134,6 +137,13 @@ class FakeOrderEvents implements OrderEvents {
 
   void changed(String? id) => _controller.add(id);
 
+  final _accepting = StreamController<bool>.broadcast();
+
+  void acceptingChanged(bool accepting) => _accepting.add(accepting);
+
+  @override
+  Stream<bool> get acceptingOrders => _accepting.stream;
+
   @override
   Stream<String?> get changes => _controller.stream;
 }
@@ -165,3 +175,75 @@ KitchenOrder order(
   readyAt: readyAt,
   customerName: name,
 );
+
+/// The canteen's pause switch as the server holds it.
+class FakeCanteenRepository implements CanteenRepository {
+  FakeCanteenRepository({this.accepting = true});
+
+  bool accepting;
+  final calls = <String>[];
+  Failure? failNext;
+
+  @override
+  Future<Result<bool>> isAcceptingOrders() async {
+    calls.add('get');
+    if (_fail() case final failure?) return Err(failure);
+    return Ok(accepting);
+  }
+
+  @override
+  Future<Result<bool>> setAcceptingOrders(bool accepting) async {
+    calls.add(accepting ? 'resume' : 'pause');
+    if (_fail() case final failure?) return Err(failure);
+    this.accepting = accepting;
+    return Ok(accepting);
+  }
+
+  Failure? _fail() {
+    final failure = failNext;
+    failNext = null;
+    return failure;
+  }
+}
+
+/// The menu as the server holds it; [fail] makes every availability
+/// change of that dish fail.
+class FakeStopListRepository implements StopListRepository {
+  FakeStopListRepository({
+    List<StopListDish>? dishes,
+    this.categories = const [],
+  }) : dishes = dishes ?? [];
+
+  List<StopListDish> dishes;
+  List<DishCategory> categories;
+  final calls = <String>[];
+  final fail = <int>{};
+  Failure? failLoad;
+
+  static const failure = ServerFailure('Сервер не відповідає');
+
+  @override
+  Future<Result<List<StopListDish>>> getDishes() async {
+    calls.add('dishes');
+    if (failLoad case final failure?) return Err(failure);
+    return Ok(List.of(dishes));
+  }
+
+  @override
+  Future<Result<List<DishCategory>>> getCategories() async {
+    calls.add('categories');
+    return Ok(List.of(categories));
+  }
+
+  @override
+  Future<Result<StopListDish>> setAvailable(int id, bool available) async {
+    calls.add('${available ? 'on' : 'off'} $id');
+    if (fail.contains(id)) return const Err(failure);
+    final dish = dishes.firstWhere((d) => d.id == id).withAvailable(available);
+    dishes = [for (final d in dishes) d.id == id ? dish : d];
+    return Ok(dish);
+  }
+}
+
+StopListDish dish(int id, String name, {int categoryId = 1, bool on = true}) =>
+    StopListDish(id: id, categoryId: categoryId, name: name, isAvailable: on);
