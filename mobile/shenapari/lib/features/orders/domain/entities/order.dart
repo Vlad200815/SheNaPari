@@ -4,6 +4,9 @@ import 'package:shenapari_core/orders/order_status.dart';
 export 'package:shenapari_core/orders/order_status.dart';
 
 import '../../../menu/domain/entities/break_slot.dart';
+import 'order_rating.dart';
+
+export 'order_rating.dart';
 
 /// Payment is simulated: the provider only says which button was used.
 enum PaymentProvider { googlePay, applePay, unknown }
@@ -57,6 +60,8 @@ class Order extends Equatable {
     this.readyAt,
     this.history = const [],
     this.pickupToken,
+    this.rating,
+    this.rateUntil,
   });
 
   final String id;
@@ -84,6 +89,14 @@ class Order extends Equatable {
 
   /// What the QR encodes; the server sends it only while the order is ready.
   final String? pickupToken;
+
+  /// The customer's rating, once given.
+  final OrderRating? rating;
+
+  /// Until when it can be rated (or the rating changed); null: it can't.
+  final DateTime? rateUntil;
+
+  bool get canRate => rateUntil != null;
 
   /// Still on the kitchen's board.
   bool get isActive => switch (status) {
@@ -120,5 +133,7 @@ class Order extends Equatable {
     readyAt,
     history,
     pickupToken,
+    rating,
+    rateUntil,
   ];
 }

@@ -104,4 +104,59 @@ void main() {
     expect(order.isActive, isTrue);
     expect(order.canCancel, isFalse);
   });
+
+  test('a rated order: stars, tag codes, comment and until when', () {
+    final order = OrderDto.fromJson({
+      ..._json,
+      'status': 'PickedUp',
+      'rating': {
+        'stars': 5,
+        'tags': ['tasty', 'big_portion', 'new_tag_from_the_future'],
+        'comment': 'Найкращий бургер',
+        'updatedAt': '2026-11-21T10:00:00+00:00',
+      },
+      'rateUntil': '2026-11-24T09:42:00+00:00',
+    }).toEntity();
+
+    expect(order.rating!.stars, 5);
+    expect(order.rating!.tags, [RatingTag.tasty, RatingTag.bigPortion]);
+    expect(order.rating!.comment, 'Найкращий бургер');
+    expect(order.rateUntil, DateTime.utc(2026, 11, 24, 9, 42).toLocal());
+    expect(order.canRate, isTrue);
+  });
+
+  test('an order that can no longer be rated', () {
+    final order = OrderDto.fromJson(_json).toEntity();
+
+    expect(order.rating, isNull);
+    expect(order.canRate, isFalse);
+  });
+
+  test('tag codes both ways', () {
+    for (final tag in RatingTag.values.where((t) => t != RatingTag.unknown)) {
+      expect(parseRatingTag(ratingTagCode(tag)), tag);
+    }
+    expect(ratingTagCode(RatingTag.smallPortion), 'small_portion');
+    expect(
+      const RateOrderDto(stars: 2, tags: ['cold'], comment: null).toJson(),
+      {
+        'stars': 2,
+        'tags': ['cold'],
+        'comment': null,
+      },
+    );
+  });
+
+  test('the home card prompt', () {
+    final prompt = RatingPromptDto.fromJson({
+      'orderId': 'o36',
+      'number': 36,
+      'items': ['Бургер з куркою', 'Компот'],
+      'pickedUpAt': '2026-11-21T09:42:00+00:00',
+    }).toEntity();
+
+    expect(prompt.number, 36);
+    expect(prompt.items, ['Бургер з куркою', 'Компот']);
+    expect(prompt.pickedUpAt, DateTime.utc(2026, 11, 21, 9, 42).toLocal());
+  });
 }
