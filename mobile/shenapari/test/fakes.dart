@@ -268,6 +268,39 @@ class FakeOrdersRepository implements OrdersRepository {
     kitchen(id, OrderStatus.cancelled);
     return getOrder(id);
   }
+
+  /// What the server holds for ratings; [failRating] makes the next one fail.
+  final ratings = <String, OrderRating>{};
+  Failure? failRating;
+  RatingPrompt? prompt;
+  final dismissed = <String>[];
+
+  @override
+  Future<Result<OrderRating>> rate(
+    String orderId, {
+    required int stars,
+    required List<RatingTag> tags,
+    String? comment,
+  }) async {
+    if (failRating case final failure?) {
+      failRating = null;
+      return Err(failure);
+    }
+    final rating = OrderRating(stars: stars, tags: tags, comment: comment);
+    ratings[orderId] = rating;
+    if (prompt?.orderId == orderId) prompt = null;
+    return Ok(rating);
+  }
+
+  @override
+  Future<Result<RatingPrompt?>> getRatingPrompt() async => Ok(prompt);
+
+  @override
+  Future<Result<void>> dismissRatingPrompt(String orderId) async {
+    dismissed.add(orderId);
+    if (prompt?.orderId == orderId) prompt = null;
+    return const Ok(null);
+  }
 }
 
 /// Live updates the test pushes by hand.

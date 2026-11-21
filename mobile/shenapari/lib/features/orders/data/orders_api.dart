@@ -28,4 +28,17 @@ abstract class OrdersApi {
 
   @POST('/orders/{id}/cancel')
   Future<ApiEnvelope<OrderDto>> cancel(@Path('id') String id);
+
+  @PUT('/orders/{id}/rating')
+  Future<ApiEnvelope<OrderRatingDto>> rate(
+    @Path('id') String id,
+    @Body() RateOrderDto body,
+  );
+
+  /// `[]` or one order.
+  @GET('/orders/my/rating-prompt')
+  Future<ApiEnvelope<List<RatingPromptDto>>> getRatingPrompt();
+
+  @POST('/orders/{id}/rating/dismiss')
+  Future<ApiEnvelope<void>> dismissRating(@Path('id') String id);
 }

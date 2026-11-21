@@ -56,4 +56,32 @@ class OrdersRepositoryImpl implements OrdersRepository {
   @override
   Future<Result<Order>> cancel(String id) =>
       apiCall(() => _api.cancel(id), (dto) => dto.toEntity());
+
+  @override
+  Future<Result<OrderRating>> rate(
+    String orderId, {
+    required int stars,
+    required List<RatingTag> tags,
+    String? comment,
+  }) => apiCall(
+    () => _api.rate(
+      orderId,
+      RateOrderDto(
+        stars: stars,
+        tags: [for (final tag in tags) ratingTagCode(tag)],
+        comment: comment,
+      ),
+    ),
+    (dto) => dto.toEntity(),
+  );
+
+  @override
+  Future<Result<RatingPrompt?>> getRatingPrompt() => apiCall(
+    _api.getRatingPrompt,
+    (dtos) => dtos.isEmpty ? null : dtos.first.toEntity(),
+  );
+
+  @override
+  Future<Result<void>> dismissRatingPrompt(String orderId) =>
+      apiCallVoid(() => _api.dismissRating(orderId));
 }

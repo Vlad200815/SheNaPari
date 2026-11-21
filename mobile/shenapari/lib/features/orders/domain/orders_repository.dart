@@ -30,4 +30,19 @@ abstract interface class OrdersRepository {
 
   /// Until cooking starts; later `order.cannot_cancel` (409).
   Future<Result<Order>> cancel(String id);
+
+  /// Rates a picked-up order or changes its rating, for 3 days after
+  /// pickup. Codes: `rating.not_picked_up`, `rating.window_closed` (409).
+  Future<Result<OrderRating>> rate(
+    String orderId, {
+    required int stars,
+    required List<RatingTag> tags,
+    String? comment,
+  });
+
+  /// The order the home card asks about, or null when there is none.
+  Future<Result<RatingPrompt?>> getRatingPrompt();
+
+  /// «Не зараз» on the home card.
+  Future<Result<void>> dismissRatingPrompt(String orderId);
 }
