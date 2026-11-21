@@ -4,7 +4,6 @@ import 'package:easy_localization/easy_localization.dart'
     show AssetLoader, EasyLocalization, RootBundleAssetLoader;
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shenapari_core/l10n/app_locale.dart';
 import 'package:shenapari_core/session/session_repository.dart';
 import 'package:shenapari_core/storage/app_prefs.dart';
 import 'package:shenapari_core/storage/token_storage.dart';
@@ -20,7 +19,6 @@ Future<void> bootstrap() async {
   setupDi(prefs: await SharedPreferences.getInstance());
   runApp(
     localized(
-      locale: sl<AppLocale>().locale,
       child: KitchenApp(
         router: createRouter(session: sl(), signOut: sl<SignOutUseCase>().call),
       ),
@@ -52,15 +50,15 @@ Future<void> startSession({
   await session.restore();
 }
 
-/// The texts in `assets/translations`, in the phone's language (uk or en).
+/// The texts in `assets/translations`: Ukrainian only, whatever the
+/// tablet's language (the server gets `Accept-Language: uk` too).
 Widget localized({
-  required Locale locale,
   required Widget child,
   AssetLoader assetLoader = const RootBundleAssetLoader(),
 }) => EasyLocalization(
-  supportedLocales: AppLocale.supportedLocales,
+  supportedLocales: const [Locale('uk')],
   path: 'assets/translations',
-  startLocale: locale,
+  startLocale: const Locale('uk'),
   fallbackLocale: const Locale('uk'),
   saveLocale: false,
   ignorePluralRules: false,
