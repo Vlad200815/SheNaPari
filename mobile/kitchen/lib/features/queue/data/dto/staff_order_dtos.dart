@@ -100,6 +100,16 @@ class StaffOrderItemDto {
   final int quantity;
 }
 
+/// `POST /staff/orders/pickup` — the token from the customer's QR.
+@JsonSerializable(createFactory: false)
+class PickupDto {
+  const PickupDto({required this.token});
+
+  final String token;
+
+  Map<String, dynamic> toJson() => _$PickupDtoToJson(this);
+}
+
 /// `POST /staff/orders/{id}/accept`
 @JsonSerializable(createFactory: false)
 class AcceptOrderDto {

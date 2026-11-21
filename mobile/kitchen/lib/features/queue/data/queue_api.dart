@@ -19,6 +19,9 @@ abstract class QueueApi {
     @Body() AcceptOrderDto body,
   );
 
+  @POST('/staff/orders/pickup')
+  Future<ApiEnvelope<StaffOrderDto>> pickup(@Body() PickupDto body);
+
   @PATCH('/staff/orders/{id}/status')
   Future<ApiEnvelope<StaffOrderDto>> setStatus(
     @Path('id') String id,
