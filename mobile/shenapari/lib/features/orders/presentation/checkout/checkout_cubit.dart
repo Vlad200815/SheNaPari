@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shenapari_core/orders/order_events.dart';
 
 import 'package:shenapari_core/result/result.dart';
 import '../../../cart/domain/entities/cart.dart';
@@ -11,18 +14,26 @@ import 'checkout_state.dart';
 class CheckoutCubit extends Cubit<CheckoutState> {
   /// [items] is the cart at the moment checkout opened. The cubit does not
   /// touch the cart: the page empties it once the order is placed.
+  /// The kitchen's pause switch is followed live ([OrderEvents]), so
+  /// «Оплатити» turns off and on without reopening the page.
   CheckoutCubit(
     this._menu,
-    this._orders, {
+    this._orders,
+    this._events, {
     required this.items,
     required PaymentProvider defaultProvider,
   }) : super(CheckoutState(provider: defaultProvider));
 
   final MenuRepository _menu;
   final OrdersRepository _orders;
+  final OrderEvents _events;
   final List<CartItem> items;
+  StreamSubscription<bool>? _pause;
 
   Future<void> load() async {
+    _pause ??= _events.acceptingOrders.listen(
+      (accepting) => emit(state.copyWith(isAcceptingOrders: accepting)),
+    );
     emit(state.copyWith(status: CheckoutStatus.loading, failure: null));
     final (breaks, canteen) = await (
       _menu.getTodayBreaks(),
@@ -102,4 +113,10 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
   static int? _firstOrNull(List<BreakSlot> breaks) =>
       breaks.isEmpty ? null : breaks.first.id;
+
+  @override
+  Future<void> close() async {
+    await _pause?.cancel();
+    return super.close();
+  }
 }
