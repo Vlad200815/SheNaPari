@@ -255,8 +255,17 @@ namespace ShenaPari.Api.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("INTEGER");
 
+                    b.Property<long?>("PickedUpAt")
+                        .HasColumnType("INTEGER");
+
                     b.Property<Guid>("PickupToken")
                         .HasColumnType("TEXT");
+
+                    b.Property<long?>("RatingAskedAt")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long?>("RatingDismissedAt")
+                        .HasColumnType("INTEGER");
 
                     b.Property<long?>("ReadyAt")
                         .HasColumnType("INTEGER");
@@ -277,6 +286,8 @@ namespace ShenaPari.Api.Migrations
                     b.HasIndex("CreatedAt");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("PickedUpAt");
 
                     b.HasIndex("PickupToken")
                         .IsUnique();
@@ -321,6 +332,34 @@ namespace ShenaPari.Api.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("ShenaPari.Api.Entities.OrderRating", b =>
+                {
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("CreatedAt")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Stars")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Tags")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("UpdatedAt")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("OrderId");
+
+                    b.ToTable("OrderRatings");
                 });
 
             modelBuilder.Entity("ShenaPari.Api.Entities.OrderStatusChange", b =>
@@ -594,6 +633,15 @@ namespace ShenaPari.Api.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("ShenaPari.Api.Entities.OrderRating", b =>
+                {
+                    b.HasOne("ShenaPari.Api.Entities.Order", null)
+                        .WithOne("Rating")
+                        .HasForeignKey("ShenaPari.Api.Entities.OrderRating", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ShenaPari.Api.Entities.OrderStatusChange", b =>
                 {
                     b.HasOne("ShenaPari.Api.Entities.Order", null)
@@ -647,6 +695,8 @@ namespace ShenaPari.Api.Migrations
                     b.Navigation("Items");
 
                     b.Navigation("Payments");
+
+                    b.Navigation("Rating");
 
                     b.Navigation("StatusChanges");
                 });

@@ -69,6 +69,14 @@ Paid → Accepted → Cooking → Ready → PickedUp
 підсумовують кількість і витрачене за кожен місяць усієї історії (скасовані — повернені гроші, не
 рахуються).
 
+Оцінка після видачі (`Orders/RatingService.cs`): `PUT /orders/{id}/rating` `{stars: 1–5, tags, comment}`
+— поставити або змінити протягом 3 днів. Теги — коди: на 4–5 зірок `tasty`, `fast`, `hot`,
+`big_portion`, `no_queue`; на 1–3 `cold`, `slow`, `small_portion`, `wrong_order`, `not_tasty`. Через
+30 хв після видачі таймер шле один push «Як вам №36?» (`type: rate_order`) і запис під дзвіночок.
+`GET /orders/my/rating-prompt` — картка на головній (`[]` або одне замовлення) до оцінки, «не зараз»
+(`POST /orders/{id}/rating/dismiss`), нового замовлення або 24 год. `OrderDto` має `rating` і
+`rateUntil` (null — оцінити вже не можна).
+
 ## Ролі
 
 `SuperAdmin` ⊃ `Admin` ⊃ `Cook`; окремо `Customer`.

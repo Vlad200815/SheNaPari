@@ -48,6 +48,30 @@ public class OrderNotifier(IHubContext<OrdersHub> hub, PushService push, CampusC
             await push.SendToUserAsync(order.CustomerId, message);
     }
 
+    /// «Як вам №36?» some time after pickup: a line under the bell and, if
+    /// wanted, a push that opens the rating sheet.
+    public async Task RatingRequestedAsync(Order order)
+    {
+        var en = order.Language == "en";
+        var title = en ? $"How was order #{order.Number}?" : $"Як вам №{order.Number}?";
+        var body = en ? "Rate it in one tap: the kitchen reads every review" : "Оцініть одним дотиком: кухня читає кожен відгук";
+        db.Notifications.Add(new Notification
+        {
+            UserId = order.CustomerId,
+            OrderId = order.Id,
+            Title = title,
+            Body = body,
+            CreatedAt = clock.UtcNow,
+        });
+        await db.SaveChangesAsync();
+        if (await WantsPushAsync(order.CustomerId))
+            await push.SendToUserAsync(order.CustomerId, new PushMessage(title, body, new Dictionary<string, string>
+            {
+                ["type"] = "rate_order",
+                ["orderId"] = order.Id.ToString(),
+            }));
+    }
+
     /// Kitchen paused or resumed taking orders → everyone connected.
     public Task CanteenChangedAsync(CanteenDto canteen) =>
         hub.Clients.All.SendAsync("CanteenChanged", canteen);

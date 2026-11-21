@@ -29,6 +29,17 @@ public class Order
     /// When the order actually became Ready; the "not picked up" timer counts from here.
     public DateTimeOffset? ReadyAt { get; set; }
 
+    /// When it was handed over; the rating timers count from here.
+    public DateTimeOffset? PickedUpAt { get; set; }
+
+    /// The «how was it?» push went out (once per order).
+    public DateTimeOffset? RatingAskedAt { get; set; }
+
+    /// The customer closed the rating card on the home screen.
+    public DateTimeOffset? RatingDismissedAt { get; set; }
+
+    public OrderRating? Rating { get; set; }
+
     /// "uk" or "en": the app's language when the order was placed. Its
     /// notifications and pushes are written later, when the kitchen changes
     /// the status, so they cannot take the language from that request.
