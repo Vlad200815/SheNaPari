@@ -20,6 +20,8 @@ void setupDi({required SharedPreferences prefs, TokenStorage? tokenStorage}) {
     apiBaseUrl: Env.apiBaseUrl,
     prefs: prefs,
     tokenStorage: tokenStorage,
+    // Cooks are Ukrainian; kitchen tablets often run in English.
+    onlyLanguage: 'uk',
   );
   registerAuth(sl);
   registerQueue(sl, apiBaseUrl: Env.apiBaseUrl);

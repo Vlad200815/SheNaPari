@@ -1,6 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kitchen/app/di.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shenapari_core/l10n/app_locale.dart';
 import 'package:shenapari_core/l10n/core_keys.dart';
+import 'package:shenapari_core/storage/in_memory_token_storage.dart';
 
 import '../l10n_helper.dart';
 
@@ -13,23 +19,34 @@ Set<String> _keys(Map<String, dynamic> map, [String prefix = '']) => {
 };
 
 void main() {
-  test('the translations are bundled with the app', () async {
+  test('the Ukrainian texts are bundled with the app', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    for (final code in ['uk', 'en']) {
-      final json = await rootBundle.loadString(
-        'assets/translations/$code.json',
-      );
-      expect(json, contains('"login"'));
-    }
+    final json = await rootBundle.loadString('assets/translations/uk.json');
+    expect(json, contains('"login"'));
   });
 
-  test('uk and en have the same keys', () {
-    expect(_keys(readTranslations('en')), _keys(readTranslations('uk')));
+  test('Ukrainian only: no other translations', () {
+    final files = Directory('assets/translations')
+        .listSync()
+        .map((f) => f.uri.pathSegments.last)
+        .toList();
+    expect(files, ['uk.json']);
   });
 
   test('the keys the shared package uses are here too', () {
-    for (final code in ['uk', 'en']) {
-      expect(_keys(readTranslations(code)), containsAll(CoreKeys.all));
-    }
+    expect(_keys(readTranslations('uk')), containsAll(CoreKeys.all));
+  });
+
+  test('Ukrainian even on an English tablet, for the server too', () async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({});
+    await sl.reset();
+    setupDi(
+      prefs: await SharedPreferences.getInstance(),
+      tokenStorage: InMemoryTokenStorage(),
+    );
+    addTearDown(sl.reset);
+
+    expect(sl<AppLocale>().languageCode, 'uk');
   });
 }
