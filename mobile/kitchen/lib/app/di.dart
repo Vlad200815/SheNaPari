@@ -4,6 +4,7 @@ import 'package:shenapari_core/core_module.dart';
 import 'package:shenapari_core/storage/token_storage.dart';
 
 import '../features/auth/auth_module.dart';
+import '../features/pickup/pickup_module.dart';
 import '../features/queue/queue_module.dart';
 import 'env.dart';
 
@@ -20,4 +21,5 @@ void setupDi({required SharedPreferences prefs, TokenStorage? tokenStorage}) {
   );
   registerAuth(sl);
   registerQueue(sl, apiBaseUrl: Env.apiBaseUrl);
+  registerPickup(sl);
 }

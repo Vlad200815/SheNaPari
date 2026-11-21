@@ -11,6 +11,7 @@ import '../../../core/l10n/l10n.dart';
 import '../domain/entities/kitchen_order.dart';
 import 'queue_cubit.dart';
 import 'widgets/queue_board.dart';
+import '../../pickup/presentation/pickup_view.dart';
 
 enum KitchenTab { queue, pickup, stopList }
 
@@ -52,7 +53,8 @@ class _QueuePageState extends State<QueuePage> {
           final tablet = constraints.maxWidth >= QueuePage.tabletWidth;
           final body = switch (_tab) {
             KitchenTab.queue => QueueBoard(tablet: tablet),
-            KitchenTab.pickup || KitchenTab.stopList => const _Soon(),
+            KitchenTab.pickup => PickupView(tablet: tablet),
+            KitchenTab.stopList => const _Soon(),
           };
           return Scaffold(
             body: SafeArea(
