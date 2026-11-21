@@ -22,6 +22,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<Canteen> Canteens => Set<Canteen>();
     public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<OrderRating> OrderRatings => Set<OrderRating>();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder c)
     {
@@ -113,6 +114,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasIndex(o => o.CreatedAt);
             e.HasMany(o => o.StatusChanges).WithOne().HasForeignKey(c => c.OrderId).OnDelete(DeleteBehavior.Cascade);
             e.HasMany(o => o.Payments).WithOne().HasForeignKey(p => p.OrderId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(o => o.Rating).WithOne().HasForeignKey<OrderRating>(r => r.OrderId).OnDelete(DeleteBehavior.Cascade);
+            // The rating timers look for recently picked-up orders.
+            e.HasIndex(o => o.PickedUpAt);
+        });
+
+        b.Entity<OrderRating>(e =>
+        {
+            e.HasKey(r => r.OrderId);
+            e.Property(r => r.Tags).HasMaxLength(200);
+            e.Property(r => r.Comment).HasMaxLength(ShenaPari.Api.Orders.RatingService.MaxComment);
         });
 
         b.Entity<OrderItem>(e =>

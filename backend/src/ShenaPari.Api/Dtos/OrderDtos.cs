@@ -24,7 +24,18 @@ public record OrderDto(
     PaymentProvider PaymentProvider,
     List<OrderItemDto> Items,
     List<OrderStatusChangeDto> History,
-    Guid? PickupToken);
+    Guid? PickupToken,
+    OrderRatingDto? Rating = null,
+    // Until when it can be rated or the rating changed; null = it can't (not picked up, or too late).
+    DateTimeOffset? RateUntil = null);
+
+/// PUT /orders/{id}/rating. Tags are codes (RatingService.PositiveTags / NegativeTags).
+public record RateOrderDto(int Stars, List<string>? Tags, string? Comment);
+
+public record OrderRatingDto(int Stars, List<string> Tags, string? Comment, DateTimeOffset UpdatedAt);
+
+/// The «how was it?» card on the home screen.
+public record RatingPromptDto(Guid OrderId, int Number, List<string> Items, DateTimeOffset PickedUpAt);
 
 /// One page of the customer's finished orders, newest first. [Months] covers the whole
 /// history under the same filter (not just this page), for the month headers.
