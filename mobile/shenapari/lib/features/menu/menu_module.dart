@@ -16,7 +16,7 @@ void registerMenu(GetIt sl) {
       () => MenuRepositoryImpl(sl(), baseUrl: sl<Dio>().options.baseUrl),
     )
     ..registerFactory(() => GetMenuUseCase(sl()))
-    ..registerFactory(() => HomeCubit(sl(), sl()))
+    ..registerFactory(() => HomeCubit(sl(), sl(), sl()))
     ..registerFactoryParam<DishCubit, int, Dish?>(
       (id, initial) => DishCubit(sl(), dishId: id, initial: initial),
     );

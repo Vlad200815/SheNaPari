@@ -144,6 +144,13 @@ class FakeOrderEvents implements OrderEvents {
   @override
   Stream<bool> get acceptingOrders => _accepting.stream;
 
+  final _menu = StreamController<int?>.broadcast();
+
+  void menuChanged([int? dishId]) => _menu.add(dishId);
+
+  @override
+  Stream<int?> get menuChanges => _menu.stream;
+
   @override
   Stream<String?> get changes => _controller.stream;
 }
