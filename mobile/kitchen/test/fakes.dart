@@ -178,25 +178,33 @@ KitchenOrder order(
 
 /// The canteen's pause switch as the server holds it.
 class FakeCanteenRepository implements CanteenRepository {
-  FakeCanteenRepository({this.accepting = true});
+  FakeCanteenRepository({this.accepting = true, this.pausedAt});
 
   bool accepting;
+  DateTime? pausedAt;
+
+  /// «Now» for a new pause.
+  DateTime now = DateTime(2026, 11, 21, 11, 20);
+
+  KitchenSwitch get _switch =>
+      KitchenSwitch(accepting: accepting, pausedAt: pausedAt);
   final calls = <String>[];
   Failure? failNext;
 
   @override
-  Future<Result<bool>> isAcceptingOrders() async {
+  Future<Result<KitchenSwitch>> get() async {
     calls.add('get');
     if (_fail() case final failure?) return Err(failure);
-    return Ok(accepting);
+    return Ok(_switch);
   }
 
   @override
-  Future<Result<bool>> setAcceptingOrders(bool accepting) async {
+  Future<Result<KitchenSwitch>> setAcceptingOrders(bool accepting) async {
     calls.add(accepting ? 'resume' : 'pause');
     if (_fail() case final failure?) return Err(failure);
+    pausedAt = accepting ? null : (pausedAt ?? now);
     this.accepting = accepting;
-    return Ok(accepting);
+    return Ok(_switch);
   }
 
   Failure? _fail() {

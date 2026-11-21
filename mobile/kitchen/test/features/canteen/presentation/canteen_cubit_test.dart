@@ -35,16 +35,18 @@ void main() {
     expect(c.state.status, CanteenStatus.failure);
   });
 
-  test('pause, then resume', () async {
+  test('pause, then resume; the banner knows since when', () async {
     final c = cubit();
     await c.load();
 
     await c.pause();
     expect(c.state.accepting, isFalse);
+    expect(c.state.pausedAt, DateTime(2026, 11, 21, 11, 20));
     expect(c.state.busy, isFalse);
 
     await c.resume();
     expect(c.state.accepting, isTrue);
+    expect(c.state.pausedAt, isNull);
     expect(repository.calls, ['get', 'pause', 'resume']);
   });
 
@@ -69,14 +71,18 @@ void main() {
     expect(repository.calls.where((x) => x == 'pause'), hasLength(1));
   });
 
-  test('another device paused: follows it live', () async {
+  test('another device paused: follows it live, with the time', () async {
     final c = cubit();
     await c.load();
+    repository
+      ..accepting = false
+      ..pausedAt = DateTime(2026, 11, 21, 11, 5);
 
     events.acceptingChanged(false);
     await Future<void>.delayed(Duration.zero);
 
     expect(c.state.accepting, isFalse);
+    expect(c.state.pausedAt, DateTime(2026, 11, 21, 11, 5));
   });
 
   test('after a reconnect: asks the server again', () async {

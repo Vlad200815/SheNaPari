@@ -97,6 +97,9 @@ namespace ShenaPari.Api.Migrations
                     b.Property<string>("NameEn")
                         .HasColumnType("TEXT");
 
+                    b.Property<long?>("PausedAt")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.ToTable("Canteens");
