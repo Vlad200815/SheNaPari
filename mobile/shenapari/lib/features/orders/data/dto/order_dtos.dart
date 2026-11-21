@@ -51,6 +51,8 @@ class OrderDto {
     this.readyAt,
     this.history = const [],
     this.pickupToken,
+    this.rating,
+    this.rateUntil,
   });
 
   factory OrderDto.fromJson(Map<String, dynamic> json) =>
@@ -70,6 +72,12 @@ class OrderDto {
   /// Only while the order is ready: what the QR at pickup encodes.
   final String? pickupToken;
 
+  /// Picked-up orders only, once rated.
+  final OrderRatingDto? rating;
+
+  /// Null: it can't be rated (any more).
+  final DateTime? rateUntil;
+
   Order toEntity() => Order(
     id: id,
     number: number,
@@ -82,6 +90,8 @@ class OrderDto {
     readyAt: readyAt?.toLocal(),
     history: [for (final change in history) change.toEntity()],
     pickupToken: pickupToken,
+    rating: rating?.toEntity(),
+    rateUntil: rateUntil?.toLocal(),
   );
 
   /// `PickedUp` → [OrderStatus.pickedUp]; anything new → `unknown`.
@@ -189,5 +199,83 @@ class OrderMonthDto {
     month: month,
     count: count,
     spentKopecks: toKopecks(spent),
+  );
+}
+
+/// Tag codes as the server sends them: `big_portion` ↔ [RatingTag.bigPortion].
+RatingTag parseRatingTag(String code) =>
+    RatingTag.values.asNameMap()[_camel(code)] ?? RatingTag.unknown;
+
+String ratingTagCode(RatingTag tag) => tag.name.replaceAllMapped(
+  RegExp('[A-Z]'),
+  (m) => '_${m[0]!.toLowerCase()}',
+);
+
+String _camel(String code) =>
+    code.replaceAllMapped(RegExp('_([a-z])'), (m) => m[1]!.toUpperCase());
+
+@JsonSerializable(createToJson: false)
+class OrderRatingDto {
+  const OrderRatingDto({
+    required this.stars,
+    this.tags = const [],
+    this.comment,
+    this.updatedAt,
+  });
+
+  factory OrderRatingDto.fromJson(Map<String, dynamic> json) =>
+      _$OrderRatingDtoFromJson(json);
+
+  final int stars;
+  final List<String> tags;
+  final String? comment;
+  final DateTime? updatedAt;
+
+  /// Unknown codes (a newer server) are left out rather than shown blank.
+  OrderRating toEntity() => OrderRating(
+    stars: stars.clamp(1, 5),
+    tags: [
+      for (final code in tags)
+        if (parseRatingTag(code) case final tag when tag != RatingTag.unknown)
+          tag,
+    ],
+    comment: comment,
+    updatedAt: updatedAt?.toLocal(),
+  );
+}
+
+@JsonSerializable(createFactory: false)
+class RateOrderDto {
+  const RateOrderDto({required this.stars, required this.tags, this.comment});
+
+  final int stars;
+  final List<String> tags;
+  final String? comment;
+
+  Map<String, dynamic> toJson() => _$RateOrderDtoToJson(this);
+}
+
+@JsonSerializable(createToJson: false)
+class RatingPromptDto {
+  const RatingPromptDto({
+    required this.orderId,
+    required this.number,
+    required this.pickedUpAt,
+    this.items = const [],
+  });
+
+  factory RatingPromptDto.fromJson(Map<String, dynamic> json) =>
+      _$RatingPromptDtoFromJson(json);
+
+  final String orderId;
+  final int number;
+  final List<String> items;
+  final DateTime pickedUpAt;
+
+  RatingPrompt toEntity() => RatingPrompt(
+    orderId: orderId,
+    number: number,
+    items: items,
+    pickedUpAt: pickedUpAt.toLocal(),
   );
 }

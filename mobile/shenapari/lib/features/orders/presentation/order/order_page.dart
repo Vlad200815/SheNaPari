@@ -17,6 +17,7 @@ import '../widgets/order_widgets.dart';
 import 'order_cubit.dart';
 import '../../../../core/l10n/l10n.dart';
 import 'package:shenapari_core/ui/app_colors.dart';
+import '../rating/order_rating_section.dart';
 
 /// One order: status steps (live), the QR once ready, what was ordered and
 /// cancellation while the kitchen has not started cooking.
@@ -185,6 +186,10 @@ class _OrderView extends StatelessWidget {
               ],
             ),
           ),
+          if (order.rating != null || order.canRate) ...[
+            const SizedBox(height: 16),
+            OrderRatingSection(order: order, onRated: cubit.refresh),
+          ],
           if (order.canCancel) ...[
             const SizedBox(height: 24),
             AppButton.outlined(
