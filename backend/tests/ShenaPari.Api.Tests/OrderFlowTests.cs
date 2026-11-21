@@ -280,7 +280,7 @@ public class KitchenSwitchTests(ApiFactory api) : IClassFixture<ApiFactory>
     }
 
     [Fact]
-    public async Task Dish_on_the_stop_list_disappears_for_customers()
+    public async Task Dish_on_the_stop_list_shows_as_sold_out_and_cannot_be_ordered()
     {
         var (customer, _) = await api.LoginCustomerAsync();
         var cook = await api.LoginCookAsync();
@@ -288,11 +288,14 @@ public class KitchenSwitchTests(ApiFactory api) : IClassFixture<ApiFactory>
 
         await cook.PatchJsonAsync($"/staff/dishes/{dishId}/availability", new SetAvailabilityDto(false));
 
-        Assert.DoesNotContain(await customer.GetDataAsync<List<DishDto>>("/dishes"), d => d.Id == dishId);
-        Assert.Equal(HttpStatusCode.NotFound, (await customer.GetAsync($"/dishes/{dishId}")).StatusCode);
+        Assert.Contains(await customer.GetDataAsync<List<DishDto>>("/dishes"), d => d.Id == dishId && !d.IsAvailable);
+        Assert.False((await customer.GetDataAsync<DishDto>($"/dishes/{dishId}")).IsAvailable);
         var order = await customer.PostJsonAsync("/orders",
             new CreateOrderDto(null, PaymentProvider.GooglePay, [new(dishId, 1)]));
         Assert.Equal(["order.dish_unavailable"], (await order.ReadResultAsync<object>()).Errors);
         Assert.Contains(await cook.GetDataAsync<List<StaffDishDto>>("/staff/dishes"), d => d.Id == dishId && !d.IsAvailable);
+
+        await cook.PatchJsonAsync($"/staff/dishes/{dishId}/availability", new SetAvailabilityDto(true));
+        Assert.True((await customer.GetDataAsync<DishDto>($"/dishes/{dishId}")).IsAvailable);
     }
 }

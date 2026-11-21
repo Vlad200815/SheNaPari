@@ -35,6 +35,19 @@ void main() {
     expect(await getMenu(), Ok(sampleMenu));
   });
 
+  test('sold-out dishes stay in the menu, after the rest', () async {
+    when(
+      () => repository.getDishes(),
+    ).thenAnswer((_) async => Ok([cheeseburger.soldOut(), lemonade]));
+
+    final result = await getMenu();
+
+    expect((result as Ok<Menu>).value.dishes, [
+      lemonade,
+      cheeseburger.soldOut(),
+    ]);
+  });
+
   test('drops categories without dishes', () async {
     final result = await getMenu();
 

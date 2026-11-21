@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:shenapari_core/result/failure.dart';
 import '../../../menu/domain/entities/break_slot.dart';
+import '../../../menu/domain/entities/dish.dart';
 import '../../domain/entities/order.dart';
 
 part 'checkout_state.freezed.dart';
@@ -29,6 +30,10 @@ abstract class CheckoutState with _$CheckoutState {
     /// Set once placed.
     Order? order,
     Failure? failure,
+
+    /// The whole menu again after `order.dish_unavailable`: the page hands
+    /// it to the cart and goes back there, where the sold-out dish is grey.
+    List<Dish>? freshDishes,
   }) = _CheckoutState;
 
   bool get canPay => status == CheckoutStatus.ready && isAcceptingOrders;
