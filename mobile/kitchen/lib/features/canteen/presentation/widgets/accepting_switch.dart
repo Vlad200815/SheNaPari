@@ -5,6 +5,7 @@ import 'package:shenapari_core/ui/app_text.dart';
 import 'package:shenapari_core/ui/confirm_sheet.dart';
 
 import '../../../../core/l10n/l10n.dart';
+import '../../../queue/presentation/widgets/queue_colors.dart';
 import '../canteen_cubit.dart';
 import '../canteen_state.dart';
 
@@ -107,7 +108,12 @@ class PausedBanner extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      LocaleKeys.canteen_banner.tr(),
+                      switch (state.pausedAt) {
+                        final at? => LocaleKeys.canteen_banner_at.tr(
+                          namedArgs: {'time': clock(at)},
+                        ),
+                        null => LocaleKeys.canteen_banner.tr(),
+                      },
                       style: AppText.small(
                         color: colors.danger,
                         fontWeight: FontWeight.w600,

@@ -18,11 +18,8 @@ class CanteenCubit extends Cubit<CanteenState> {
   StreamSubscription<String?>? _reconnects;
 
   Future<void> load() async {
-    _live ??= _events.acceptingOrders.listen(
-      (accepting) => emit(
-        state.copyWith(status: CanteenStatus.loaded, accepting: accepting),
-      ),
-    );
+    // The event says only on/off; the pause time comes with a reload.
+    _live ??= _events.acceptingOrders.listen((_) => _fetch());
     // `null` = updates may have been missed while offline.
     _reconnects ??= _events.changes
         .where((id) => id == null)
@@ -35,12 +32,13 @@ class CanteenCubit extends Cubit<CanteenState> {
   Future<void> resume() => _set(true);
 
   Future<void> _fetch() async {
-    final result = await _repository.isAcceptingOrders();
+    final result = await _repository.get();
     if (isClosed) return;
     emit(switch (result) {
-      Ok(value: final accepting) => state.copyWith(
+      Ok(value: final kitchen) => state.copyWith(
         status: CanteenStatus.loaded,
-        accepting: accepting,
+        accepting: kitchen.accepting,
+        pausedAt: kitchen.pausedAt,
       ),
       // Keep what we knew; a first load failing hides the switch.
       Err() when state.status == CanteenStatus.loaded => state,
@@ -57,9 +55,10 @@ class CanteenCubit extends Cubit<CanteenState> {
     final result = await _repository.setAcceptingOrders(accepting);
     if (isClosed) return;
     emit(switch (result) {
-      Ok(value: final accepting) => state.copyWith(
+      Ok(value: final kitchen) => state.copyWith(
         busy: false,
-        accepting: accepting,
+        accepting: kitchen.accepting,
+        pausedAt: kitchen.pausedAt,
       ),
       Err(:final failure) => state.copyWith(busy: false, failure: failure),
     });
