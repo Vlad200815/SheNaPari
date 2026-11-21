@@ -4,8 +4,10 @@ import 'package:shenapari_core/core_module.dart';
 import 'package:shenapari_core/storage/token_storage.dart';
 
 import '../features/auth/auth_module.dart';
+import '../features/canteen/canteen_module.dart';
 import '../features/pickup/pickup_module.dart';
 import '../features/queue/queue_module.dart';
+import '../features/stop_list/stop_list_module.dart';
 import 'env.dart';
 
 /// Service locator. Use it only here, in feature modules and in
@@ -22,4 +24,6 @@ void setupDi({required SharedPreferences prefs, TokenStorage? tokenStorage}) {
   registerAuth(sl);
   registerQueue(sl, apiBaseUrl: Env.apiBaseUrl);
   registerPickup(sl);
+  registerCanteen(sl);
+  registerStopList(sl);
 }

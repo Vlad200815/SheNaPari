@@ -276,6 +276,13 @@ class FakeOrderEvents implements OrderEvents {
 
   void changed(String? orderId) => _controller.add(orderId);
 
+  final _accepting = StreamController<bool>.broadcast();
+
+  void acceptingChanged(bool accepting) => _accepting.add(accepting);
+
+  @override
+  Stream<bool> get acceptingOrders => _accepting.stream;
+
   @override
   Stream<String?> get changes => _controller.stream;
 }
