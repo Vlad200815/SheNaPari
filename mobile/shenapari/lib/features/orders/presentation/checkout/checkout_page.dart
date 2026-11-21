@@ -41,9 +41,14 @@ class CheckoutPage extends StatelessWidget {
       child: BlocConsumer<CheckoutCubit, CheckoutState>(
         listenWhen: (previous, current) =>
             previous.status != current.status ||
-            previous.failure != current.failure,
+            previous.failure != current.failure ||
+            previous.freshDishes != current.freshDishes,
         listener: (context, state) {
-          if (state.status == CheckoutStatus.placed) {
+          if (state.freshDishes case final dishes?) {
+            // A dish ran out: back to the cart, where it is now grey.
+            context.read<CartCubit>().updateDishes(dishes);
+            if (context.canPop()) context.pop();
+          } else if (state.status == CheckoutStatus.placed) {
             context.read<CartCubit>().clear();
           } else if (state.status == CheckoutStatus.ready &&
               state.failure != null) {

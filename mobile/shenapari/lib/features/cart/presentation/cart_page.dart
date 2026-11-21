@@ -95,6 +95,7 @@ class _CartRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final dish = item.dish;
     final cart = context.read<CartCubit>();
+    final soldOut = !dish.isAvailable;
     return Material(
       color: context.colors.surface,
       borderRadius: BorderRadius.circular(16),
@@ -107,7 +108,15 @@ class _CartRow extends StatelessWidget {
             children: [
               SizedBox.square(
                 dimension: 72,
-                child: DishImage(url: dish.imageUrl, radius: 12),
+                child: soldOut
+                    ? ColorFiltered(
+                        colorFilter: greyscale,
+                        child: Opacity(
+                          opacity: 0.6,
+                          child: DishImage(url: dish.imageUrl, radius: 12),
+                        ),
+                      )
+                    : DishImage(url: dish.imageUrl, radius: 12),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -119,29 +128,53 @@ class _CartRow extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: AppText.small(
-                        color: context.colors.textPrimary,
+                        color: soldOut
+                            ? context.colors.textSecondary
+                            : context.colors.textPrimary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      formatPrice(item.totalKopecks),
-                      style: AppText.medium().copyWith(
-                        fontWeight: FontWeight.w700,
+                    if (soldOut)
+                      Text(
+                        LocaleKeys.home_sold_out.tr(),
+                        style: AppText.small(
+                          color: context.colors.danger,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      )
+                    else
+                      Text(
+                        formatPrice(item.totalKopecks),
+                        style: AppText.medium().copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
               const SizedBox(width: 8),
-              QuantityStepper(
-                compact: true,
-                value: item.quantity,
-                // Going below 1 removes the dish.
-                min: 0,
-                max: Cart.maxQuantity,
-                onChanged: (quantity) => cart.setQuantity(dish, quantity),
-              ),
+              if (soldOut)
+                IconButton(
+                  tooltip: LocaleKeys.cart_remove.tr(
+                    namedArgs: {'name': dish.name},
+                  ),
+                  onPressed: () => cart.remove(dish.id),
+                  style: IconButton.styleFrom(minimumSize: const Size(44, 44)),
+                  icon: Icon(
+                    Icons.delete_outline_rounded,
+                    color: context.colors.textSecondary,
+                  ),
+                )
+              else
+                QuantityStepper(
+                  compact: true,
+                  value: item.quantity,
+                  // Going below 1 removes the dish.
+                  min: 0,
+                  max: Cart.maxQuantity,
+                  onChanged: (quantity) => cart.setQuantity(dish, quantity),
+                ),
             ],
           ),
         ),
@@ -196,10 +229,22 @@ class _CheckoutBar extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            AppButton.primary(
-              text: LocaleKeys.cart_checkout.tr(),
-              onPressed: () => context.push(Routes.checkout),
-            ),
+            if (cart.hasSoldOut) ...[
+              Text(
+                LocaleKeys.cart_sold_out_note.tr(),
+                style: AppText.small(color: context.colors.textSecondary),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              AppButton.outlined(
+                text: LocaleKeys.cart_remove_sold_out.tr(),
+                onPressed: context.read<CartCubit>().removeSoldOut,
+              ),
+            ] else
+              AppButton.primary(
+                text: LocaleKeys.cart_checkout.tr(),
+                onPressed: () => context.push(Routes.checkout),
+              ),
           ],
         ),
       ),

@@ -34,7 +34,12 @@ class GetMenuUseCase {
               for (final category in categories)
                 if (used.contains(category.id)) category,
             ],
-            dishes: dishes,
+            // Sold-out dishes go last, so the menu starts with what can
+            // be ordered; the server's order is kept otherwise.
+            dishes: [
+              ...dishes.where((d) => d.isAvailable),
+              ...dishes.where((d) => !d.isAvailable),
+            ],
             nextBreak: nextBreak,
           ),
         );
