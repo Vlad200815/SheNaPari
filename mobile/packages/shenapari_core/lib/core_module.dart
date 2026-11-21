@@ -12,15 +12,23 @@ import 'storage/secure_token_storage.dart';
 import 'storage/token_storage.dart';
 
 /// Registers the shared services (prefs, locale, tokens, session, Dio). [tokenStorage] can be replaced in tests.
+/// [onlyLanguage] pins the language whatever the phone says (the kitchen is
+/// Ukrainian only); the app must then have no language picker.
 void registerCore(
   GetIt sl, {
   required String apiBaseUrl,
   required SharedPreferences prefs,
   TokenStorage? tokenStorage,
+  String? onlyLanguage,
 }) {
   sl
     ..registerSingleton<AppPrefs>(AppPrefs(prefs))
-    ..registerLazySingleton<AppLocale>(() => AppLocale(sl()))
+    ..registerLazySingleton<AppLocale>(
+      () => AppLocale(
+        sl(),
+        deviceLanguageCode: onlyLanguage == null ? null : () => onlyLanguage,
+      ),
+    )
     ..registerLazySingleton<TokenStorage>(
       () => tokenStorage ?? SecureTokenStorage(),
     )
