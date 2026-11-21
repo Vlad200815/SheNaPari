@@ -35,7 +35,7 @@ public class OrderService(AppDbContext db, CampusClock clock, OrderNotifier noti
         // Names and prices come from the DB, never from the client.
         var dishIds = dto.Items.Select(i => i.DishId).Distinct().ToList();
         var dishes = await db.Dishes
-            .Where(d => dishIds.Contains(d.Id) && d.IsAvailable)
+            .Where(d => dishIds.Contains(d.Id) && d.IsAvailable && !d.IsArchived)
             .ToDictionaryAsync(d => d.Id);
         if (dishes.Count != dishIds.Count) return OrderErrors.DishUnavailable;
 

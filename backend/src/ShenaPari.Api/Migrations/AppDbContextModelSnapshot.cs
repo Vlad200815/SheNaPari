@@ -152,6 +152,9 @@ namespace ShenaPari.Api.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("INTEGER");
 

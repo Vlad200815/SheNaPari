@@ -55,7 +55,6 @@ public static class ErrorTexts
         ["menu.invalid_dish"] = "Invalid dish data",
         ["menu.invalid_image"] = "A JPEG, PNG or WebP photo up to 5 MB is required",
         ["menu.category_not_empty"] = "Move or delete the dishes of this category first",
-        ["menu.dish_in_use"] = "The dish is in orders. Hide it instead of deleting",
 
         ["order.not_found"] = "Order not found",
         ["order.empty"] = "The order has no dishes",
