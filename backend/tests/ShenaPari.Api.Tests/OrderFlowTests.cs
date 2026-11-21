@@ -264,13 +264,18 @@ public class KitchenSwitchTests(ApiFactory api) : IClassFixture<ApiFactory>
         var byCustomer = await customer.PutJsonAsync("/staff/canteen/accepting", new SetAcceptingDto(false));
         Assert.Equal(HttpStatusCode.Forbidden, byCustomer.StatusCode);
 
+        var before = DateTimeOffset.UtcNow.AddSeconds(-1);
         await cook.PutJsonAsync("/staff/canteen/accepting", new SetAcceptingDto(false));
-        Assert.False((await customer.GetDataAsync<CanteenDto>("/canteen")).IsAcceptingOrders);
+        var canteen = await customer.GetDataAsync<CanteenDto>("/canteen");
+        Assert.False(canteen.IsAcceptingOrders);
+        Assert.NotNull(canteen.PausedAt);
+        Assert.True(canteen.PausedAt >= before);
         var paused = await customer.PostJsonAsync("/orders", OneBorscht);
         Assert.Equal(HttpStatusCode.Conflict, paused.StatusCode);
         Assert.Equal(["order.canteen_paused"], (await paused.ReadResultAsync<object>()).Errors);
 
         await cook.PutJsonAsync("/staff/canteen/accepting", new SetAcceptingDto(true));
+        Assert.Null((await customer.GetDataAsync<CanteenDto>("/canteen")).PausedAt);
         Assert.Equal(HttpStatusCode.Created, (await customer.PostJsonAsync("/orders", OneBorscht)).StatusCode);
     }
 

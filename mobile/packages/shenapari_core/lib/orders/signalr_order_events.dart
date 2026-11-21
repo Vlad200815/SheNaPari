@@ -10,8 +10,10 @@ import 'order_events.dart';
 ///
 /// The hub puts each connection into the group of its user, so a customer
 /// gets only their own orders; staff are also in the staff group and get
-/// every order, new ones included (`OrderCreated`). The connection opens when the first screen
-/// starts listening and closes when the last one stops (or on sign-out).
+/// every order, new ones included (`OrderCreated`). Everyone gets the
+/// kitchen's pause switch (`CanteenChanged`). The connection opens when the
+/// first screen starts listening to either stream and closes when the last
+/// one stops (or on sign-out).
 ///
 /// The access token is read at connect time. Screens load orders over REST
 /// before listening, and that request refreshes an expired token, so the
@@ -23,14 +25,19 @@ class SignalROrderEvents implements OrderEvents {
   }) : _url = '$baseUrl/hubs/orders',
        _session = session {
     _controller = StreamController<String?>.broadcast(
-      onListen: _connect,
-      onCancel: _disconnect,
+      onListen: _listened,
+      onCancel: _cancelled,
+    );
+    _accepting = StreamController<bool>.broadcast(
+      onListen: _listened,
+      onCancel: _cancelled,
     );
   }
 
   final String _url;
   final SessionRepository _session;
   late final StreamController<String?> _controller;
+  late final StreamController<bool> _accepting;
   HubConnection? _hub;
   Timer? _retry;
 
@@ -41,6 +48,17 @@ class SignalROrderEvents implements OrderEvents {
 
   @override
   Stream<String?> get changes => _controller.stream;
+
+  @override
+  Stream<bool> get acceptingOrders => _accepting.stream;
+
+  bool get _hasListener => _controller.hasListener || _accepting.hasListener;
+
+  void _listened() => _connect();
+
+  void _cancelled() {
+    if (!_hasListener) _disconnect();
+  }
 
   Future<void> _connect() async {
     if (_hub != null) return;
@@ -63,6 +81,11 @@ class SignalROrderEvents implements OrderEvents {
         final event = arguments?.firstOrNull;
         if (event is Map) _controller.add(event['id']?.toString());
       })
+      ..on('CanteenChanged', (arguments) {
+        final event = arguments?.firstOrNull;
+        final accepting = event is Map ? event['isAcceptingOrders'] : null;
+        if (accepting is bool) _accepting.add(accepting);
+      })
       // Events sent while offline are lost: ask screens to reload.
       ..onreconnected(({connectionId}) => _controller.add(null))
       // Automatic reconnect gave up: start over while screens still listen.
@@ -83,7 +106,7 @@ class SignalROrderEvents implements OrderEvents {
     _hub = null;
     _retry?.cancel();
     _retry = Timer(retryDelay, () {
-      if (_controller.hasListener) {
+      if (_hasListener) {
         _connect();
         _controller.add(null); // whatever happened meanwhile, reload it
       }

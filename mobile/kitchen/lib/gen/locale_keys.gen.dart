@@ -29,7 +29,6 @@ abstract class LocaleKeys {
   static const queue_tab_stop = 'queue.tab_stop';
   static const queue_empty_title = 'queue.empty_title';
   static const queue_empty_text = 'queue.empty_text';
-  static const queue_soon = 'queue.soon';
   static const queue_sign_out = 'queue.sign_out';
   static const queue_sign_out_title = 'queue.sign_out_title';
   static const queue_sign_out_text = 'queue.sign_out_text';
@@ -105,4 +104,23 @@ abstract class LocaleKeys {
   static const pickup_problems_not_ready = 'pickup.problems.not_ready';
   static const pickup_problems = 'pickup.problems';
   static const pickup = 'pickup';
+  static const stop_list_search = 'stop_list.search';
+  static const stop_list_off_count = 'stop_list.off_count';
+  static const stop_list_enable_all = 'stop_list.enable_all';
+  static const stop_list_on = 'stop_list.on';
+  static const stop_list_off = 'stop_list.off';
+  static const stop_list_uncategorized = 'stop_list.uncategorized';
+  static const stop_list_nothing_found = 'stop_list.nothing_found';
+  static const stop_list_empty = 'stop_list.empty';
+  static const stop_list = 'stop_list';
+  static const canteen_accepting = 'canteen.accepting';
+  static const canteen_paused = 'canteen.paused';
+  static const canteen_pause_title = 'canteen.pause_title';
+  static const canteen_pause_text = 'canteen.pause_text';
+  static const canteen_pause_confirm = 'canteen.pause_confirm';
+  static const canteen_keep = 'canteen.keep';
+  static const canteen_banner = 'canteen.banner';
+  static const canteen_banner_at = 'canteen.banner_at';
+  static const canteen_resume = 'canteen.resume';
+  static const canteen = 'canteen';
 }
