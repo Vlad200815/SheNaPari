@@ -5,19 +5,25 @@ import 'package:shenapari_core/ui/app_colors.dart';
 import 'package:shenapari_core/ui/app_logo.dart';
 import 'package:shenapari_core/ui/app_text.dart';
 import 'package:shenapari_core/ui/confirm_sheet.dart';
+import 'package:shenapari_core/ui/snack_bars.dart';
 
 import '../../../app/di.dart';
 import '../../../core/l10n/l10n.dart';
 import '../domain/entities/kitchen_order.dart';
 import 'queue_cubit.dart';
 import 'widgets/queue_board.dart';
+import '../../canteen/presentation/canteen_cubit.dart';
+import '../../canteen/presentation/canteen_state.dart';
+import '../../canteen/presentation/widgets/accepting_switch.dart';
 import '../../pickup/presentation/pickup_view.dart';
+import '../../stop_list/presentation/stop_list_view.dart';
 
 enum KitchenTab { queue, pickup, stopList }
 
 /// The kitchen's frame: on a tablet a top bar with the logo, the three tabs
 /// and the employee button; on a phone a header and a bottom bar. The queue
-/// cubit lives here, so the «Черга» tab can count the new orders.
+/// cubit lives here, so the «Черга» tab can count the new orders, and so
+/// does the pause switch, shown on every tab.
 class QueuePage extends StatefulWidget {
   const QueuePage({super.key, required this.onSignOut});
 
@@ -46,40 +52,49 @@ class _QueuePageState extends State<QueuePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<QueueCubit>()..load(),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final tablet = constraints.maxWidth >= QueuePage.tabletWidth;
-          final body = switch (_tab) {
-            KitchenTab.queue => QueueBoard(tablet: tablet),
-            KitchenTab.pickup => PickupView(tablet: tablet),
-            KitchenTab.stopList => const _Soon(),
-          };
-          return Scaffold(
-            body: SafeArea(
-              bottom: tablet,
-              child: Column(
-                children: [
-                  tablet
-                      ? _TopBar(
-                          tab: _tab,
-                          onTab: (tab) => setState(() => _tab = tab),
-                          onSignOut: _signOut,
-                        )
-                      : _PhoneHeader(tab: _tab, onSignOut: _signOut),
-                  Expanded(child: body),
-                ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sl<QueueCubit>()..load()),
+        BlocProvider(create: (_) => sl<CanteenCubit>()..load()),
+      ],
+      child: BlocListener<CanteenCubit, CanteenState>(
+        listenWhen: (a, b) => b.failure != null && a.failure != b.failure,
+        listener: (context, state) =>
+            showFailureSnackBar(context, state.failure!),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final tablet = constraints.maxWidth >= QueuePage.tabletWidth;
+            final body = switch (_tab) {
+              KitchenTab.queue => QueueBoard(tablet: tablet),
+              KitchenTab.pickup => PickupView(tablet: tablet),
+              KitchenTab.stopList => StopListView(tablet: tablet),
+            };
+            return Scaffold(
+              body: SafeArea(
+                bottom: tablet,
+                child: Column(
+                  children: [
+                    tablet
+                        ? _TopBar(
+                            tab: _tab,
+                            onTab: (tab) => setState(() => _tab = tab),
+                            onSignOut: _signOut,
+                          )
+                        : _PhoneHeader(tab: _tab, onSignOut: _signOut),
+                    const PausedBanner(),
+                    Expanded(child: body),
+                  ],
+                ),
               ),
-            ),
-            bottomNavigationBar: tablet
-                ? null
-                : _BottomBar(
-                    tab: _tab,
-                    onTab: (tab) => setState(() => _tab = tab),
-                  ),
-          );
-        },
+              bottomNavigationBar: tablet
+                  ? null
+                  : _BottomBar(
+                      tab: _tab,
+                      onTab: (tab) => setState(() => _tab = tab),
+                    ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -149,6 +164,8 @@ class _TopBar extends StatelessWidget {
             ),
           ),
           const Spacer(),
+          const AcceptingPill(),
+          const SizedBox(width: 12),
           _AccountButton(onSignOut: onSignOut),
         ],
       ),
@@ -243,6 +260,8 @@ class _PhoneHeader extends StatelessWidget {
               style: AppText.title().copyWith(fontSize: 20),
             ),
           ),
+          const AcceptingPill(),
+          const SizedBox(width: 8),
           _AccountButton(onSignOut: onSignOut),
         ],
       ),
@@ -309,18 +328,6 @@ class _BottomBar extends StatelessWidget {
       ),
     );
   }
-}
-
-class _Soon extends StatelessWidget {
-  const _Soon();
-
-  @override
-  Widget build(BuildContext context) => Center(
-    child: Text(
-      LocaleKeys.queue_soon.tr(),
-      style: AppText.regular(color: context.colors.textSecondary),
-    ),
-  );
 }
 
 /// The yellow count of new orders on the «Черга» tab (nothing when none).

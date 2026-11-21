@@ -57,7 +57,7 @@ public record PickupDto(Guid Token);
 /// Real-time event payload for SignalR.
 public record OrderStatusChangedEvent(Guid OrderId, int Number, OrderStatus Status, DateTimeOffset? EstimatedReadyAt);
 
-public record CanteenDto(string Name, bool IsAcceptingOrders);
+public record CanteenDto(string Name, bool IsAcceptingOrders, DateTimeOffset? PausedAt = null);
 
 public record SetAcceptingDto(bool IsAcceptingOrders);
 

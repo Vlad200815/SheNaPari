@@ -30,7 +30,6 @@
     "tab_stop": "Stop list",
     "empty_title": "All quiet",
     "empty_text": "New orders show up here with a sound.",
-    "soon": "Coming soon",
     "sign_out": "Sign out",
     "sign_out_title": "Sign out of the kitchen?",
     "sign_out_text": "Coming back takes the e-mail and password.",
@@ -112,5 +111,26 @@
       "no_such_number": "No order with this number",
       "not_ready": "#{number} is not ready yet"
     }
+  },
+  "stop_list": {
+    "search": "Find a dish",
+    "off_count": "Switched off: {n}",
+    "enable_all": "Switch all on",
+    "on": "on the menu",
+    "off": "sold out",
+    "uncategorized": "Other",
+    "nothing_found": "Nothing found",
+    "empty": "No dishes on the menu yet"
+  },
+  "canteen": {
+    "accepting": "Taking orders",
+    "paused": "Paused",
+    "pause_title": "Pause taking orders?",
+    "pause_text": "Customers will see «The kitchen is not taking orders right now». Orders already in the queue stay.",
+    "pause_confirm": "Pause",
+    "keep": "No",
+    "banner": "Orders paused · no new orders are coming in",
+    "banner_at": "Orders paused at {time} · no new orders are coming in",
+    "resume": "Resume"
   }
 }
