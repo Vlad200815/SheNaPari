@@ -110,6 +110,7 @@ builder.Services.AddScoped<PushService>();
 
 builder.Services.AddScoped<OrderNotifier>();
 builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<RatingService>();
 builder.Services.AddScoped<CanteenService>();
 builder.Services.AddHostedService<OrderExpiryService>();
 builder.Services.AddSignalR()
