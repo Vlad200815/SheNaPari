@@ -12,6 +12,7 @@ import 'package:shenapari/features/orders/domain/orders_repository.dart';
 import 'package:shenapari/features/orders/presentation/checkout/checkout_cubit.dart';
 import 'package:shenapari/features/orders/presentation/checkout/checkout_state.dart';
 
+import '../../../../fakes.dart';
 import '../../../menu/menu_samples.dart';
 
 class _MockMenu extends Mock implements MenuRepository {}
@@ -49,12 +50,14 @@ final _ready = CheckoutState(
 void main() {
   late _MockMenu menu;
   late _MockOrders orders;
+  late FakeOrderEvents events;
 
   setUpAll(() => registerFallbackValue(PaymentProvider.googlePay));
 
   setUp(() {
     menu = _MockMenu();
     orders = _MockOrders();
+    events = FakeOrderEvents();
     when(
       () => menu.getTodayBreaks(),
     ).thenAnswer((_) async => Ok([_first, _second]));
@@ -66,6 +69,7 @@ void main() {
   CheckoutCubit build() => CheckoutCubit(
     menu,
     orders,
+    events,
     items: _items,
     defaultProvider: PaymentProvider.googlePay,
   );
@@ -213,5 +217,33 @@ void main() {
     seed: () => _ready.copyWith(status: CheckoutStatus.placing),
     act: (cubit) => cubit.pay(),
     expect: () => const <CheckoutState>[],
+  );
+
+  blocTest<CheckoutCubit, CheckoutState>(
+    'the kitchen pauses while the page is open: «Оплатити» turns off at once',
+    build: build,
+    act: (cubit) async {
+      await cubit.load();
+      events.acceptingChanged(false);
+      await Future<void>.delayed(Duration.zero);
+    },
+    verify: (cubit) {
+      expect(cubit.state.isAcceptingOrders, isFalse);
+      expect(cubit.state.canPay, isFalse);
+    },
+  );
+
+  blocTest<CheckoutCubit, CheckoutState>(
+    'and resumes: «Оплатити» is back without reopening the page',
+    setUp: () => when(() => menu.getCanteen()).thenAnswer(
+      (_) async => const Ok(Canteen(name: 'Їдальня', isAcceptingOrders: false)),
+    ),
+    build: build,
+    act: (cubit) async {
+      await cubit.load();
+      events.acceptingChanged(true);
+      await Future<void>.delayed(Duration.zero);
+    },
+    verify: (cubit) => expect(cubit.state.canPay, isTrue),
   );
 }

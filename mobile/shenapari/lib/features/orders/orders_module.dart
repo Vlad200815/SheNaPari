@@ -26,8 +26,13 @@ void registerOrders(GetIt sl) {
       ),
     )
     ..registerFactoryParam<CheckoutCubit, List<CartItem>, PaymentProvider>(
-      (items, provider) =>
-          CheckoutCubit(sl(), sl(), items: items, defaultProvider: provider),
+      (items, provider) => CheckoutCubit(
+        sl(),
+        sl(),
+        sl(),
+        items: items,
+        defaultProvider: provider,
+      ),
     )
     ..registerFactory(() => OrdersCubit(sl(), sl()))
     ..registerFactory(() => OrderHistoryCubit(sl(), sl()))
