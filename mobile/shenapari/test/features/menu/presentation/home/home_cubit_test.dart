@@ -205,6 +205,18 @@ void main() {
     );
 
     blocTest<HomeCubit, HomeState>(
+      'the kitchen paused: the break card learns it without a swipe',
+      setUp: () => answer(Ok(sampleMenu)),
+      build: build,
+      act: (cubit) async {
+        await cubit.load();
+        events.acceptingChanged(false);
+        await Future<void>.delayed(HomeCubit.debounce * 2);
+      },
+      verify: (_) => verify(() => getMenu()).called(2),
+    );
+
+    blocTest<HomeCubit, HomeState>(
       'an order status event does not reload the menu',
       setUp: () => answer(Ok(sampleMenu)),
       build: build,
