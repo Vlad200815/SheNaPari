@@ -81,6 +81,15 @@ public static class OrderErrors
     public static readonly Error InvalidHistoryFilter = new("order.invalid_history_filter", "В історії лише видані, скасовані й не забрані замовлення", 400);
 }
 
+public static class RatingErrors
+{
+    public static readonly Error NotPickedUp = new("rating.not_picked_up", "Оцінити можна лише видане замовлення", 409);
+    public static readonly Error WindowClosed = new("rating.window_closed", "Оцінити замовлення можна протягом 3 днів", 409);
+    public static readonly Error InvalidStars = new("rating.invalid_stars", "Оцінка — від 1 до 5 зірок", 400);
+    public static readonly Error InvalidTag = new("rating.invalid_tag", "Такої позначки немає", 400);
+    public static readonly Error CommentTooLong = new("rating.comment_too_long", "Коментар — до 500 символів", 400);
+}
+
 public static class LegalErrors
 {
     public static readonly Error NotFound = new("legal.not_found", "Документ не знайдено", 404);

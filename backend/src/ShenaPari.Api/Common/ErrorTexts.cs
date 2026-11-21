@@ -71,6 +71,11 @@ public static class ErrorTexts
         ["order.eta_required"] = "Set the ready time to accept the order",
         ["order.not_ready"] = "The order isn't ready yet",
         ["order.invalid_history_filter"] = "The history has only picked up, cancelled and not picked up orders",
+        ["rating.not_picked_up"] = "Only a picked up order can be rated",
+        ["rating.window_closed"] = "An order can be rated within 3 days",
+        ["rating.invalid_stars"] = "A rating is 1 to 5 stars",
+        ["rating.invalid_tag"] = "There is no such mark",
+        ["rating.comment_too_long"] = "A comment is up to 500 characters",
 
         ["legal.not_found"] = "Document not found",
     };
