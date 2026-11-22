@@ -1,6 +1,8 @@
 import 'package:audioplayers/audioplayers.dart';
 
-/// The chime for a new order: the kitchen hears it across the room.
+/// The sound of a new order: «гам», the same as the customers' order
+/// pushes (assets/sounds/gam.wav, made by the customer app's
+/// tool/make_gam_sound.py from Vlad's recording).
 abstract interface class NewOrderAlert {
   Future<void> play();
 }
@@ -12,7 +14,7 @@ class SoundNewOrderAlert implements NewOrderAlert {
   Future<void> play() async {
     try {
       await _player.stop();
-      await _player.play(AssetSource('sounds/new_order.wav'));
+      await _player.play(AssetSource('sounds/gam.wav'));
     } on Object {
       // No sound (muted device, no audio focus): the toast still shows.
     }
