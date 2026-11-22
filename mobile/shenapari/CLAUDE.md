@@ -14,6 +14,8 @@ flutter run --dart-define-from-file=env/dev.json      # емулятор / си�
 flutter run --dart-define-from-file=env/device.json   # справжній телефон у тій самій Wi-Fi
 ```
 
+**Демо з будь-якої мережі** (університет, роздача з телефона, мобільний інтернет): `scripts/demo.sh` у корені репо запускає бекенд і тунель ngrok на постійну адресу. Один раз: акаунт ngrok, `ngrok config add-authtoken <токен>`, безплатний статичний домен (Dashboard → Domains) і `env/demo.json` з ним (копія `env/demo.example.json`, у git не потрапляє). Збирати конфігураціями «SheNaPari (демо)» / «ШеНаПарі Кухня (демо)». Mac має бути ввімкнений і в інтернеті.
+
 Без `API_BASE_URL` застосунок сам іде на комп'ютер розробника: Android-емулятор → `http://10.0.2.2:5041`, iOS-симулятор → `http://localhost:5041`. Для телефона скопіюй `env/device.example.json` у `env/device.json` (у git не потрапляє) і впиши IP Mac (`ipconfig getifaddr en0`). У Android Studio ті самі запуски є на кнопці Run: «SheNaPari» і «SheNaPari (телефон)» (`.run/` у корені репо).
 
 ## Архітектура
