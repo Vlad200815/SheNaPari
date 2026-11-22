@@ -20,6 +20,7 @@ import 'package:shenapari/features/orders/domain/orders_repository.dart';
 import 'package:shenapari/features/cart/domain/entities/cart.dart';
 import 'package:shenapari/features/profile/domain/entities/user.dart';
 import 'package:shenapari/features/profile/domain/profile_repository.dart';
+import 'package:shenapari/core/device/notification_permission.dart';
 
 /// Accepts the code [validCode]; a number in [knownPhones] is a returning
 /// customer, any other is new. Answers like the real backend.
@@ -379,4 +380,32 @@ class FakeQrDisplayMode implements QrDisplayMode {
 
   @override
   Future<void> exit() async => on = false;
+}
+
+/// The phone's notification permission as a test sets it.
+class FakeNotificationPermission implements NotificationPermission {
+  FakeNotificationPermission([this.access = NotificationAccess.denied]);
+
+  NotificationAccess access;
+
+  /// What the system dialog answers.
+  NotificationAccess answer = NotificationAccess.granted;
+  int requests = 0;
+  int settingsOpened = 0;
+
+  @override
+  bool get canAsk => true;
+
+  @override
+  Future<NotificationAccess> status() async => access;
+
+  @override
+  Future<NotificationAccess> request() async {
+    requests++;
+    if (access == NotificationAccess.blocked) return access;
+    return access = answer;
+  }
+
+  @override
+  Future<void> openSettings() async => settingsOpened++;
 }

@@ -6,6 +6,7 @@ import 'package:shenapari_core/l10n/app_locale.dart';
 import 'package:shenapari_core/result/failure.dart';
 import 'package:shenapari_core/result/result.dart';
 import 'package:shenapari_core/storage/app_prefs.dart';
+import 'package:shenapari/core/device/notification_permission.dart';
 import 'package:shenapari/features/profile/domain/entities/user.dart';
 import 'package:shenapari/features/profile/presentation/settings/settings_cubit.dart';
 
@@ -20,16 +21,23 @@ class _OfflineProfile extends FakeProfileRepository {
 void main() {
   late AppPrefs prefs;
   late AppLocale locale;
+  late FakeNotificationPermission permission;
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
     prefs = AppPrefs(await SharedPreferences.getInstance());
     // A phone set to German: the app has no German, so English.
     locale = AppLocale(prefs, deviceLanguageCode: () => 'de');
+    permission = FakeNotificationPermission(NotificationAccess.granted);
   });
 
   test('theme: follows the phone until picked, then is kept', () async {
-    final cubit = SettingsCubit(FakeProfileRepository(), prefs, locale);
+    final cubit = SettingsCubit(
+      FakeProfileRepository(),
+      prefs,
+      locale,
+      permission,
+    );
     expect(cubit.state.themeMode, ThemeMode.system);
 
     await cubit.setThemeMode(ThemeMode.dark);
@@ -37,14 +45,24 @@ void main() {
     expect(cubit.state.themeMode, ThemeMode.dark);
     expect(prefs.themeMode, ThemeMode.dark);
     expect(
-      SettingsCubit(FakeProfileRepository(), prefs, locale).state.themeMode,
+      SettingsCubit(
+        FakeProfileRepository(),
+        prefs,
+        locale,
+        permission,
+      ).state.themeMode,
       ThemeMode.dark,
       reason: 'kept between launches',
     );
   });
 
   test('language: follows the phone until picked, then is kept', () async {
-    final cubit = SettingsCubit(FakeProfileRepository(), prefs, locale);
+    final cubit = SettingsCubit(
+      FakeProfileRepository(),
+      prefs,
+      locale,
+      permission,
+    );
     expect(cubit.state.language, AppLanguage.system);
     expect(cubit.state.languageCode, 'en');
 
@@ -54,7 +72,12 @@ void main() {
     expect(cubit.state.languageCode, 'uk');
     expect(prefs.language, AppLanguage.uk);
     expect(
-      SettingsCubit(FakeProfileRepository(), prefs, locale).state.language,
+      SettingsCubit(
+        FakeProfileRepository(),
+        prefs,
+        locale,
+        permission,
+      ).state.language,
       AppLanguage.uk,
       reason: 'kept between launches',
     );
@@ -67,7 +90,7 @@ void main() {
     'the push switch is disabled until loaded, then shows the server value',
     () async {
       final repo = FakeProfileRepository()..orderPush = false;
-      final cubit = SettingsCubit(repo, prefs, locale);
+      final cubit = SettingsCubit(repo, prefs, locale, permission);
       expect(cubit.state.orderPush, isNull);
 
       await cubit.load();
@@ -78,7 +101,7 @@ void main() {
 
   test('switching push off saves it on the server', () async {
     final repo = FakeProfileRepository();
-    final cubit = SettingsCubit(repo, prefs, locale);
+    final cubit = SettingsCubit(repo, prefs, locale, permission);
     await cubit.load();
 
     await cubit.setOrderPush(false);
@@ -88,7 +111,7 @@ void main() {
   });
 
   test('a refused change switches back and says why', () async {
-    final cubit = SettingsCubit(_OfflineProfile(), prefs, locale);
+    final cubit = SettingsCubit(_OfflineProfile(), prefs, locale, permission);
     await cubit.load();
 
     await cubit.setOrderPush(false);
@@ -98,14 +121,74 @@ void main() {
   });
 
   test('«Вимкнути анімації» is kept on the phone', () async {
-    final cubit = SettingsCubit(FakeProfileRepository(), prefs, locale);
+    final cubit = SettingsCubit(
+      FakeProfileRepository(),
+      prefs,
+      locale,
+      permission,
+    );
 
     await cubit.setReduceMotion(true);
 
     expect(prefs.reduceMotion, isTrue);
     expect(
-      SettingsCubit(FakeProfileRepository(), prefs, locale).state.reduceMotion,
+      SettingsCubit(
+        FakeProfileRepository(),
+        prefs,
+        locale,
+        permission,
+      ).state.reduceMotion,
       isTrue,
     );
+  });
+
+  test('sounds: on until switched off, then kept', () async {
+    final cubit = SettingsCubit(
+      FakeProfileRepository(),
+      prefs,
+      locale,
+      permission,
+    );
+    expect(cubit.state.sounds, isTrue);
+
+    await cubit.setSounds(false);
+
+    expect(cubit.state.sounds, isFalse);
+    expect(prefs.sounds, isFalse);
+  });
+
+  test(
+    'notifications blocked by the phone: shown, the row opens settings',
+    () async {
+      permission.access = NotificationAccess.blocked;
+      final cubit = SettingsCubit(
+        FakeProfileRepository(),
+        prefs,
+        locale,
+        permission,
+      );
+
+      await cubit.checkNotifications();
+      expect(cubit.state.notifications, NotificationAccess.blocked);
+
+      await cubit.fixNotifications();
+      expect(permission.settingsOpened, 1);
+    },
+  );
+
+  test('not asked yet: the row shows the system dialog', () async {
+    permission.access = NotificationAccess.denied;
+    final cubit = SettingsCubit(
+      FakeProfileRepository(),
+      prefs,
+      locale,
+      permission,
+    );
+    await cubit.checkNotifications();
+
+    await cubit.fixNotifications();
+
+    expect(permission.requests, 1);
+    expect(cubit.state.notifications, NotificationAccess.granted);
   });
 }
