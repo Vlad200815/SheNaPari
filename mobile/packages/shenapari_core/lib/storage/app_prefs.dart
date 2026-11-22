@@ -16,6 +16,9 @@ class AppPrefs extends ChangeNotifier {
   static const _reduceMotionKey = 'reduce_motion';
   static const _languageKey = 'language';
   static const _themeModeKey = 'theme_mode';
+  static const _soundsKey = 'sounds';
+  static const _paidOrdersKey = 'paid_orders';
+  static const _notificationNudgesKey = 'notification_nudges_dismissed';
 
   bool get onboardingSeen => _prefs.getBool(_onboardingSeenKey) ?? false;
 
@@ -28,6 +31,27 @@ class AppPrefs extends ChangeNotifier {
   bool get launchedBefore => _prefs.getBool(_launchedBeforeKey) ?? false;
 
   Future<void> setLaunchedBefore() => _prefs.setBool(_launchedBeforeKey, true);
+
+  /// «Звуки в застосунку»: the success sound (the phone's silent mode mutes
+  /// it anyway).
+  bool get sounds => _prefs.getBool(_soundsKey) ?? true;
+
+  Future<void> setSounds(bool value) async {
+    await _prefs.setBool(_soundsKey, value);
+    notifyListeners();
+  }
+
+  /// Orders paid on this phone, for the «turn notifications on» card.
+  int get paidOrders => _prefs.getInt(_paidOrdersKey) ?? 0;
+
+  Future<void> countPaidOrder() => _prefs.setInt(_paidOrdersKey, paidOrders + 1);
+
+  /// How many times «Не треба» was tapped on that card.
+  int get notificationNudgesDismissed =>
+      _prefs.getInt(_notificationNudgesKey) ?? 0;
+
+  Future<void> dismissNotificationNudge() =>
+      _prefs.setInt(_notificationNudgesKey, notificationNudgesDismissed + 1);
 
   /// «Вимкнути анімації» in the app's settings, on top of the system one.
   bool get reduceMotion => _prefs.getBool(_reduceMotionKey) ?? false;

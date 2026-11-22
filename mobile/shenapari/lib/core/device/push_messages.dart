@@ -28,8 +28,8 @@ abstract interface class PushMessages {
   /// The notification channel and the listeners; once, at start.
   Future<void> init();
 
-  /// Asks for permission (Android 13+) the first time; null when the phone
-  /// can't receive pushes.
+  /// The device token; null when the phone can't receive pushes. Doesn't
+  /// ask for permission: that has its own moments (NotificationPermission).
   Future<String?> token();
 
   Stream<String> get tokenRefresh;
@@ -109,7 +109,6 @@ class FirebasePushMessages implements PushMessages {
   @override
   Future<String?> token() async {
     try {
-      await FirebaseMessaging.instance.requestPermission();
       // The registration token the backend's FCM v1 `token` sends to. The
       // newer register()/onRegistered give an installation id instead.
       // ignore: deprecated_member_use
