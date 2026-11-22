@@ -3,6 +3,8 @@ import 'dart:developer' as developer;
 import 'package:easy_localization/easy_localization.dart'
     show AssetLoader, EasyLocalization, RootBundleAssetLoader;
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter/foundation.dart'
+    show LicenseEntryWithLineBreaks, LicenseRegistry;
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,6 +13,7 @@ import 'package:shenapari_core/session/session_repository.dart';
 import 'package:shenapari_core/storage/app_prefs.dart';
 import 'package:shenapari_core/storage/token_storage.dart';
 import '../features/auth/domain/usecases/sign_out_use_case.dart';
+import '../core/device/rive_support.dart';
 import 'app.dart';
 import 'di.dart';
 import 'router/app_router.dart';
@@ -23,6 +26,19 @@ Future<void> bootstrap() async {
 
   try {
     await EasyLocalization.ensureInitialized();
+    // The rating stars; without it they fall back to drawn ones.
+    await RiveSupport.init();
+    LicenseRegistry.addLicense(
+      () => Stream.value(
+        const LicenseEntryWithLineBreaks(
+          ['Rating animation (Rive)'],
+          '«Rating animation» by JcToon, '
+          'https://rive.app/marketplace/405-6776-rating-animation/\n'
+          'Licensed under CC BY 4.0: '
+          'https://creativecommons.org/licenses/by/4.0/',
+        ),
+      ),
+    );
     setupDi(prefs: await SharedPreferences.getInstance());
     runApp(
       localized(
