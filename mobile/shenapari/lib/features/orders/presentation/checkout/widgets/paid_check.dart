@@ -13,10 +13,13 @@ import 'package:shenapari_core/gen/colors.gen.dart';
 /// Kept on its own, so a Rive animation can take its place later (same
 /// size, same moment).
 class PaidCheck extends StatefulWidget {
-  const PaidCheck({super.key, this.size = 104});
+  const PaidCheck({super.key, this.size = 104, this.onTicked});
 
   /// The circle; the confetti flies a bit beyond it.
   final double size;
+
+  /// The moment the tick is drawn, with the haptic: the success sound.
+  final VoidCallback? onTicked;
 
   @override
   State<PaidCheck> createState() => _PaidCheckState();
@@ -37,12 +40,15 @@ class _PaidCheckState extends State<PaidCheck>
     _started = true;
     if (MediaQuery.disableAnimationsOf(context)) {
       _controller.value = 1;
+      widget.onTicked?.call();
       return;
     }
     _controller.forward();
     // The tap lands when the tick is drawn, not when the screen opens.
     Future<void>.delayed(const Duration(milliseconds: 560), () {
-      if (mounted) HapticFeedback.mediumImpact();
+      if (!mounted) return;
+      HapticFeedback.mediumImpact();
+      widget.onTicked?.call();
     });
   }
 

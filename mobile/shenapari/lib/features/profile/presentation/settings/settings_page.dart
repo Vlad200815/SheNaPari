@@ -15,6 +15,7 @@ import '../widgets/profile_ui.dart';
 import 'language_menu.dart';
 import 'theme_menu.dart';
 import 'settings_cubit.dart';
+import '../../../../core/device/notification_permission.dart';
 import 'package:shenapari_core/ui/app_colors.dart';
 
 /// «Налаштування»: order push on/off, the phone's notification permission,
@@ -55,78 +56,133 @@ class SettingsPage extends StatelessWidget {
                 showFailureSnackBar(context, state.failure!),
           ),
         ],
-        child: Scaffold(
-          backgroundColor: context.colors.background,
-          appBar: AppBar(
+        child: _RecheckOnResume(
+          child: Scaffold(
             backgroundColor: context.colors.background,
-            title: Text(LocaleKeys.settings_title.tr(), style: AppText.title()),
-          ),
-          body: SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.all(AppDimens.horizontalPadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  BlocBuilder<SettingsCubit, SettingsState>(
-                    builder: (context, state) {
-                      final cubit = context.read<SettingsCubit>();
-                      final orderPush = state.orderPush;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          MenuCard(
+            appBar: AppBar(
+              backgroundColor: context.colors.background,
+              title: Text(
+                LocaleKeys.settings_title.tr(),
+                style: AppText.title(),
+              ),
+            ),
+            body: SafeArea(
+              top: false,
+              // Scrolls on a small phone or with big text; with room to
+              // spare, «Видалити акаунт» still sits at the bottom.
+              child: CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppDimens.horizontalPadding,
+                      AppDimens.horizontalPadding,
+                      AppDimens.horizontalPadding,
+                      0,
+                    ),
+                    sliver: SliverToBoxAdapter(
+                      child: BlocBuilder<SettingsCubit, SettingsState>(
+                        builder: (context, state) {
+                          final cubit = context.read<SettingsCubit>();
+                          final orderPush = state.orderPush;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              SwitchRow(
-                                icon: Icons.notifications_active_outlined,
-                                tint: ColorName.primary400,
-                                title: LocaleKeys.settings_order_push.tr(),
-                                subtitle: LocaleKeys.settings_order_push_text
-                                    .tr(),
-                                value: orderPush ?? true,
-                                onChanged: orderPush == null
-                                    ? null
-                                    : cubit.setOrderPush,
+                              MenuCard(
+                                children: [
+                                  SwitchRow(
+                                    icon: Icons.notifications_active_outlined,
+                                    tint: ColorName.primary400,
+                                    title: LocaleKeys.settings_order_push.tr(),
+                                    subtitle: LocaleKeys
+                                        .settings_order_push_text
+                                        .tr(),
+                                    value: orderPush ?? true,
+                                    onChanged: orderPush == null
+                                        ? null
+                                        : cubit.setOrderPush,
+                                  ),
+                                  // Says so when the phone blocks them, and fixes
+                                  // it: the system dialog or the phone settings.
+                                  switch (state.notifications) {
+                                    NotificationAccess.denied ||
+                                    NotificationAccess.blocked => MenuRow(
+                                      icon: Icons.notifications_off_outlined,
+                                      tint: context.colors.danger,
+                                      title: LocaleKeys.settings_permission
+                                          .tr(),
+                                      subtitle: LocaleKeys
+                                          .settings_permission_blocked
+                                          .tr(),
+                                      onTap: cubit.fixNotifications,
+                                    ),
+                                    _ => MenuRow(
+                                      icon: Icons.settings_suggest_outlined,
+                                      tint: context.colors.iconMuted,
+                                      title: LocaleKeys.settings_permission
+                                          .tr(),
+                                      subtitle: LocaleKeys
+                                          .settings_permission_text
+                                          .tr(),
+                                      onTap: openAppSettings,
+                                    ),
+                                  },
+                                ],
                               ),
-                              MenuRow(
-                                icon: Icons.settings_suggest_outlined,
-                                tint: context.colors.iconMuted,
-                                title: LocaleKeys.settings_permission.tr(),
-                                subtitle: LocaleKeys.settings_permission_text
-                                    .tr(),
-                                onTap: openAppSettings,
+                              const SizedBox(height: 16),
+                              MenuCard(
+                                children: [
+                                  LanguageRow(
+                                    current: state.language,
+                                    onPicked: cubit.setLanguage,
+                                  ),
+                                  ThemeRow(
+                                    current: state.themeMode,
+                                    onPicked: cubit.setThemeMode,
+                                  ),
+                                  SwitchRow(
+                                    icon: Icons.volume_up_outlined,
+                                    tint: ColorName.primary500,
+                                    title: LocaleKeys.settings_sounds.tr(),
+                                    subtitle: LocaleKeys.settings_sounds_text
+                                        .tr(),
+                                    value: state.sounds,
+                                    onChanged: cubit.setSounds,
+                                  ),
+                                  SwitchRow(
+                                    icon: Icons.motion_photos_off_outlined,
+                                    tint: ColorName.blue,
+                                    title: LocaleKeys.settings_reduce_motion
+                                        .tr(),
+                                    subtitle: LocaleKeys
+                                        .settings_reduce_motion_text
+                                        .tr(),
+                                    value: state.reduceMotion,
+                                    onChanged: cubit.setReduceMotion,
+                                  ),
+                                ],
                               ),
                             ],
-                          ),
-                          const SizedBox(height: 16),
-                          MenuCard(
-                            children: [
-                              LanguageRow(
-                                current: state.language,
-                                onPicked: cubit.setLanguage,
-                              ),
-                              ThemeRow(
-                                current: state.themeMode,
-                                onPicked: cubit.setThemeMode,
-                              ),
-                              SwitchRow(
-                                icon: Icons.motion_photos_off_outlined,
-                                tint: ColorName.blue,
-                                title: LocaleKeys.settings_reduce_motion.tr(),
-                                subtitle: LocaleKeys.settings_reduce_motion_text
-                                    .tr(),
-                                value: state.reduceMotion,
-                                onChanged: cubit.setReduceMotion,
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    },
+                          );
+                        },
+                      ),
+                    ),
                   ),
-                  const Spacer(),
-                  const _DeleteAccountButton(),
-                  const SizedBox(height: 8),
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppDimens.horizontalPadding,
+                        24,
+                        AppDimens.horizontalPadding,
+                        AppDimens.horizontalPadding + 8,
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [_DeleteAccountButton()],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -184,4 +240,35 @@ class _DeleteAccountButton extends StatelessWidget {
       },
     );
   }
+}
+
+/// Back from the phone's settings: the permission may have changed there.
+class _RecheckOnResume extends StatefulWidget {
+  const _RecheckOnResume({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_RecheckOnResume> createState() => _RecheckOnResumeState();
+}
+
+class _RecheckOnResumeState extends State<_RecheckOnResume> {
+  late final AppLifecycleListener _lifecycle;
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycle = AppLifecycleListener(
+      onResume: () => context.read<SettingsCubit>().checkNotifications(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

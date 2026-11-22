@@ -37,6 +37,9 @@ abstract class LocaleKeys {
   static const onboarding_start = 'onboarding.start';
   static const onboarding_next = 'onboarding.next';
   static const onboarding_skip = 'onboarding.skip';
+  static const onboarding_enable_notifications =
+      'onboarding.enable_notifications';
+  static const onboarding_later = 'onboarding.later';
   static const onboarding = 'onboarding';
   static const auth_step = 'auth.step';
   static const auth_phone_title = 'auth.phone_title';
@@ -238,6 +241,9 @@ abstract class LocaleKeys {
   static const settings_theme_system = 'settings.theme_system';
   static const settings_theme_light = 'settings.theme_light';
   static const settings_theme_dark = 'settings.theme_dark';
+  static const settings_sounds = 'settings.sounds';
+  static const settings_sounds_text = 'settings.sounds_text';
+  static const settings_permission_blocked = 'settings.permission_blocked';
   static const settings = 'settings';
   static const support_title = 'support.title';
   static const support_intro = 'support.intro';
@@ -309,4 +315,9 @@ abstract class LocaleKeys {
   static const rating_star = 'rating.star';
   static const rating_rate_star = 'rating.rate_star';
   static const rating = 'rating';
+  static const nudge_title = 'nudge.title';
+  static const nudge_text = 'nudge.text';
+  static const nudge_enable = 'nudge.enable';
+  static const nudge_dismiss = 'nudge.dismiss';
+  static const nudge = 'nudge';
 }

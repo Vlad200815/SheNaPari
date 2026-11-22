@@ -23,5 +23,5 @@ void registerProfile(GetIt sl) {
     ..registerFactory(() => DeleteAccountCubit(sl()))
     ..registerFactory(() => MeCubit(sl()))
     ..registerFactory(() => EditProfileCubit(sl()))
-    ..registerFactory(() => SettingsCubit(sl(), sl(), sl()));
+    ..registerFactory(() => SettingsCubit(sl(), sl(), sl(), sl()));
 }
