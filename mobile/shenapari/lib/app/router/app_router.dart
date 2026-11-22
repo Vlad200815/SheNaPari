@@ -115,8 +115,11 @@ GoRouter createRouter({
       ),
       GoRoute(
         path: Routes.orderPattern,
-        builder: (_, state) =>
-            OrderPage(orderId: state.pathParameters['id'] ?? ''),
+        builder: (_, state) => OrderPage(
+          orderId: state.pathParameters['id'] ?? '',
+          // From the «Як вам №36?» push: open the rating sheet.
+          openRating: state.uri.queryParameters['rate'] == '1',
+        ),
       ),
       GoRoute(
         path: Routes.legalPattern,
