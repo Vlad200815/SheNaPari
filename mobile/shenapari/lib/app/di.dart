@@ -13,6 +13,7 @@ import '../features/notifications/notifications_module.dart';
 import '../features/orders/orders_module.dart';
 import '../features/profile/profile_module.dart';
 import 'env.dart';
+import '../features/push/push_module.dart';
 
 /// Service locator. Use it only here, in feature modules and in
 /// `BlocProvider(create: ...)`; classes get dependencies via constructors.
@@ -35,4 +36,5 @@ void setupDi({required SharedPreferences prefs, TokenStorage? tokenStorage}) {
   registerCart(sl, prefs: prefs);
   registerOrders(sl);
   registerNotifications(sl);
+  registerPush(sl);
 }
