@@ -49,13 +49,19 @@ class FirebasePushMessages implements PushMessages {
   final _taps = StreamController<PushTap>.broadcast();
   final _subscriptions = <StreamSubscription<Object?>>[];
 
-  /// The backend's `FcmPushSender.AndroidChannelId`.
+  /// The backend's `FcmPushSender.AndroidChannelId`. Its sound is «гам»
+  /// (res/raw/gam.wav). Android fixes a channel's sound when it is created,
+  /// so a new sound means a new channel id.
   static const _channel = AndroidNotificationChannel(
-    'orders',
+    'order_updates',
     'Замовлення',
     description: 'Прийнято, готове, скасовано, оцінка',
     importance: Importance.high,
+    sound: RawResourceAndroidNotificationSound('gam'),
   );
+
+  /// The first channel, without the sound; gone from the phone's settings.
+  static const _oldChannelIds = ['orders'];
 
   @override
   Future<void> init() async {
@@ -71,11 +77,14 @@ class FirebasePushMessages implements PushMessages {
         );
       },
     );
-    await _local
+    final android = _local
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.createNotificationChannel(_channel);
+        >();
+    await android?.createNotificationChannel(_channel);
+    for (final id in _oldChannelIds) {
+      await android?.deleteNotificationChannel(channelId: id);
+    }
     _subscriptions
       ..add(FirebaseMessaging.onMessage.listen(_showWhileOpen))
       ..add(
@@ -100,6 +109,7 @@ class FirebasePushMessages implements PushMessages {
           importance: Importance.high,
           priority: Priority.high,
           icon: '@drawable/ic_notification',
+          sound: _channel.sound,
         ),
       ),
       payload: jsonEncode(message.data),

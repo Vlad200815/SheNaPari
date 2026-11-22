@@ -8,7 +8,11 @@ namespace ShenaPari.Api.Push;
 public class FcmPushSender : IPushSender
 {
     /// The Android app creates a notification channel with this id.
-    public const string AndroidChannelId = "orders";
+    public const string AndroidChannelId = "order_updates";
+
+    /// res/raw/gam.wav in the app: Vlad's «гам». The channel plays it on
+    /// Android 8+; older phones take it from here.
+    public const string AndroidSound = "gam";
 
     private readonly FirebaseMessaging _messaging;
     private readonly ILogger<FcmPushSender> _logger;
@@ -39,7 +43,7 @@ public class FcmPushSender : IPushSender
             Android = new AndroidConfig
             {
                 Priority = Priority.High,
-                Notification = new AndroidNotification { ChannelId = AndroidChannelId },
+                Notification = new AndroidNotification { ChannelId = AndroidChannelId, Sound = AndroidSound },
             },
         });
 
