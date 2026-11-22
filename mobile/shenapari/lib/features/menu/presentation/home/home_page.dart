@@ -11,6 +11,8 @@ import 'package:shenapari_core/ui/snack_bars.dart';
 import 'package:shenapari_core/gen/colors.gen.dart';
 import '../../../cart/presentation/cart_cubit.dart';
 import '../../../notifications/presentation/notifications_cubit.dart';
+import '../../../orders/presentation/rating/rating_prompt_card.dart';
+import '../../../orders/presentation/rating/rating_prompt_cubit.dart';
 import '../widgets/break_card.dart';
 import '../widgets/dish_card.dart';
 import '../widgets/filter_chips.dart';
@@ -31,6 +33,7 @@ class HomePage extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => sl<HomeCubit>()..load()),
         BlocProvider(create: (_) => sl<UnreadNotificationsCubit>()..load()),
+        BlocProvider(create: (_) => sl<RatingPromptCubit>()..load()),
       ],
       child: MultiBlocListener(
         listeners: [
@@ -183,6 +186,7 @@ class _Header extends StatelessWidget {
             nextBreak: menu.nextBreak,
             onBreakStarted: context.read<HomeCubit>().refresh,
           ),
+          const RatingPromptCard(),
         ],
       ),
     );
@@ -307,7 +311,11 @@ class _RefreshOnResume extends StatefulWidget {
 
 class _RefreshOnResumeState extends State<_RefreshOnResume> {
   late final _lifecycle = AppLifecycleListener(
-    onResume: () => context.read<HomeCubit>().refresh(),
+    onResume: () {
+      context.read<HomeCubit>().refresh();
+      // Half an hour after pickup the «Як вам?» card may be due.
+      context.read<RatingPromptCubit>().load();
+    },
   );
 
   @override
