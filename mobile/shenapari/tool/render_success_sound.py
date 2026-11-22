@@ -1,7 +1,9 @@
-"""Renders «М'який дзинь угору», the success sound (Оплачено, Дякуємо!), to
-assets/sounds/success.wav. The same synthesis as the sound board artifact:
-two struck bells (inharmonic partials, instant attack, exponential ring-out),
-the second a fifth higher. Python standard library only.
+"""Renders «Дзинь на видачу», the success sound (Оплачено, Дякуємо!), to
+assets/sounds/success.wav: two strikes of a counter bell, like a kitchen
+calling «order up». The same synthesis as the sound board artifact: struck
+bells (inharmonic partials, instant attack, exponential ring-out), the
+second strike 170 ms later and a little softer. Python standard library
+only.
 
   python3 tool/render_success_sound.py
 """
@@ -10,7 +12,7 @@ import struct
 import wave
 
 RATE = 44100
-LENGTH = 1.05  # seconds
+LENGTH = 1.6  # seconds
 PARTIALS = [(1, 1), (2.76, 0.45), (5.4, 0.22), (8.93, 0.1), (0.5, 0.18)]
 
 
@@ -33,8 +35,8 @@ def bell(buffer, start, freq, gain, decay):
 
 def main():
     buffer = [0.0] * int(LENGTH * RATE)
-    bell(buffer, 0.0, 1568, 0.30, 0.9)
-    bell(buffer, 0.09, 2349, 0.22, 0.8)
+    bell(buffer, 0.0, 1760, 0.55, 1.5)
+    bell(buffer, 0.17, 1760, 0.42, 1.3)
     peak = max(abs(x) for x in buffer)
     scale = 0.7 / peak  # about -3 dB
     fade = int(0.03 * RATE)
