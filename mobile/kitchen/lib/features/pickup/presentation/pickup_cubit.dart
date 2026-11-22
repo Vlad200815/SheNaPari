@@ -5,17 +5,19 @@ import '../../queue/domain/entities/kitchen_order.dart';
 import '../../queue/domain/queue_repository.dart';
 import 'package:shenapari_core/result/failure.dart';
 
+import '../../../core/device/handed_over_sound.dart';
 import 'pickup_state.dart';
 
 /// The counter: a QR hands the order over at once (the server checks the
 /// code); a typed number first shows the order, so the cook can match the
 /// name, and hands it over on «Видати».
 class PickupCubit extends Cubit<PickupState> {
-  PickupCubit(this._queue, {DateTime Function()? clock})
+  PickupCubit(this._queue, this._sound, {DateTime Function()? clock})
     : _clock = clock ?? DateTime.now,
       super(const PickupState());
 
   final QueueRepository _queue;
+  final HandedOverSound _sound;
   final DateTime Function() _clock;
   String? _lastToken;
   DateTime? _lastScanAt;
@@ -116,13 +118,16 @@ class PickupCubit extends Cubit<PickupState> {
     }
   }
 
-  void _done(KitchenOrder order) => emit(
-    PickupState(
-      status: PickupStatus.done,
-      order: order,
-      handedOver: state.handedOver + 1,
-    ),
-  );
+  void _done(KitchenOrder order) {
+    _sound.play();
+    emit(
+      PickupState(
+        status: PickupStatus.done,
+        order: order,
+        handedOver: state.handedOver + 1,
+      ),
+    );
+  }
 
   PickupState _failed({
     PickupProblem? problem,

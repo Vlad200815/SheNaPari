@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:kitchen/core/device/handed_over_sound.dart';
 import 'package:kitchen/core/device/new_order_alert.dart';
 import 'package:kitchen/features/auth/domain/staff_auth_repository.dart';
 import 'package:kitchen/features/canteen/domain/canteen_repository.dart';
@@ -262,3 +263,10 @@ class FakeStopListRepository implements StopListRepository {
 
 StopListDish dish(int id, String name, {int categoryId = 1, bool on = true}) =>
     StopListDish(id: id, categoryId: categoryId, name: name, isAvailable: on);
+
+class FakeHandedOverSound implements HandedOverSound {
+  int plays = 0;
+
+  @override
+  Future<void> play() async => plays++;
+}
