@@ -85,6 +85,16 @@ class $AssetsLegalGen {
   List<String> get values => [privacyEn, privacy, refundEn, refund, termsEn, terms];
 }
 
+class $AssetsRiveGen {
+  const $AssetsRiveGen();
+
+  /// File path: assets/rive/rating_stars.riv
+  String get ratingStars => 'assets/rive/rating_stars.riv';
+
+  /// List of all assets
+  List<String> get values => [ratingStars];
+}
+
 class $AssetsTranslationsGen {
   const $AssetsTranslationsGen();
 
@@ -221,6 +231,7 @@ class $AssetsImagesSplashGen {
 abstract final class Assets {
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsLegalGen legal = $AssetsLegalGen();
+  static const $AssetsRiveGen rive = $AssetsRiveGen();
   static const $AssetsTranslationsGen translations = $AssetsTranslationsGen();
 }
 

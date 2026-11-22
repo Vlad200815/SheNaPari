@@ -13,6 +13,9 @@ import 'presentation/checkout/checkout_cubit.dart';
 import 'presentation/order/order_cubit.dart';
 import 'presentation/orders/order_history_cubit.dart';
 import 'presentation/orders/orders_cubit.dart';
+import 'presentation/rating/rate_order_cubit.dart';
+import 'presentation/rating/rate_order_sheet.dart';
+import 'presentation/rating/rating_prompt_cubit.dart';
 
 void registerOrders(GetIt sl) {
   sl
@@ -38,5 +41,14 @@ void registerOrders(GetIt sl) {
     ..registerFactory(() => OrderHistoryCubit(sl(), sl()))
     ..registerFactoryParam<OrderCubit, String, void>(
       (id, _) => OrderCubit(sl(), sl(), orderId: id),
-    );
+    )
+    ..registerFactoryParam<RateOrderCubit, String, RateOrderArgs>(
+      (id, args) => RateOrderCubit(
+        sl(),
+        orderId: id,
+        initialStars: args.initialStars,
+        existing: args.existing,
+      ),
+    )
+    ..registerFactory(() => RatingPromptCubit(sl()));
 }
