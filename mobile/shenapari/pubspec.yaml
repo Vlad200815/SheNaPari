@@ -140,6 +140,7 @@ dependencies:
   wakelock_plus: ^1.8.0
   no_screenshot: ^2.0.1
   easy_localization: ^3.0.8
+  rive: 0.15.0-dev.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -205,6 +206,10 @@ flutter:
     # Legal
     # Offline copies of backend/src/ShenaPari.Api/Legal/*.md (keep in sync)
     - assets/legal/
+
+    # Rive: «Rating animation» by JcToon, CC BY 4.0
+    # https://rive.app/marketplace/405-6776-rating-animation/
+    - assets/rive/rating_stars.riv
 
     # Images
     - assets/images/

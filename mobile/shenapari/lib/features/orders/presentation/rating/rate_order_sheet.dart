@@ -16,6 +16,7 @@ import 'rate_order_cubit.dart';
 import 'rate_order_state.dart';
 import 'rating_texts.dart';
 import 'widgets/rating_stars.dart';
+import 'widgets/rive_rating_stars.dart';
 
 /// The rating sheet. [initialStars]: the star tapped on the card that
 /// opened it; [existing]: changing a rating already given. Returns what the
@@ -187,11 +188,7 @@ class _Form extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Center(
-          child: RatingStars(
-            value: state.stars,
-            onChanged: cubit.setStars,
-            animateFirstValue: true,
-          ),
+          child: RiveRatingStars(value: state.stars, onChanged: cubit.setStars),
         ),
         SizedBox(
           height: 26,
@@ -258,20 +255,7 @@ class _Form extends StatelessWidget {
               ),
             )
           else
-            Center(
-              child: TextButton.icon(
-                onPressed: cubit.openComment,
-                style: TextButton.styleFrom(minimumSize: const Size(44, 44)),
-                icon: Icon(Icons.edit_outlined, color: ratingAccent(context)),
-                label: Text(
-                  LocaleKeys.rating_add_comment.tr(),
-                  style: AppText.small(
-                    color: ratingAccent(context),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
+            _CommentInvite(positive: positive, onTap: cubit.openComment),
         ],
         // Here, not a snack bar: one would sit under the sheet's dimming.
         if (state.failure case final failure?) ...[
@@ -415,6 +399,74 @@ class _TagChip extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// «Додати коментар» as a quiet field-to-be: the same rounded box the
+/// comment will open in, a pen in a soft circle, a «+» at the end. Tapping
+/// anywhere on it opens the real field.
+class _CommentInvite extends StatelessWidget {
+  const _CommentInvite({required this.positive, required this.onTap});
+
+  final bool positive;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Material(
+      color: colors.surfaceMuted,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 56),
+          padding: const EdgeInsets.fromLTRB(10, 8, 14, 8),
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: colors.accentSoft,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.chat_bubble_outline_rounded,
+                  size: 18,
+                  color: ratingAccent(context),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      LocaleKeys.rating_add_comment.tr(),
+                      style: AppText.small(
+                        color: colors.textPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      positive
+                          ? LocaleKeys.rating_comment_good.tr()
+                          : LocaleKeys.rating_comment_bad.tr(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppText.small(color: colors.textSecondary),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.add_rounded, color: colors.textSecondary),
+            ],
           ),
         ),
       ),
