@@ -50,3 +50,4 @@ app.*.map.json
 
 # Local: the Wi-Fi IP of this computer for a real phone
 /env/device.json
+/env/demo.json
