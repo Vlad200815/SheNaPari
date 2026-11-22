@@ -1,4 +1,8 @@
+import 'dart:async';
 import 'dart:developer' as developer;
+import 'dart:io';
+
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:easy_localization/easy_localization.dart'
     show AssetLoader, EasyLocalization, RootBundleAssetLoader;
@@ -14,6 +18,8 @@ import 'package:shenapari_core/storage/app_prefs.dart';
 import 'package:shenapari_core/storage/token_storage.dart';
 import '../features/auth/domain/usecases/sign_out_use_case.dart';
 import '../core/device/rive_support.dart';
+import '../features/push/presentation/push_coordinator.dart';
+import '../firebase_options.dart';
 import 'app.dart';
 import 'di.dart';
 import 'router/app_router.dart';
@@ -39,16 +45,30 @@ Future<void> bootstrap() async {
         ),
       ),
     );
+    // Pushes are Android-only; iPhones get live updates over SignalR.
+    if (Platform.isAndroid) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
     setupDi(prefs: await SharedPreferences.getInstance());
+    final router = createRouter(
+      session: sl(),
+      prefs: sl(),
+      signOut: sl<SignOutUseCase>().call,
+    );
     runApp(
       localized(
         locale: sl<AppLocale>().locale,
-        child: App(
-          router: createRouter(
-            session: sl(),
-            prefs: sl(),
-            signOut: sl<SignOutUseCase>().call,
-          ),
+        child: App(router: router),
+      ),
+    );
+    // A tapped push opens its order over whatever is on screen, after the
+    // frame in which the router settles on the signed-in screens.
+    unawaited(
+      sl<PushCoordinator>().start(
+        open: (location) => WidgetsBinding.instance.addPostFrameCallback(
+          (_) => router.push(location),
         ),
       ),
     );

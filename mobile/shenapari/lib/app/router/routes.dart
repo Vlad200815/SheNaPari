@@ -19,6 +19,9 @@ abstract final class Routes {
   /// One order, over the tabs.
   static const orderPattern = '/order/:id';
   static String order(String id) => '/order/$id';
+
+  /// The order with the rating sheet open (from the «Як вам?» push).
+  static String orderRate(String id) => '/order/$id?rate=1';
   static const more = '/more';
 
   /// Pushed over the tabs from «Більше».
