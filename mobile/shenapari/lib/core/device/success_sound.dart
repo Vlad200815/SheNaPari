@@ -1,7 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shenapari_core/storage/app_prefs.dart';
 
-/// «М'який дзинь угору» with the yellow tick (Оплачено, Дякуємо!). Off with
+/// «Дзинь на видачу» (two counter-bell strikes) with the yellow tick (Оплачено, Дякуємо!). Off with
 /// «Звуки в застосунку»; the phone's silent mode mutes it too.
 abstract interface class SuccessSound {
   Future<void> play();
