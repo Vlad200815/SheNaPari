@@ -56,6 +56,7 @@ Future<void> bootstrap() async {
       session: sl(),
       prefs: sl(),
       signOut: sl<SignOutUseCase>().call,
+      notifications: sl(),
     );
     runApp(
       localized(

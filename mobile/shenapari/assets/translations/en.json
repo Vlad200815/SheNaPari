@@ -37,7 +37,9 @@
     "calm_text": "Get real-time updates, from the moment it hits the grill to the moment it’s handed over. We take care of the time, you take care of the appetite.",
     "start": "Start",
     "next": "Next",
-    "skip": "Skip"
+    "skip": "Skip",
+    "enable_notifications": "Turn on notifications",
+    "later": "Later"
   },
   "auth": {
     "step": "Step {current} of {total}",
@@ -260,7 +262,10 @@
     "theme": "Theme",
     "theme_system": "System default",
     "theme_light": "Light",
-    "theme_dark": "Dark"
+    "theme_dark": "Dark",
+    "sounds": "Sounds in the app",
+    "sounds_text": "A ding when you pay or send a rating",
+    "permission_blocked": "Off in the phone settings. Tap to turn on"
   },
   "support": {
     "title": "Support",
@@ -336,5 +341,11 @@
     "change": "Change",
     "star": "{n} of 5",
     "rate_star": "Rate {n} of 5"
+  },
+  "nudge": {
+    "title": "Know when #{number} is ready",
+    "text": "Notifications are off: without them you will have to check yourself.",
+    "enable": "Turn on",
+    "dismiss": "No, thanks"
   }
 }

@@ -17,6 +17,7 @@ import 'rate_order_state.dart';
 import 'rating_texts.dart';
 import 'widgets/rating_stars.dart';
 import 'widgets/rive_rating_stars.dart';
+import '../../../../core/device/success_sound.dart';
 
 /// The rating sheet. [initialStars]: the star tapped on the card that
 /// opened it; [existing]: changing a rating already given. Returns what the
@@ -292,7 +293,7 @@ class _Thanks extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const AppLogo(width: 56),
-          const PaidCheck(size: 88),
+          PaidCheck(size: 88, onTicked: context.read<SuccessSound>().play),
           Text(
             LocaleKeys.rating_thanks.tr(),
             style: AppText.title().copyWith(fontSize: 22),

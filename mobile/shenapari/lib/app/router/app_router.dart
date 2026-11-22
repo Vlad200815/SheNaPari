@@ -28,6 +28,7 @@ import 'app_redirect.dart';
 import 'main_shell.dart';
 import 'routes.dart';
 import 'stream_listenable.dart';
+import '../../core/device/notification_permission.dart';
 
 /// The router re-runs [appRedirect] whenever the session or the onboarding
 /// flag changes, so screens never navigate manually after sign-in/sign-out.
@@ -35,6 +36,7 @@ GoRouter createRouter({
   required SessionRepository session,
   required AppPrefs prefs,
   required Future<void> Function() signOut,
+  NotificationPermission? notifications,
 }) {
   return GoRouter(
     initialLocation: Routes.splash,
@@ -58,8 +60,13 @@ GoRouter createRouter({
         path: Routes.onboarding,
         // Appears right under the native splash and looks the same, so
         // any transition here would be visible as a jump.
-        pageBuilder: (_, state) =>
-            _instant(state, OnboardingPage(onDone: prefs.setOnboardingSeen)),
+        pageBuilder: (_, state) => _instant(
+          state,
+          OnboardingPage(
+            onDone: prefs.setOnboardingSeen,
+            notifications: notifications,
+          ),
+        ),
       ),
       GoRoute(
         path: Routes.phone,
