@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ШеНаПарі Кухня (демо)" type="FlutterRunConfigurationType" factoryName="Flutter">
+    <option name="additionalArgs" value="--dart-define-from-file=../shenapari/env/demo.json" />
+    <option name="filePath" value="$PROJECT_DIR$/mobile/kitchen/lib/main.dart" />
+    <method v="2" />
+  </configuration>
+</component>
