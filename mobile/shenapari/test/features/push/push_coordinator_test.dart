@@ -130,16 +130,22 @@ void main() {
     expect(opened, ['/order/o36?rate=1']);
   });
 
-  test('launched from a push before sign-in is known: opens once signed in', () async {
-    messages.launchedFrom = const PushTap(type: 'order_status', orderId: 'o7');
-    await coordinator.start(open: opened.add);
-    expect(opened, isEmpty);
+  test(
+    'launched from a push before sign-in is known: opens once signed in',
+    () async {
+      messages.launchedFrom = const PushTap(
+        type: 'order_status',
+        orderId: 'o7',
+      );
+      await coordinator.start(open: opened.add);
+      expect(opened, isEmpty);
 
-    await session.save(tokens, isNewUser: false);
-    await settle();
+      await session.save(tokens, isNewUser: false);
+      await settle();
 
-    expect(opened, ['/order/o7']);
-  });
+      expect(opened, ['/order/o7']);
+    },
+  );
 
   test('a push without an order opens nothing', () async {
     await session.save(tokens, isNewUser: false);

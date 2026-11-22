@@ -22,6 +22,9 @@ import 'checkout_cubit.dart';
 import 'checkout_state.dart';
 import '../../../../core/l10n/l10n.dart';
 import 'package:shenapari_core/ui/app_colors.dart';
+import '../../../../core/device/success_sound.dart';
+import '../../../push/presentation/notification_nudge_card.dart';
+import '../../../push/presentation/notification_nudge_cubit.dart';
 
 /// When to pick up, what is ordered, how to pay — then «Оплатити».
 class CheckoutPage extends StatelessWidget {
@@ -253,7 +256,9 @@ class _Placed extends StatelessWidget {
           children: [
             const Center(child: AppLogo()),
             // The check's box leaves room for the confetti, so no gap here.
-            const Center(child: PaidCheck()),
+            Center(
+              child: PaidCheck(onTicked: context.read<SuccessSound>().play),
+            ),
             const SizedBox(height: 8),
             Text(
               LocaleKeys.checkout_paid_title.tr(
@@ -277,6 +282,10 @@ class _Placed extends StatelessWidget {
               formatPrice(order.totalKopecks),
               style: AppText.title(),
               textAlign: TextAlign.center,
+            ),
+            BlocProvider(
+              create: (_) => sl<NotificationNudgeCubit>()..load(),
+              child: NotificationNudgeCard(number: order.number),
             ),
             const SizedBox(height: 32),
             AppButton.primary(

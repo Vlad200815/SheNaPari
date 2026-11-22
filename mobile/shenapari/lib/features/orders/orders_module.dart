@@ -16,9 +16,11 @@ import 'presentation/orders/orders_cubit.dart';
 import 'presentation/rating/rate_order_cubit.dart';
 import 'presentation/rating/rate_order_sheet.dart';
 import 'presentation/rating/rating_prompt_cubit.dart';
+import '../../core/device/success_sound.dart';
 
 void registerOrders(GetIt sl) {
   sl
+    ..registerLazySingleton<SuccessSound>(() => AudioSuccessSound(sl()))
     ..registerLazySingleton<OrdersApi>(() => OrdersApi(sl()))
     ..registerLazySingleton<OrdersRepository>(() => OrdersRepositoryImpl(sl()))
     // One live connection shared by every screen that listens.
