@@ -9,3 +9,6 @@
 # Android Studio opened at mobile/ instead of the repo root
 /mobile/.idea/
 .idea/deviceManager.xml
+
+# scripts/demo.sh
+backend/demo.log
