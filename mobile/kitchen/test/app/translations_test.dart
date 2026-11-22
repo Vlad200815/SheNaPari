@@ -26,10 +26,9 @@ void main() {
   });
 
   test('Ukrainian only: no other translations', () {
-    final files = Directory('assets/translations')
-        .listSync()
-        .map((f) => f.uri.pathSegments.last)
-        .toList();
+    final files = Directory(
+      'assets/translations',
+    ).listSync().map((f) => f.uri.pathSegments.last).toList();
     expect(files, ['uk.json']);
   });
 
