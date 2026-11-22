@@ -95,6 +95,16 @@ class $AssetsRiveGen {
   List<String> get values => [ratingStars];
 }
 
+class $AssetsSoundsGen {
+  const $AssetsSoundsGen();
+
+  /// File path: assets/sounds/success.wav
+  String get success => 'assets/sounds/success.wav';
+
+  /// List of all assets
+  List<String> get values => [success];
+}
+
 class $AssetsTranslationsGen {
   const $AssetsTranslationsGen();
 
@@ -232,6 +242,7 @@ abstract final class Assets {
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsLegalGen legal = $AssetsLegalGen();
   static const $AssetsRiveGen rive = $AssetsRiveGen();
+  static const $AssetsSoundsGen sounds = $AssetsSoundsGen();
   static const $AssetsTranslationsGen translations = $AssetsTranslationsGen();
 }
 
