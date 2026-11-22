@@ -9,16 +9,18 @@ void main() {
   const token = '3f2a9c10-5b7e-4d21-9a0c-1e2f3a4b5c6d';
   late FakeQueueRepository repository;
   late DateTime now;
+  late FakeHandedOverSound sound;
 
   setUp(() {
     now = DateTime(2026, 11, 20, 12);
+    sound = FakeHandedOverSound();
     repository = FakeQueueRepository([
       order(36, status: OrderStatus.ready, name: 'Влад'),
       order(38, status: OrderStatus.cooking),
     ])..tokens[token] = 'o36';
   });
 
-  PickupCubit cubit() => PickupCubit(repository, clock: () => now);
+  PickupCubit cubit() => PickupCubit(repository, sound, clock: () => now);
 
   test('a scanned QR hands the order over at once', () async {
     final c = cubit();
@@ -90,5 +92,37 @@ void main() {
       ..digit(4);
 
     expect(c.state.number, '123');
+  });
+
+  test('handed over by QR: «дзинь» once', () async {
+    final c = cubit();
+
+    await c.scanned(token);
+
+    expect(sound.plays, 1);
+  });
+
+  test('a code that is not ours or an order not ready: no «дзинь»', () async {
+    final c = cubit();
+
+    await c.scanned('https://example.com');
+    now = now.add(const Duration(seconds: 5));
+    c.digit(3);
+    c.digit(8);
+    await c.lookUp();
+
+    expect(sound.plays, 0);
+  });
+
+  test('handed over by number: «дзинь» after «Видати»', () async {
+    final c = cubit();
+    c.digit(3);
+    c.digit(6);
+    await c.lookUp();
+    expect(sound.plays, 0, reason: 'only found, not handed over yet');
+
+    await c.handOverFound();
+
+    expect(sound.plays, 1);
   });
 }
