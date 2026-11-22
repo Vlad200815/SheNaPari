@@ -10,6 +10,26 @@ import 'rate_order_sheet.dart';
 import 'rating_texts.dart';
 import 'widgets/rating_stars.dart';
 
+/// The rating sheet for [order] (new or a change); what was saved, or null.
+Future<OrderRating?> openOrderRating(
+  BuildContext context,
+  Order order, {
+  int stars = 0,
+}) {
+  final pickedUp = order.reachedAt(OrderStatus.pickedUp);
+  final names = [for (final item in order.items) item.name];
+  return showRateOrderSheet(
+    context,
+    orderId: order.id,
+    number: order.number,
+    subtitle: pickedUp == null
+        ? itemsLine(names)
+        : '${itemsLine(names)} · ${formatClock(pickedUp)}',
+    initialStars: stars,
+    existing: order.rating,
+  );
+}
+
 /// On a picked-up order's page: «Як вам це замовлення?» with stars that open
 /// the sheet, or the rating given, with «Змінити» while it still can be.
 /// Nothing for other orders. [onRated] reloads the order.
@@ -24,19 +44,7 @@ class OrderRatingSection extends StatelessWidget {
   final VoidCallback onRated;
 
   Future<void> _open(BuildContext context, {int stars = 0}) async {
-    final pickedUp = order.reachedAt(OrderStatus.pickedUp);
-    final names = [for (final item in order.items) item.name];
-    final rating = await showRateOrderSheet(
-      context,
-      orderId: order.id,
-      number: order.number,
-      subtitle: pickedUp == null
-          ? itemsLine(names)
-          : '${itemsLine(names)} · ${formatClock(pickedUp)}',
-      initialStars: stars,
-      existing: order.rating,
-    );
-    if (rating != null) onRated();
+    if (await openOrderRating(context, order, stars: stars) != null) onRated();
   }
 
   @override
