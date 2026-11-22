@@ -54,8 +54,10 @@ class _PaidCheckState extends State<PaidCheck>
 
   @override
   Widget build(BuildContext context) {
-    // Decoration: the title under it already says «оплачено».
-    final box = widget.size * 1.7;
+    // Decoration: the title under it already says «оплачено». The box holds
+    // the confetti too (they fly to ~0.84 × size from the centre), so
+    // nothing above or below gets hit by them.
+    final box = widget.size * 1.9;
     return ExcludeSemantics(
       child: SizedBox.square(
         dimension: box,

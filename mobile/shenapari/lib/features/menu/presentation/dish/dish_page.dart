@@ -125,7 +125,13 @@ class _DishView extends StatelessWidget {
           top: topInset + 8,
           left: AppDimens.horizontalPadding,
           child: _RoundButton(
-            icon: Icons.arrow_back_rounded,
+            // The platform's own back sign, like the app bars' BackButton:
+            // a chevron on iPhone, an arrow on Android.
+            icon: switch (Theme.of(context).platform) {
+              TargetPlatform.iOS ||
+              TargetPlatform.macOS => Icons.arrow_back_ios_new_rounded,
+              _ => Icons.arrow_back_rounded,
+            },
             label: LocaleKeys.common_back.tr(),
             onTap: () => _back(context),
           ),
