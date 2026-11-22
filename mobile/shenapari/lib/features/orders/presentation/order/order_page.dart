@@ -22,9 +22,18 @@ import '../rating/order_rating_section.dart';
 /// One order: status steps (live), the QR once ready, what was ordered and
 /// cancellation while the kitchen has not started cooking.
 class OrderPage extends StatelessWidget {
-  const OrderPage({super.key, required this.orderId});
+  const OrderPage({super.key, required this.orderId, this.openRating = false});
 
   final String orderId;
+
+  /// Opens the rating sheet once the order is loaded, if it can be rated
+  /// and isn't yet.
+  final bool openRating;
+
+  Future<void> _rate(BuildContext context, Order order) async {
+    final cubit = context.read<OrderCubit>();
+    if (await openOrderRating(context, order) != null) await cubit.refresh();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +41,18 @@ class OrderPage extends StatelessWidget {
       create: (_) => sl<OrderCubit>(param1: orderId)..load(),
       child: BlocConsumer<OrderCubit, OrderState>(
         listenWhen: (previous, current) =>
-            current.failure != null && previous.failure != current.failure,
-        listener: (context, state) =>
-            showFailureSnackBar(context, state.failure!),
+            (current.failure != null && previous.failure != current.failure) ||
+            // The first load, for [openRating].
+            (previous.order == null && current.order != null),
+        listener: (context, state) {
+          if (state.failure case final failure?) {
+            showFailureSnackBar(context, failure);
+          }
+          if (state.order case final order?
+              when openRating && order.canRate && order.rating == null) {
+            _rate(context, order);
+          }
+        },
         builder: (context, state) => Scaffold(
           backgroundColor: context.colors.background,
           appBar: AppBar(
