@@ -217,7 +217,11 @@
     "qr_label": "QR code of order #{number}",
     "show_hint": "Show the code at the counter and pick it up",
     "waiting": "The QR shows up once the order is ready",
-    "details": "Order details"
+    "details": "Order details",
+    "handed_over": "Order #{number} handed over",
+    "handed_over_text": "Enjoy your meal and your break!",
+    "done": "Done",
+    "next_order": "Next order"
   },
   "notifications": {
     "title": "Notifications",
