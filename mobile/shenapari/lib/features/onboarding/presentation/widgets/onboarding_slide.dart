@@ -42,7 +42,12 @@ class OnboardingSlide extends StatelessWidget {
                       ? ColorFilter.mode(context.colors.fill, BlendMode.srcIn)
                       : null,
                 ),
-                image.image(fit: BoxFit.contain),
+                // Air under the logo: the pictures are drawn to their
+                // edges, and on a tall phone the girl's bun touched it.
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: image.image(fit: BoxFit.contain),
+                ),
               ],
             ),
           ),

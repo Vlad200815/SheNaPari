@@ -61,12 +61,11 @@ class DishCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              _Name(dish.name),
-              Text(
-                LocaleKeys.home_weight.tr(
+              _NameAndWeight(
+                name: dish.name,
+                weight: LocaleKeys.home_weight.tr(
                   namedArgs: {'grams': '${dish.weightG}'},
                 ),
-                style: AppText.small(color: context.colors.textSecondary),
               ),
               const SizedBox(height: 4),
               Row(
@@ -95,31 +94,41 @@ class DishCard extends StatelessWidget {
   }
 }
 
-/// The dish name, always two lines tall: the photo takes what is left of the
-/// card, so a name that wraps must not make its photo smaller than the
-/// neighbours'. An invisible two-line text sets the height, at any text size.
-class _Name extends StatelessWidget {
-  const _Name(this.name);
+/// The name and, right under it, the weight — always as tall as a two-line
+/// name: the photo takes what is left of the card, so a name that wraps must
+/// not make its photo smaller than the neighbours'. A one-line name keeps the
+/// weight next to it; the spare line goes below. An invisible copy with a
+/// two-line name sets the height, at any text size.
+class _NameAndWeight extends StatelessWidget {
+  const _NameAndWeight({required this.name, required this.weight});
 
   final String name;
+  final String weight;
 
   @override
   Widget build(BuildContext context) {
-    final style = AppText.small(
+    final nameStyle = AppText.small(
       color: context.colors.textPrimary,
       fontWeight: FontWeight.w600,
     );
-    return Stack(
+    final weightStyle = AppText.small(color: context.colors.textSecondary);
+    Widget column(String name, String weight, {int? maxLines}) => Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        ExcludeSemantics(
-          child: Opacity(opacity: 0, child: Text('\n', style: style)),
-        ),
         Text(
           name,
-          style: style,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
+          style: nameStyle,
+          maxLines: maxLines,
+          overflow: maxLines == null ? null : TextOverflow.ellipsis,
         ),
+        Text(weight, style: weightStyle),
+      ],
+    );
+    return Stack(
+      children: [
+        ExcludeSemantics(child: Opacity(opacity: 0, child: column('\n', '0'))),
+        column(name, weight, maxLines: 2),
       ],
     );
   }
