@@ -200,6 +200,10 @@ abstract class LocaleKeys {
   static const my_qr_show_hint = 'my_qr.show_hint';
   static const my_qr_waiting = 'my_qr.waiting';
   static const my_qr_details = 'my_qr.details';
+  static const my_qr_handed_over = 'my_qr.handed_over';
+  static const my_qr_handed_over_text = 'my_qr.handed_over_text';
+  static const my_qr_done = 'my_qr.done';
+  static const my_qr_next_order = 'my_qr.next_order';
   static const my_qr = 'my_qr';
   static const notifications_title = 'notifications.title';
   static const notifications_empty_title = 'notifications.empty_title';

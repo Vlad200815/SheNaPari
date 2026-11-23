@@ -23,6 +23,10 @@ abstract class OrdersState with _$OrdersState {
     @Default(OrdersStatus.loading) OrdersStatus status,
     @Default(<Order>[]) List<Order> orders,
     Failure? failure,
+
+    /// A ready order that the kitchen has just handed out: «Мій QR» shows
+    /// «№7 видано» instead of an empty sheet, until [OrdersCubit.dismissHandedOver].
+    Order? handedOver,
   }) = _OrdersState;
 
   /// [orders] come active from the server; one that the kitchen has just
@@ -86,10 +90,26 @@ class OrdersCubit extends Cubit<OrdersState> {
     await _fetch();
   }
 
+  /// «Готово» under «№7 видано».
+  void dismissHandedOver() => emit(state.copyWith(handedOver: null));
+
   Future<void> _fetch() async {
+    final readyBefore = {
+      for (final o in state.orders)
+        if (o.status == OrderStatus.ready) o.id,
+    };
     switch (await _orders.getActiveOrders()) {
       case Ok(value: final orders):
         emit(state.copyWith(status: OrdersStatus.loaded, orders: orders));
+        // A ready order gone from the active ones was picked up — or not
+        // collected in time: only the order itself says which.
+        final gone = readyBefore.difference({for (final o in orders) o.id});
+        for (final id in gone) {
+          if (await _orders.getOrder(id) case Ok(value: final order)
+              when order.status == OrderStatus.pickedUp && !isClosed) {
+            emit(state.copyWith(handedOver: order));
+          }
+        }
       case Err(:final failure):
         emit(
           state.copyWith(
