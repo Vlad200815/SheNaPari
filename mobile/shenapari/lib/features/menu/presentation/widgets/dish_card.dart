@@ -160,6 +160,11 @@ class SoldOutBadge extends StatelessWidget {
 
 /// A dish photo with a neutral stand-in while loading, on error or when the
 /// dish has no photo at all.
+///
+/// The file is kept on disk after the first download (cached_network_image),
+/// and decoded at the size it is shown: a 1024 px photo in a 150 pt card on a
+/// 3× phone becomes 450 px in memory — about 0.8 MB instead of 4 MB — so a
+/// weak phone scrolls the menu without dropping frames or images.
 class DishImage extends StatelessWidget {
   const DishImage({super.key, required this.url, this.radius = 8});
 
@@ -173,12 +178,27 @@ class DishImage extends StatelessWidget {
       borderRadius: BorderRadius.circular(radius),
       child: url == null
           ? const _NoImage()
-          : CachedNetworkImage(
-              imageUrl: url,
-              fit: BoxFit.cover,
-              placeholder: (_, _) =>
-                  ColoredBox(color: context.colors.surfaceMuted),
-              errorWidget: (_, _, _) => const _NoImage(),
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                // The photo is square and cropped to fill (cover): decode for
+                // the longer side, so it stays sharp in a tall or wide box.
+                final side = constraints.biggest.longestSide;
+                final pixels = side.isFinite
+                    ? (side * MediaQuery.devicePixelRatioOf(context)).round()
+                    : null;
+                return CachedNetworkImage(
+                  imageUrl: url,
+                  fit: BoxFit.cover,
+                  memCacheWidth: pixels,
+                  // From the disk cache the photo is there at once: a short
+                  // fade, not half a second of grey on every scroll back.
+                  fadeInDuration: const Duration(milliseconds: 150),
+                  placeholderFadeInDuration: Duration.zero,
+                  placeholder: (_, _) =>
+                      ColoredBox(color: context.colors.surfaceMuted),
+                  errorWidget: (_, _, _) => const _NoImage(),
+                );
+              },
             ),
     );
   }
