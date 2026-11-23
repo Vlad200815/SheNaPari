@@ -132,6 +132,9 @@ class _MenuView extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final dish = dishes[index];
                   return DishCard(
+                    // A filter or a live update reshuffles the grid: each card
+                    // keeps its own element (and decoded photo) by dish.
+                    key: ValueKey(dish.id),
                     dish: dish,
                     onTap: () =>
                         context.push(Routes.dish(dish.id), extra: dish),
