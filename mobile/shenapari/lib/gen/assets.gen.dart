@@ -124,17 +124,17 @@ class $AssetsImagesAuthGen {
   /// File path: assets/images/auth/ic_UA.svg
   SvgGenImage get icUA => const SvgGenImage('assets/images/auth/ic_UA.svg');
 
-  /// File path: assets/images/auth/otp_code.png
-  AssetGenImage get otpCode => const AssetGenImage('assets/images/auth/otp_code.png');
+  /// File path: assets/images/auth/otp_code.webp
+  AssetGenImage get otpCode => const AssetGenImage('assets/images/auth/otp_code.webp');
 
-  /// File path: assets/images/auth/otp_code_dark.png
-  AssetGenImage get otpCodeDark => const AssetGenImage('assets/images/auth/otp_code_dark.png');
+  /// File path: assets/images/auth/otp_code_dark.webp
+  AssetGenImage get otpCodeDark => const AssetGenImage('assets/images/auth/otp_code_dark.webp');
 
-  /// File path: assets/images/auth/phone_auth.png
-  AssetGenImage get phoneAuth => const AssetGenImage('assets/images/auth/phone_auth.png');
+  /// File path: assets/images/auth/phone_auth.webp
+  AssetGenImage get phoneAuth => const AssetGenImage('assets/images/auth/phone_auth.webp');
 
-  /// File path: assets/images/auth/phone_auth_dark.png
-  AssetGenImage get phoneAuthDark => const AssetGenImage('assets/images/auth/phone_auth_dark.png');
+  /// File path: assets/images/auth/phone_auth_dark.webp
+  AssetGenImage get phoneAuthDark => const AssetGenImage('assets/images/auth/phone_auth_dark.webp');
 
   /// List of all assets
   List<dynamic> get values => [icUA, otpCode, otpCodeDark, phoneAuth, phoneAuthDark];
@@ -225,17 +225,14 @@ class $AssetsImagesOnboardingGen {
 class $AssetsImagesSplashGen {
   const $AssetsImagesSplashGen();
 
-  /// File path: assets/images/splash/dark_background.png
-  AssetGenImage get darkBackground => const AssetGenImage('assets/images/splash/dark_background.png');
-
-  /// File path: assets/images/splash/light_background.png
-  AssetGenImage get lightBackground => const AssetGenImage('assets/images/splash/light_background.png');
-
   /// File path: assets/images/splash/logo.png
   AssetGenImage get logo => const AssetGenImage('assets/images/splash/logo.png');
 
+  /// File path: assets/images/splash/logo_splash.png
+  AssetGenImage get logoSplash => const AssetGenImage('assets/images/splash/logo_splash.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [darkBackground, lightBackground, logo];
+  List<AssetGenImage> get values => [logo, logoSplash];
 }
 
 abstract final class Assets {
