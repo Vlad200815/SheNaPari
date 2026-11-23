@@ -38,4 +38,23 @@ void main() {
     expect(sizes, hasLength(2));
     expect(sizes.first, sizes.last);
   });
+
+  testWidgets('the weight sits right under a one-line name', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: appTheme,
+        home: Scaffold(
+          body: SizedBox(
+            width: 170,
+            height: 260,
+            child: DishCard(dish: _dish(1, 'Чизбургер')),
+          ),
+        ),
+      ),
+    );
+
+    final name = tester.getRect(find.text('Чизбургер'));
+    final weight = tester.getRect(find.textContaining('190'));
+    expect(weight.top - name.bottom, lessThan(2));
+  });
 }
