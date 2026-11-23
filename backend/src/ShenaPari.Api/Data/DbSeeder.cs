@@ -26,6 +26,7 @@ public static class DbSeeder
             db.Categories.AddRange(DemoMenu());
             await db.SaveChangesAsync();
         }
+        await EnsureDemoPhotosAsync(db);
 
         if (!await db.Canteens.AnyAsync())
         {
@@ -87,6 +88,43 @@ public static class DbSeeder
             employee.Credentials = new UserCredentials { PasswordHash = passwords.Hash(employee, item.Password) };
             db.Employees.Add(employee);
         }
+        await db.SaveChangesAsync();
+    }
+
+    /// Photos of the demo dishes, shipped in wwwroot/images/menu. Given to a dish with that name that has
+    /// no photo yet, so older databases get them too; a photo uploaded by an admin is never replaced.
+    private static readonly Dictionary<string, string> DemoPhotos = new()
+    {
+        ["Чизбургер"] = "cheeseburger",
+        ["Бургер з куркою"] = "chicken-burger",
+        ["Подвійний бургер"] = "double-burger",
+        ["Хот-дог класичний"] = "hot-dog",
+        ["Хот-дог із сиром"] = "cheese-hot-dog",
+        ["Французький хот-дог"] = "french-hot-dog",
+        ["Багет із шинкою і сиром"] = "ham-cheese-baguette",
+        ["Багет із куркою"] = "chicken-baguette",
+        ["Багет із тунцем"] = "tuna-baguette",
+        ["Фалафель у піті"] = "falafel-pita",
+        ["Борщ український"] = "borscht",
+        ["Суп курячий з локшиною"] = "chicken-noodle-soup",
+        ["Вареники з картоплею"] = "varenyky",
+        ["Котлета по-київськи"] = "chicken-kyiv",
+        ["Сирник"] = "syrnyky",
+        ["Пиріжок з вишнею"] = "cherry-pie",
+        ["Круасан"] = "croissant",
+        ["Чай чорний"] = "black-tea",
+        ["Кава американо"] = "americano",
+        ["Компот"] = "kompot",
+    };
+
+    private static string DemoPhotoUrl(string slug) => $"/images/menu/{slug}.jpg";
+
+    private static async Task EnsureDemoPhotosAsync(AppDbContext db)
+    {
+        var names = DemoPhotos.Keys.ToList();
+        var dishes = await db.Dishes.Where(d => d.ImageUrl == null && names.Contains(d.Name)).ToListAsync();
+        if (dishes.Count == 0) return;
+        foreach (var dish in dishes) dish.ImageUrl = DemoPhotoUrl(DemoPhotos[dish.Name]);
         await db.SaveChangesAsync();
     }
 
