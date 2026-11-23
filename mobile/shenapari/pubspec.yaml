@@ -235,38 +235,18 @@ flutter:
 ###
 
 flutter_native_splash:
-  #! FOR ALL PLATFORM, except Android 12+:
-
-  # general color for all platform (except android 12+):
-  # see there only 2 lines in all parameters that marked as [required], so others
-  # remain optional. NOTE that if you specify the [required] color, then you cant
-  # use the [required] background_image in the next section. the reverse is true.
-  # select one, they cant work together.
-  #  color: "#ffffff"   #========[REQUIRED]============
-  #  color_dark: "#000000"
-
-  # hide notif bar on android. ios already hides it by default.
-  # Has no effect in web since web has no notification bar.
+  # The app background of each mode and the logo, on every platform, so the
+  # native splash, Android 12+'s own splash and the Flutter SplashPage look
+  # the same (no flash, no jump). Regenerate after a change:
+  #   dart run flutter_native_splash:create
+  color: "#F4F7F2" # AppColors.light.background (secondary100)
+  color_dark: "#121212" # AppColors.dark.background
+  # 4x: drawn at 200 pt, the logo itself 150 pt wide.
+  image: assets/images/splash/logo_splash.png
   fullscreen: true
-
-  # general background_image for all platform (except android 12+)
-  # if you specify this [required] background_image, then you should comment the
-  # [required] color in previous section. select one, they cant work together.
-
-  background_image: assets/images/splash/light_background.png    #========[REQUIRED]============
-  background_image_dark: assets/images/splash/dark_background.png
-
-  #background_image:      "assets/background.png"
-  #background_image_dark: "assets/dark-background.png"
-
-  # general image for all platform (except android 12+):
-  # allows you to specify an image used in the splash screen. It must be a
-  # png file and should be sized for 4x pixel density.
-
-  image: assets/images/splash/logo.png
-
   android_12:
+    # Android 12+ fits this into its 288 dp icon: the logo is ~150 dp too,
+    # inside the 192 dp circle the system crops to.
     image: assets/images/splash/logo.png
-
-    color: "#ffffff"
-    color_dark: "#000000"
+    color: "#F4F7F2"
+    color_dark: "#121212"
