@@ -21,6 +21,7 @@ import '../core/device/rive_support.dart';
 import '../features/push/presentation/push_coordinator.dart';
 import '../firebase_options.dart';
 import 'app.dart';
+import 'splash_page.dart';
 import 'di.dart';
 import 'router/app_router.dart';
 
@@ -58,6 +59,7 @@ Future<void> bootstrap() async {
       signOut: sl<SignOutUseCase>().call,
       notifications: sl(),
     );
+    await SplashPage.precacheLogo();
     runApp(
       localized(
         locale: sl<AppLocale>().locale,
