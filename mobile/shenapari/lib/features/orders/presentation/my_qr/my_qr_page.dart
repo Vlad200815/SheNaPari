@@ -180,10 +180,9 @@ class _Sheet extends StatelessWidget {
   Widget _content(BuildContext context, OrdersState state) {
     final orders = state.forPickup;
     if (state.handedOver case final order?) {
-      return _HandedOver(
+      return _Centred(
         key: ValueKey('handed-${order.id}'),
-        order: order,
-        hasMore: orders.isNotEmpty,
+        child: _HandedOver(order: order, hasMore: orders.isNotEmpty),
       );
     }
     return switch (state.status) {
@@ -194,19 +193,23 @@ class _Sheet extends StatelessWidget {
           child: CircularProgressIndicator(color: ColorName.primary400),
         ),
       ),
-      OrdersStatus.failure => _Message(
+      OrdersStatus.failure => _Centred(
         key: const ValueKey('failure'),
-        icon: Icons.cloud_off,
-        text: state.failure!.text,
-        button: LocaleKeys.common_retry.tr(),
-        onPressed: context.read<OrdersCubit>().load,
+        child: _Message(
+          icon: Icons.cloud_off,
+          text: state.failure!.text,
+          button: LocaleKeys.common_retry.tr(),
+          onPressed: context.read<OrdersCubit>().load,
+        ),
       ),
-      OrdersStatus.loaded when orders.isEmpty => _Message(
+      OrdersStatus.loaded when orders.isEmpty => _Centred(
         key: const ValueKey('none'),
-        icon: Icons.qr_code_2_rounded,
-        text: LocaleKeys.my_qr_empty.tr(),
-        button: LocaleKeys.common_to_menu.tr(),
-        onPressed: () => context.go(Routes.home),
+        child: _Message(
+          icon: Icons.qr_code_2_rounded,
+          text: LocaleKeys.my_qr_empty.tr(),
+          button: LocaleKeys.common_to_menu.tr(),
+          onPressed: () => context.go(Routes.home),
+        ),
       ),
       OrdersStatus.loaded when orders.length == 1 => _OrderPage(
         key: ValueKey('one-${orders.single.id}-${orders.single.status}'),
@@ -512,7 +515,7 @@ class _ReadyQr extends StatelessWidget {
 /// confetti as «Оплачено», with «Дзинь на видачу» at the moment the counter
 /// hears it too — instead of the sheet going blank.
 class _HandedOver extends StatelessWidget {
-  const _HandedOver({super.key, required this.order, required this.hasMore});
+  const _HandedOver({required this.order, required this.hasMore});
 
   final Order order;
 
@@ -642,9 +645,24 @@ class _DetailsLink extends StatelessWidget {
   }
 }
 
+/// The sheet is always the same height (78 % of the screen), so a short
+/// message would hug the title and leave the bottom empty: it sits in the
+/// middle instead, a little above centre where the eye expects it.
+/// The QR itself stays at the top, under the title.
+class _Centred extends StatelessWidget {
+  const _Centred({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Align(
+    alignment: const Alignment(0, -0.25),
+    child: SingleChildScrollView(child: child),
+  );
+}
+
 class _Message extends StatelessWidget {
   const _Message({
-    super.key,
     required this.icon,
     required this.text,
     required this.button,
