@@ -17,9 +17,6 @@ import 'package:vector_graphics/vector_graphics.dart' as _vg;
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/app_icon.png
-  AssetGenImage get appIcon => const AssetGenImage('assets/images/app_icon.png');
-
   /// Directory path: assets/images/auth
   $AssetsImagesAuthGen get auth => const $AssetsImagesAuthGen();
 
@@ -32,17 +29,11 @@ class $AssetsImagesGen {
   /// Directory path: assets/images/home
   $AssetsImagesHomeGen get home => const $AssetsImagesHomeGen();
 
-  /// File path: assets/images/ic_back_arrow.svg
-  SvgGenImage get icBackArrow => const SvgGenImage('assets/images/ic_back_arrow.svg');
-
   /// File path: assets/images/ic_chili.svg
   SvgGenImage get icChili => const SvgGenImage('assets/images/ic_chili.svg');
 
   /// File path: assets/images/ic_scan.svg
   SvgGenImage get icScan => const SvgGenImage('assets/images/ic_scan.svg');
-
-  /// File path: assets/images/ic_test_error.svg
-  SvgGenImage get icTestError => const SvgGenImage('assets/images/ic_test_error.svg');
 
   /// Directory path: assets/images/onboarding
   $AssetsImagesOnboardingGen get onboarding => const $AssetsImagesOnboardingGen();
@@ -50,14 +41,8 @@ class $AssetsImagesGen {
   /// Directory path: assets/images/splash
   $AssetsImagesSplashGen get splash => const $AssetsImagesSplashGen();
 
-  /// File path: assets/images/star-rating.riv
-  String get starRating => 'assets/images/star-rating.riv';
-
-  /// File path: assets/images/test.jpg
-  AssetGenImage get test => const AssetGenImage('assets/images/test.jpg');
-
   /// List of all assets
-  List<dynamic> get values => [appIcon, icBackArrow, icChili, icScan, icTestError, starRating, test];
+  List<SvgGenImage> get values => [icChili, icScan];
 }
 
 class $AssetsLegalGen {
@@ -190,17 +175,8 @@ class $AssetsImagesHomeGen {
   /// File path: assets/images/home/add.svg
   SvgGenImage get add => const SvgGenImage('assets/images/home/add.svg');
 
-  /// File path: assets/images/home/poster.png
-  AssetGenImage get poster => const AssetGenImage('assets/images/home/poster.png');
-
-  /// File path: assets/images/home/product.png
-  AssetGenImage get product => const AssetGenImage('assets/images/home/product.png');
-
-  /// File path: assets/images/home/star.svg
-  SvgGenImage get star => const SvgGenImage('assets/images/home/star.svg');
-
   /// List of all assets
-  List<dynamic> get values => [add, poster, product, star];
+  List<SvgGenImage> get values => [add];
 }
 
 class $AssetsImagesOnboardingGen {
