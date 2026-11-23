@@ -61,15 +61,7 @@ class DishCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                dish.name,
-                style: AppText.small(
-                  color: context.colors.textPrimary,
-                  fontWeight: FontWeight.w600,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+              _Name(dish.name),
               Text(
                 LocaleKeys.home_weight.tr(
                   namedArgs: {'grams': '${dish.weightG}'},
@@ -99,6 +91,36 @@ class DishCard extends StatelessWidget {
     return Opacity(
       opacity: 0.6,
       child: ColorFiltered(colorFilter: greyscale, child: card),
+    );
+  }
+}
+
+/// The dish name, always two lines tall: the photo takes what is left of the
+/// card, so a name that wraps must not make its photo smaller than the
+/// neighbours'. An invisible two-line text sets the height, at any text size.
+class _Name extends StatelessWidget {
+  const _Name(this.name);
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = AppText.small(
+      color: context.colors.textPrimary,
+      fontWeight: FontWeight.w600,
+    );
+    return Stack(
+      children: [
+        ExcludeSemantics(
+          child: Opacity(opacity: 0, child: Text('\n', style: style)),
+        ),
+        Text(
+          name,
+          style: style,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 }
