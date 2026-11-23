@@ -12,7 +12,9 @@ import '../../../../core/device/qr_display_mode.dart';
 import 'package:shenapari_core/ui/app_button.dart';
 import 'package:shenapari_core/ui/app_text.dart';
 import 'package:shenapari_core/gen/colors.gen.dart';
+import '../../../../core/device/success_sound.dart';
 import '../../domain/entities/order.dart';
+import '../checkout/widgets/paid_check.dart';
 import '../orders/orders_cubit.dart';
 import '../widgets/order_texts.dart';
 import '../widgets/order_widgets.dart';
@@ -177,6 +179,13 @@ class _Sheet extends StatelessWidget {
 
   Widget _content(BuildContext context, OrdersState state) {
     final orders = state.forPickup;
+    if (state.handedOver case final order?) {
+      return _HandedOver(
+        key: ValueKey('handed-${order.id}'),
+        order: order,
+        hasMore: orders.isNotEmpty,
+      );
+    }
     return switch (state.status) {
       OrdersStatus.loading => const SizedBox(
         key: ValueKey('loading'),
@@ -495,6 +504,58 @@ class _ReadyQr extends StatelessWidget {
           _DetailsLink(order: order),
         ],
       ),
+    );
+  }
+}
+
+/// The kitchen has just handed out the order on screen: the same tick and
+/// confetti as «Оплачено», with «Дзинь на видачу» at the moment the counter
+/// hears it too — instead of the sheet going blank.
+class _HandedOver extends StatelessWidget {
+  const _HandedOver({super.key, required this.order, required this.hasMore});
+
+  final Order order;
+
+  /// Other orders are still waiting: go on to them instead of closing.
+  final bool hasMore;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 8),
+        Center(
+          child: PaidCheck(
+            size: 96,
+            onTicked: context.read<SuccessSound>().play,
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          LocaleKeys.my_qr_handed_over.tr(
+            namedArgs: {'number': '${order.number}'},
+          ),
+          style: AppText.heading().copyWith(fontSize: 24),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 6),
+        Text(
+          LocaleKeys.my_qr_handed_over_text.tr(),
+          style: AppText.regular(color: context.colors.textSecondary),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 24),
+        AppButton.primary(
+          text: hasMore
+              ? LocaleKeys.my_qr_next_order.tr()
+              : LocaleKeys.my_qr_done.tr(),
+          onPressed: hasMore
+              ? context.read<OrdersCubit>().dismissHandedOver
+              : () => context.pop(),
+        ),
+      ],
     );
   }
 }

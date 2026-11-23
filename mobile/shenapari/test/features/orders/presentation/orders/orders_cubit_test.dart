@@ -45,6 +45,62 @@ void main() {
     await cubit.close();
   });
 
+  group('handed over while «Мій QR» shows it', () {
+    Future<OrdersCubit> readyOnScreen() async {
+      repository.kitchen('order-7', OrderStatus.ready, pickupToken: 't');
+      final cubit = OrdersCubit(repository, events);
+      await cubit.load();
+      return cubit;
+    }
+
+    test('the kitchen hands it out: «№7 видано»', () async {
+      final cubit = await readyOnScreen();
+
+      repository.kitchen('order-7', OrderStatus.pickedUp);
+      events.changed('order-7');
+      await Future<void>.delayed(Duration.zero);
+
+      expect(cubit.state.handedOver?.id, 'order-7');
+      expect(cubit.state.forPickup, isEmpty);
+      await cubit.close();
+    });
+
+    test('not picked up in time is no success', () async {
+      final cubit = await readyOnScreen();
+
+      repository.kitchen('order-7', OrderStatus.notPickedUp);
+      events.changed('order-7');
+      await Future<void>.delayed(Duration.zero);
+
+      expect(cubit.state.handedOver, isNull);
+      await cubit.close();
+    });
+
+    test('an order that was not ready yet is no success either', () async {
+      final cubit = OrdersCubit(repository, events);
+      await cubit.load(); // paid
+
+      repository.kitchen('order-7', OrderStatus.cancelled);
+      events.changed('order-7');
+      await Future<void>.delayed(Duration.zero);
+
+      expect(cubit.state.handedOver, isNull);
+      await cubit.close();
+    });
+
+    test('«Готово» clears it', () async {
+      final cubit = await readyOnScreen();
+      repository.kitchen('order-7', OrderStatus.pickedUp);
+      events.changed('order-7');
+      await Future<void>.delayed(Duration.zero);
+
+      cubit.dismissHandedOver();
+
+      expect(cubit.state.handedOver, isNull);
+      await cubit.close();
+    });
+  });
+
   test('«Мій QR»: ready orders first, longest-waiting on top', () {
     Order order(
       String id,
