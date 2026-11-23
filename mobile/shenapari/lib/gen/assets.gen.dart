@@ -209,14 +209,14 @@ class $AssetsImagesOnboardingGen {
   /// File path: assets/images/onboarding/background.svg
   SvgGenImage get background => const SvgGenImage('assets/images/onboarding/background.svg');
 
-  /// File path: assets/images/onboarding/order_in_seconds.png
-  AssetGenImage get orderInSeconds => const AssetGenImage('assets/images/onboarding/order_in_seconds.png');
+  /// File path: assets/images/onboarding/order_in_seconds.webp
+  AssetGenImage get orderInSeconds => const AssetGenImage('assets/images/onboarding/order_in_seconds.webp');
 
-  /// File path: assets/images/onboarding/realtime_notifications.png
-  AssetGenImage get realtimeNotifications => const AssetGenImage('assets/images/onboarding/realtime_notifications.png');
+  /// File path: assets/images/onboarding/realtime_notifications.webp
+  AssetGenImage get realtimeNotifications => const AssetGenImage('assets/images/onboarding/realtime_notifications.webp');
 
-  /// File path: assets/images/onboarding/welcome.png
-  AssetGenImage get welcome => const AssetGenImage('assets/images/onboarding/welcome.png');
+  /// File path: assets/images/onboarding/welcome.webp
+  AssetGenImage get welcome => const AssetGenImage('assets/images/onboarding/welcome.webp');
 
   /// List of all assets
   List<dynamic> get values => [background, orderInSeconds, realtimeNotifications, welcome];
