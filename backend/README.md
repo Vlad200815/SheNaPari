@@ -100,6 +100,7 @@ Paid → Accepted → Cooking → Ready → PickedUp
 | `OrderCreated` | персонал | нове замовлення |
 | `OrderStatusChanged` | власник замовлення і персонал | будь-яка зміна статусу |
 | `CanteenChanged` | усі | кухня призупинила або відновила прийом |
+| `MenuChanged` | усі | стоп-лист або зміна меню адміном; `{dishId}`, `null` для категорій |
 
 Токен передається як `?access_token=...`.
 
