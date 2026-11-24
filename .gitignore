@@ -12,3 +12,4 @@
 
 # scripts/demo.sh
 backend/demo.log
+backend/ngrok.log
