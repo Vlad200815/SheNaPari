@@ -3,7 +3,8 @@
 # (an ngrok static domain), so the apps work from any network — the
 # university's Wi-Fi, a phone's hotspot, mobile data — without a rebuild.
 #
-#   scripts/demo.sh          # backend (if not running) + the tunnel; Ctrl+C stops both
+#   scripts/demo.sh          # backend (if not running) + the tunnel + sign-in codes;
+#                            # Ctrl+C stops both
 #
 # Once: an ngrok account, `ngrok config add-authtoken <token>`, a free static
 # domain (dashboard → Domains), and mobile/shenapari/env/demo.json with it
@@ -38,7 +39,30 @@ else
     sleep 1
   done
 fi
-trap '[[ -n $BACKEND_PID ]] && kill $BACKEND_PID 2>/dev/null' EXIT
+# ngrok runs in the background: its full-screen view would wipe anything
+# printed over it. This window shows the address and the sign-in codes
+# instead; the request list is still at http://127.0.0.1:4040.
+ngrok http --url="$DOMAIN" $PORT --log=stdout > backend/ngrok.log 2>&1 &
+NGROK_PID=$!
+trap 'kill $NGROK_PID 2>/dev/null; [[ -n $BACKEND_PID ]] && kill $BACKEND_PID 2>/dev/null' EXIT
 
+for _ in $(seq 1 20); do
+  curl -s http://127.0.0.1:4040/api/tunnels | grep -q "$DOMAIN" && break
+  if ! kill -0 $NGROK_PID 2>/dev/null; then
+    echo "ngrok stopped, see backend/ngrok.log:" >&2
+    tail -5 backend/ngrok.log >&2
+    exit 1
+  fi
+  sleep 1
+done
+
+echo
 echo "Public address: $URL"
-ngrok http --url="$DOMAIN" $PORT
+echo "Requests:       http://127.0.0.1:4040"
+if [[ -z $BACKEND_PID ]]; then
+  echo "(The backend was already running, so its codes go to its own console.)"
+fi
+echo "Sign-in codes appear below. Ctrl+C stops everything."
+echo
+touch backend/demo.log
+tail -n 0 -f backend/demo.log | grep --line-buffered "SMS to"
