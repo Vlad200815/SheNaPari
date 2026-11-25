@@ -155,4 +155,4 @@ cd mobile/kitchen && flutter test          # 60
 
 - Кожен крок робиться в окремій гілці, PR завжди відкривається в `main`.
 - Код і коментарі пишуться англійською, тексти для користувача українською (у клієнті ще й англійською).
-- Повні правила архітектури для Flutter: `mobile/shenapari/CLAUDE.md` і `mobile/kitchen/CLAUDE.md`. Опис API для розробника сервера: `backend/README.md`.
+- Правила архітектури: [architecture.md](architecture.md). Опис API для розробника сервера: `backend/README.md`.
