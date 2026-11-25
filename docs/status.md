@@ -130,4 +130,4 @@
 | Клієнт (`flutter test`) | **348** | Cubit'и (успіх і помилка), use case, `toEntity()`, `AuthInterceptor`, `apiCall`, redirect роутера, віджети, наявність перекладів |
 | Кухня (`flutter test`) | **60** | вхід, черга, видача, стоп-лист, пауза, redirect, віджети дошки |
 
-Правила, яких дотримується код, описано в [архітектурі](architecture.md#clean-architecture-feature-first) і в `mobile/shenapari/CLAUDE.md`.
+Правила, яких дотримується код, описано в [архітектурі](architecture.md#clean-architecture-feature-first).
